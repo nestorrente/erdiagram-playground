@@ -1,0 +1,9 @@
+ingress:
+  enabled: true
+  domain: nestorrente.com
+  subdomain: demo
+deployment:
+  image: registry.nestorrente.com/v2/erdiagram/erdiagram-playground
+  containerPort: 80
+  imagePullSecrets:
+    - regcred

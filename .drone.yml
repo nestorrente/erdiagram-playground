@@ -1,0 +1,42 @@
+kind: pipeline
+type: kubernetes
+name: default
+
+steps:
+  #  - name: build
+  #    image: node:10
+  #    commands:
+  #      - npm install
+  #      - npm run build-demo
+  - name: bake
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: docker_user
+      password:
+        from_secret: docker_pass
+      repo: registry.nestorrente.com/v2/erdiagram/erdiagram-playground
+      registry: registry.nestorrente.com/v2
+      tags:
+        - latest
+        - 1.1.${CI_BUILD_NUMBER}
+    when:
+      branch:
+        - master
+        - release/*
+  - name: deploy-production
+    image: rubasace/drone-helm-k8s
+    environment:
+      K8S_CERT_AUTHORITY_DATA:
+        from_secret: K8S_CERT_AUTHORITY_DATA
+      K8S_SERVER:
+        from_secret: K8S_SERVER
+      K8S_USER:
+        from_secret: K8S_USER
+      K8S_PASSWORD:
+        from_secret: K8S_PASSWORD
+      NAMESPACE: production
+      IMAGE_TAG: 1.1.${CI_BUILD_NUMBER}
+    when:
+      branch:
+        - master
