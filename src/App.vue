@@ -118,10 +118,10 @@ Move
     specialAttackStat short
     specialDefenseStat short
 
-Pokemon *->* Move
-
 Region
     name text(30)
+
+Pokemon *->* Move
 
 Pokemon *<-> Region
 
