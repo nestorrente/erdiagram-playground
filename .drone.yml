@@ -19,7 +19,7 @@ steps:
       registry: registry.nestorrente.com/v2
       tags:
         - latest
-        - 1.1.${CI_BUILD_NUMBER}
+        - 0.1.${CI_BUILD_NUMBER}
     when:
       branch:
         - master
@@ -36,7 +36,7 @@ steps:
       K8S_PASSWORD:
         from_secret: K8S_PASSWORD
       NAMESPACE: production
-      IMAGE_TAG: 1.1.${CI_BUILD_NUMBER}
+      IMAGE_TAG: 0.1.0.${CI_BUILD_NUMBER}
     when:
       branch:
         - master
