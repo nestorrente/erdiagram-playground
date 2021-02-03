@@ -14,7 +14,7 @@ steps:
       registry: registry.nestorrente.com/v2
       tags:
         - latest
-        - 0.1.${CI_BUILD_NUMBER}
+        - 0.1.0.${CI_BUILD_NUMBER}
     when:
       branch:
         - master
