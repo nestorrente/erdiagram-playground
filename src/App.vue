@@ -1,7 +1,7 @@
 <template>
     <div class="vertical-full-container">
         <div class="vfc-item">
-            <NavBar/>
+            <NavBar @show-config="showingConfigModal = true"/>
         </div>
         <section class="section pb-3 vfc-item vfc-grow">
             <!--		<pre>{{ entityRelationshipModel }}</pre>-->
@@ -39,7 +39,6 @@
                                         autocapitalize="off"
                                         spellcheck="false"
                                         v-model="inputCode"
-                                        @input="modelOutdated = true"
                                         @keypress.ctrl.enter.prevent="runERDiagram"
                                         @keydown.tab.prevent="handleTextAreaTab"
                                 ></textarea>
@@ -77,15 +76,23 @@
             </div>
         </section>
     </div>
+    <ConfigModal
+            title="Test modal"
+            v-model:showing="showingConfigModal"
+            v-model:config="config"
+    />
 </template>
 
 <script lang="ts">
-    import {computed, defineComponent, onMounted, ref} from 'vue';
+    import {computed, ComputedRef, defineComponent, onMounted, ref, watch} from 'vue';
     import NavBar from '@/components/NavBar.vue';
     import CodeBlock from '@/components/CodeBlock.vue';
+    import TabsSection from '@/components/TabsSection.vue';
     import {
+        ClassModelGenerator,
+        DatabaseModelGenerator,
         EntityRelationshipModel,
-        entityRelationshipModelParser,
+        EntityRelationshipModelParser,
         EntityRelationshipModelToClassCodeConverter,
         EntityRelationshipModelToCodeConverter,
         EntityRelationshipModelToDatabaseCodeConverter,
@@ -93,16 +100,20 @@
         MySqlDatabaseModelToCodeConverter,
         TypeScriptClassModelToCodeConverter
     } from '@nestorrente/erdiagram';
-    import TabsSection from '@/components/TabsSection.vue';
+    import ConfigModal from '@/components/ConfigModal.vue';
+    import ERDiagramPlaygroundConfig, {defaultERDiagramPlaygroundConfig} from '@/ERDiagramPlaygroundConfig';
 
     export default defineComponent({
         name: 'App',
         components: {
+            ConfigModal,
             TabsSection,
             CodeBlock,
             NavBar
         },
         setup() {
+
+            const config = ref<ERDiagramPlaygroundConfig>(defaultERDiagramPlaygroundConfig);
 
             const inputCode = ref(`
 
@@ -129,9 +140,14 @@ Pokemon *<-> Region
             onMounted(runERDiagram);
 
             const modelOutdated = ref(true);
+            watch(inputCode, () => modelOutdated.value = true);
 
             const hasErrors = ref(false);
             const entityRelationshipModel = ref<EntityRelationshipModel>();
+
+            const entityRelationshipModelParser = computed(() => {
+                return new EntityRelationshipModelParser(config.value.erModel);
+            });
 
             function runERDiagram() {
 
@@ -143,35 +159,53 @@ Pokemon *<-> Region
                 hasErrors.value = false;
 
                 try {
-                    entityRelationshipModel.value = entityRelationshipModelParser.parseModel(inputCode.value);
+                    entityRelationshipModel.value = entityRelationshipModelParser.value.parseModel(inputCode.value);
                 } catch (e) {
                     hasErrors.value = true;
                     console.error(e);
                 }
             }
 
-            const mysqlConverter = new EntityRelationshipModelToDatabaseCodeConverter(
-                    new MySqlDatabaseModelToCodeConverter()
-            );
+            const databaseModelGenerator = computed(() => {
+                return new DatabaseModelGenerator(config.value.database);
+            });
 
-            const javaConverter = new EntityRelationshipModelToClassCodeConverter(
-                    new JavaClassModelToCodeConverter({
-                        useSpringNullabilityAnnotations: true,
-                        generatedClassesPackage: 'com.example.erdiagram'
-                    })
-            );
+            const mysqlConverter = computed(() => {
+                return new EntityRelationshipModelToDatabaseCodeConverter(
+                        databaseModelGenerator.value,
+                        new MySqlDatabaseModelToCodeConverter(config.value.mysql)
+                );
+            });
 
-            const typeScriptConverter = new EntityRelationshipModelToClassCodeConverter(
-                    new TypeScriptClassModelToCodeConverter()
-            );
+            const classModelGenerator = computed(() => new ClassModelGenerator());
+
+            const javaConverter = computed(() => {
+                return new EntityRelationshipModelToClassCodeConverter(
+                        classModelGenerator.value,
+                        new JavaClassModelToCodeConverter(config.value.java)
+                );
+            });
+
+            const typeScriptConverter = computed(() => {
+                return new EntityRelationshipModelToClassCodeConverter(
+                        classModelGenerator.value,
+                        new TypeScriptClassModelToCodeConverter(config.value.typescript)
+                );
+            });
 
             const generatedMysqlCode = createComputedCompiledCode(mysqlConverter);
             const generatedJavaCode = createComputedCompiledCode(javaConverter);
             const generatedTypeScriptCode = createComputedCompiledCode(typeScriptConverter);
 
-            function createComputedCompiledCode(converter: EntityRelationshipModelToCodeConverter) {
+            function createComputedCompiledCode(converter: ComputedRef<EntityRelationshipModelToCodeConverter>) {
                 return computed(() => {
-                    return entityRelationshipModel.value ? converter.generateCode(entityRelationshipModel.value) : '';
+
+                    if (!entityRelationshipModel.value) {
+                        return '';
+                    }
+
+                    return converter.value.generateCode(entityRelationshipModel.value);
+
                 });
             }
 
@@ -220,6 +254,8 @@ Pokemon *<-> Region
                 }));
             }
 
+            const showingConfigModal = ref(false);
+
             return {
                 inputCode,
                 modelOutdated,
@@ -229,7 +265,9 @@ Pokemon *<-> Region
                 entityRelationshipModel,
                 runERDiagram,
                 hasErrors,
-                handleTextAreaTab
+                handleTextAreaTab,
+                showingConfigModal,
+                config
             };
 
         }

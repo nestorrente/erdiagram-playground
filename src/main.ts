@@ -4,6 +4,8 @@ import 'highlight.js/styles/monokai-sublime.css';
 // import 'highlight.js/styles/rainbow.css';
 // import 'highlight.js/styles/tomorrow.css';
 // import 'highlight.js/styles/github-gist.css';
+import '@fortawesome/fontawesome-free/css/all.css';
+
 import {createApp} from 'vue';
 import App from './App.vue';
 

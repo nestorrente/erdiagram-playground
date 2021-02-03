@@ -2,7 +2,8 @@
     <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
             <div class="navbar-item">
-                <img src="../assets/img/logo.svg">
+                <img src="../assets/img/logo.svg" class="mr-3">
+                <strong>ERDiagram</strong>
             </div>
 
             <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
@@ -15,32 +16,21 @@
 
         <div id="navbarBasicExample" class="navbar-menu">
             <div class="navbar-start">
-                <a class="navbar-item">
-                    Home
-                </a>
-
-                <a class="navbar-item">
-                    Documentation
-                </a>
-
                 <div class="navbar-item has-dropdown is-hoverable">
                     <a class="navbar-link">
-                        More
+                        GitHub
                     </a>
 
                     <div class="navbar-dropdown">
-                        <a class="navbar-item">
-                            About
+                        <a class="navbar-item" href="https://github.com/nestorrente/erdiagram" target="_blank">
+                            ERDiagram library
                         </a>
-                        <a class="navbar-item">
-                            Jobs
+                        <a class="navbar-item" href="https://github.com/nestorrente/erdiagram-cli" target="_blank">
+                            ERDiagram CLI
                         </a>
-                        <a class="navbar-item">
-                            Contact
-                        </a>
-                        <hr class="navbar-divider">
-                        <a class="navbar-item">
-                            Report an issue
+                        <a class="navbar-item" href="https://github.com/nestorrente/erdiagram-playground"
+                           target="_blank">
+                            ERDiagram playground - this app 😀
                         </a>
                     </div>
                 </div>
@@ -48,13 +38,20 @@
 
             <div class="navbar-end">
                 <div class="navbar-item">
+                    <article class="message is-warning is-small">
+                        <div class="message-body">
+                            Alpha version
+                        </div>
+                    </article>
+                </div>
+
+                <div class="navbar-item">
                     <div class="buttons">
-                        <a class="button is-primary">
-                            <strong>Sign up</strong>
-                        </a>
-                        <a class="button is-light">
-                            Log in
-                        </a>
+                        <button class="button is-primary" title="Configuration" @click="$emit('show-config')">
+                            <span class="icon">
+                                <i class="fas fa-cog"></i>
+                            </span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -62,8 +59,11 @@
     </nav>
 </template>
 
-<script>
-    export default {
-        name: 'NavBar'
-    }
+<script lang="ts">
+    import {defineComponent} from 'vue';
+
+    export default defineComponent({
+        name: 'NavBar',
+        emits: ['show-config']
+    });
 </script>
