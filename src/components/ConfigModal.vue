@@ -1,90 +1,164 @@
 <template>
-    <Modal
-            title="Configuration"
-            :showing="showing"
-            @update:showing="$emit('update:showing', $event)"
-    >
-        <template #default>
+	<Modal
+			title="Configuration"
+			:showing="showing"
+			@update:showing="$emit('update:showing', $event)"
+	>
+		<template #default>
 
-            <pre style="font-size: 0.5em" v-text="config"></pre>
+			<article class="message is-warning">
+				<div class="message-body">
+					This section is work-in-progress. New configurable properties will be added soon!
+				</div>
+			</article>
 
-            <h2 class="is-size-5 has-text-weight-bold mb-3">Pepe</h2>
+			<!--<pre v-text="internalConfig"></pre>-->
 
-            <div class="field">
-                <div class="control">
-                    <label class="checkbox">
-                        <input
-                                type="checkbox"
-                                :checked="config.erModel.allowUnknownEntities"
-                                @input="$emit('update:config', {
-                                    ...config,
-                                    erModel: {
-                                        ...config.erModel,
-                                        allowUnknownEntities: true
-                                    }
-                                })"
-                        >
-                        Allow unknown entities
-                    </label>
-                </div>
-            </div>
+			<section class="er-model-config mb-6">
 
-        </template>
-        <template #footer>
-            <div class="has-text-right" style="width: 100%">
-                <button
-                        class="button is-success"
-                >
-                    Save changes
-                </button>
-                <button
-                        class="button"
-                        @click="$emit('update:showing', false)"
-                >
-                    Cancel
-                </button>
-            </div>
-        </template>
-    </Modal>
+				<h2 class="is-size-5 has-text-weight-bold mb-3">General</h2>
+
+				<div class="field">
+					<div class="control">
+						<label class="checkbox">
+							<input
+									type="checkbox"
+									v-model="internalConfig.erModel.allowUnknownEntities"
+									class="mr-1"
+							>
+							Allow unknown entities
+						</label>
+					</div>
+				</div>
+
+			</section>
+
+			<section class="mysql-config mb-6">
+
+				<h2 class="is-size-5 has-text-weight-bold mb-3">MySQL</h2>
+
+				<div class="field">
+					<div class="control">
+						<label class="checkbox">
+							<input
+									type="checkbox"
+									v-model="internalConfig.database.pluralizeTableNames"
+									class="mr-1"
+							>
+							Plural table names
+						</label>
+					</div>
+				</div>
+
+			</section>
+
+			<section class="java-config mb-6">
+
+				<h2 class="is-size-5 has-text-weight-bold mb-3">Java</h2>
+
+				<div class="field">
+					<div class="control">
+						<label class="checkbox">
+							<input
+									type="checkbox"
+									v-model="internalConfig.java.useSpringNullabilityAnnotations"
+									class="mr-1"
+							>
+							Use Spring @Nullable and @NotNull annotations
+						</label>
+					</div>
+				</div>
+
+				<div class="field">
+					<label class="label">Generated classes package:</label>
+					<div class="control">
+						<input
+								type="text"
+								v-model="internalConfig.java.generatedClassesPackage"
+								placeholder="com.example"
+								class="input"
+						>
+					</div>
+				</div>
+
+			</section>
+
+		</template>
+		<template #footer>
+			<div class="has-text-right" style="width: 100%">
+				<button
+						class="button is-success"
+						@click="saveChanges"
+				>
+					Save changes
+				</button>
+				<button
+						class="button"
+						@click="close"
+				>
+					Cancel
+				</button>
+			</div>
+		</template>
+	</Modal>
 </template>
 
 <script lang="ts">
-    import {defineComponent} from 'vue';
-    import Modal from '@/components/Modal.vue';
-    import ERDiagramPlaygroundConfig from '@/ERDiagramPlaygroundConfig';
+	import {defineComponent, ref, watch} from 'vue';
+	import Modal from '@/components/Modal.vue';
+	import ERDiagramPlaygroundConfig, {defaultERDiagramPlaygroundConfig, mergeERDiagramPlaygroundConfigs} from '@/config/ERDiagramPlaygroundConfig';
 
-    interface Props {
-        title: string;
-        showing: boolean;
-        config: ERDiagramPlaygroundConfig;
-    }
+	interface Props {
+		title: string;
+		showing: boolean;
+		config: ERDiagramPlaygroundConfig;
+	}
 
-    export default defineComponent({
-        name: 'ConfigModal',
-        components: {
-            Modal
-        },
-        emits: ['update:showing', 'update:config'],
-        props: {
-            title: {
-                type: String,
-                required: true
-            },
-            showing: {
-                type: Boolean,
-                default: false
-            },
-            config: {
-                type: Object,
-                required: true
-            }
-        },
-        setup() {
+	export default defineComponent({
+		name: 'ConfigModal',
+		components: {
+			Modal
+		},
+		emits: ['update:showing', 'update:config'],
+		props: {
+			title: {
+				type: String,
+				required: true
+			},
+			showing: {
+				type: Boolean,
+				default: false
+			},
+			config: {
+				type: Object,
+				required: true
+			}
+		},
+		setup(props, context) {
 
-            // const internalConfig = mergeERDiagramPlagroundConfigs()
-            // mergeERDiagramPlagroundConfigs()
-            return {};
+			const internalConfig = ref(mergeERDiagramPlaygroundConfigs(defaultERDiagramPlaygroundConfig));
 
-        }
-    });
+			watch(() => (props as Props).showing, showing => {
+				if (showing) {
+					internalConfig.value = mergeERDiagramPlaygroundConfigs((props as Props).config);
+				}
+			});
+
+			function saveChanges() {
+				context.emit('update:config', internalConfig.value);
+				close();
+			}
+
+			function close() {
+				context.emit('update:showing', false);
+			}
+
+			return {
+				internalConfig,
+				saveChanges,
+				close
+			};
+
+		}
+	});
 </script>

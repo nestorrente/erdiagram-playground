@@ -24,15 +24,15 @@ export default interface ERDiagramPlaygroundConfig {
 	typescript: TypeScriptClassModelToCodeConverterConfig;
 }
 
-export const defaultERDiagramPlaygroundConfig: ERDiagramPlaygroundConfig = {
+export const defaultERDiagramPlaygroundConfig: ERDiagramPlaygroundConfig = mergeERDiagramPlaygroundConfigs({
 	erModel: defaultEntityRelationshipModelParserConfig,
 	database: defaultDatabaseModelGeneratorConfig,
 	mysql: defaultMySqlDatabaseModelToCodeConverterConfig,
 	java: defaultJavaClassModelToCodeConverterConfig,
 	typescript: defaultTypeScriptClassModelToCodeConverterConfig
-};
+});
 
-export function mergeERDiagramPlagroundConfigs(
+export function mergeERDiagramPlaygroundConfigs(
 		fullConfig: ERDiagramPlaygroundConfig,
 		partialConfig?: Partial<ERDiagramPlaygroundConfig>
 ) {
