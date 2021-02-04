@@ -142,11 +142,7 @@ Pokemon *<-> Region
 			const modelOutdated = ref(true);
 			watch(inputCode, () => modelOutdated.value = true);
 
-			watch(config, () => {
-				if (!modelOutdated.value) {
-					runERDiagram();
-				}
-			});
+			watch(config, () => runERDiagram());
 
 			const hasErrors = ref(false);
 			const entityRelationshipModel = ref<EntityRelationshipModel>();
