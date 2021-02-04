@@ -1,0 +1,1 @@
+- Revisar el tema de la actualización del modelo y del código al cambiar la configuración.
