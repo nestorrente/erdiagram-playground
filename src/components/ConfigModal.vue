@@ -26,7 +26,7 @@
 									v-model="internalConfig.erModel.allowUnknownEntities"
 									class="mr-1"
 							>
-							Allow unknown entities
+							Allow using unknown entities in relationships
 						</label>
 					</div>
 				</div>
