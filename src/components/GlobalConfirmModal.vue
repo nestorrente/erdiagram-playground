@@ -4,6 +4,7 @@
             :showing="globalConfirmModalStore.showing"
             @update:showing="onModalShowingChange"
             width="420px"
+            close-on-background-click
     >
         <template #default>
             {{ globalConfirmModalStore.title }}

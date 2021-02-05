@@ -39,7 +39,7 @@
     import {defineComponent} from 'vue';
 
     interface Props {
-        disabledBackgroundClick: boolean;
+        closeOnBackgroundClick: boolean;
     }
 
     export default defineComponent({
@@ -47,7 +47,7 @@
         inheritAttrs: false,
         emits: ['update:showing'],
         props: {
-            disabledBackgroundClick: {
+            closeOnBackgroundClick: {
                 type: Boolean,
                 default: false
             },
@@ -75,9 +75,9 @@
         setup(props, context) {
 
             function onBackgroundClick() {
-                const {disabledBackgroundClick} = props as Props;
+                const {closeOnBackgroundClick} = props as Props;
 
-                if (!disabledBackgroundClick) {
+                if (closeOnBackgroundClick) {
                     context.emit('update:showing', false);
                 }
             }

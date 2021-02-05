@@ -47,7 +47,7 @@
 
                 <div class="navbar-item">
                     <div class="buttons">
-                        <button class="button is-primary" title="Configuration" @click="$emit('show-config')">
+                        <button class="button is-primary" title="Settings" @click="$emit('show-config')">
                             <span class="icon">
                                 <i class="fas fa-cog"></i>
                             </span>

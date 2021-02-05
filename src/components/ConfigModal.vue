@@ -7,7 +7,7 @@
             append-body-style="height: 680px"
     >
         <template #title>
-            Configuration
+            Settings
             <span
                     v-show="configChanged"
                     class="tag is-warning"
