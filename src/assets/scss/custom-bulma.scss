@@ -34,3 +34,7 @@ $body-overflow-y: auto;
     }
 
 }
+
+.select.is-block > select {
+    width: 100%;
+}

@@ -106,6 +106,7 @@
     import ConfigModal from '@/components/ConfigModal.vue';
     import ERDiagramPlaygroundConfig, {defaultERDiagramPlaygroundConfig} from '@/config/ERDiagramPlaygroundConfig';
     import GlobalConfirmModal from '@/components/GlobalConfirmModal.vue';
+    import pokemonSampleCode from '!!raw-loader!@/erd-samples/Pokemon.erd';
 
     export default defineComponent({
         name: 'App',
@@ -121,30 +122,7 @@
             const configFromModal = ref<ERDiagramPlaygroundConfig>(defaultERDiagramPlaygroundConfig);
             const config = ref<ERDiagramPlaygroundConfig>(configFromModal.value);
 
-            const inputCode = ref(`
-
-Pokemon
-    name text(20)
-    pokedexNumber int
-    legendary bool
-
-Move
-    name text(30)
-    attackStat short
-    defenseStat short
-    specialAttackStat short
-    specialDefenseStat short
-
-Region
-    name text(30)
-
-Pokemon *->* Move
-
-Pokemon *<-> Region
-
-# Hope you like it!
-
-`.trim());
+            const inputCode = ref(pokemonSampleCode as string);
             onMounted(runERDiagram);
 
             const modelOutdated = ref(true);

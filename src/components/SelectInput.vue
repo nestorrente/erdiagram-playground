@@ -1,5 +1,5 @@
 <template>
-    <div class="select">
+    <div class="select" :class="{'is-block': block}">
         <select v-model="selectedValue">
             <option
                     v-for="item in items"
@@ -22,6 +22,7 @@
         idField: string | MapperCallback<T, any>;
         textField: string | MapperCallback<T, any>;
         modelValue: any;
+        block: boolean;
     }
 
     function getIdentityCallback<T>(): MapperCallback<T, T> {
@@ -50,6 +51,10 @@
             },
             modelValue: {
                 required: false
+            },
+            block: {
+                type: Boolean,
+                default: false
             }
         },
         setup(uncastedProps, context) {

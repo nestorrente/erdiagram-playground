@@ -1,0 +1,20 @@
+Pokemon
+    name text(20)
+    pokedexNumber int
+    legendary bool
+
+Move
+    name text(30)
+    attackStat short
+    defenseStat short
+    specialAttackStat short
+    specialDefenseStat short
+
+Region
+    name text(30)
+
+Pokemon *->* Move
+
+Pokemon *<-> Region
+
+# Hope you like it!
