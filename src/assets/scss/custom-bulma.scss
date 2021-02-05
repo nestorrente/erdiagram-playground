@@ -1,2 +1,36 @@
 $body-overflow-y: auto;
 @import "~bulma/bulma";
+
+.modal {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    visibility: hidden;
+
+    .modal-background,
+    .modal-card {
+        transition-property: visibility, opacity;
+        transition-duration: 0.2s;
+        opacity: 0;
+    }
+
+    .modal-card {
+        transition-property: visibility, opacity, transform;
+        transform: scale(0.9);
+    }
+
+    &.is-active {
+        visibility: visible;
+
+        .modal-background,
+        .modal-card {
+            opacity: 1;
+        }
+
+        .modal-card {
+            transform: none;
+        }
+    }
+
+}

@@ -8,6 +8,9 @@ import '@fortawesome/fontawesome-free/css/all.css';
 
 import {createApp} from 'vue';
 import App from './App.vue';
+import initGlobalVueConfig from '@/config/initGlobalVueConfig';
+
+initGlobalVueConfig();
 
 const app = createApp(App);
 

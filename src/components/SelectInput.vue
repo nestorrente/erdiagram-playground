@@ -111,16 +111,3 @@
         }
     });
 </script>
-
-<style lang="scss">
-    .code-container {
-        //border: 1px solid lightgrey;
-        border-radius: 4px;
-        overflow: hidden;
-        padding: 0;
-    }
-
-    .code-container > code {
-        padding: 1.25em;
-    }
-</style>

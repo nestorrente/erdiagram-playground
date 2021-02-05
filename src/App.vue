@@ -4,7 +4,6 @@
             <NavBar @show-config="showingConfigModal = true"/>
         </div>
         <section class="section pb-3 vfc-item vfc-grow">
-            <!--		<pre>{{ entityRelationshipModel }}</pre>-->
             <div class="container vertical-full-container">
                 <div class="columns is-full-height">
                     <div class="column is-half">
@@ -46,41 +45,45 @@
                         </div>
                     </div>
                     <div class="column is-half">
-                        <TabsSection
-                                :headers="['MySQL', 'Java POJO', 'TypeScript']"
-                        >
-                            <template #tab0>
-                                <CodeBlock
-                                        lang="mysql"
-                                        :code="generatedMysqlCode"
-                                        full-height
-                                />
-                            </template>
-                            <template #tab1>
-                                <CodeBlock
-                                        lang="java"
-                                        :code="generatedJavaCode"
-                                        full-height
-                                />
-                            </template>
-                            <template #tab2>
-                                <CodeBlock
-                                        lang="typescript"
-                                        :code="generatedTypeScriptCode"
-                                        full-height
-                                />
-                            </template>
-                        </TabsSection>
+                        <div class="vertical-full-container">
+                            <TabsSection
+                                    :headers="['MySQL', 'Java POJO', 'TypeScript']"
+                                    append-tabs-class="vfc-item"
+                                    append-tabs-content-class="vfc-item vfc-grow"
+                            >
+                                <template #tab0>
+                                    <CodeBlock
+                                            lang="mysql"
+                                            :code="generatedMysqlCode"
+                                            full-height
+                                    />
+                                </template>
+                                <template #tab1>
+                                    <CodeBlock
+                                            lang="java"
+                                            :code="generatedJavaCode"
+                                            full-height
+                                    />
+                                </template>
+                                <template #tab2>
+                                    <CodeBlock
+                                            lang="typescript"
+                                            :code="generatedTypeScriptCode"
+                                            full-height
+                                    />
+                                </template>
+                            </TabsSection>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
     </div>
     <ConfigModal
-            title="Test modal"
             v-model:showing="showingConfigModal"
-            v-model:config="config"
+            v-model:config="configFromModal"
     />
+    <GlobalConfirmModal/>
 </template>
 
 <script lang="ts">
@@ -102,10 +105,12 @@
     } from '@nestorrente/erdiagram';
     import ConfigModal from '@/components/ConfigModal.vue';
     import ERDiagramPlaygroundConfig, {defaultERDiagramPlaygroundConfig} from '@/config/ERDiagramPlaygroundConfig';
+    import GlobalConfirmModal from '@/components/GlobalConfirmModal.vue';
 
     export default defineComponent({
         name: 'App',
         components: {
+            GlobalConfirmModal,
             ConfigModal,
             TabsSection,
             CodeBlock,
@@ -113,7 +118,8 @@
         },
         setup() {
 
-            const config = ref<ERDiagramPlaygroundConfig>(defaultERDiagramPlaygroundConfig);
+            const configFromModal = ref<ERDiagramPlaygroundConfig>(defaultERDiagramPlaygroundConfig);
+            const config = ref<ERDiagramPlaygroundConfig>(configFromModal.value);
 
             const inputCode = ref(`
 
@@ -143,8 +149,7 @@ Pokemon *<-> Region
 
             const modelOutdated = ref(true);
             watch(inputCode, () => modelOutdated.value = true);
-
-            watch(config, () => runERDiagram());
+            watch(configFromModal, () => modelOutdated.value = true);
 
             const hasErrors = ref(false);
             const entityRelationshipModel = ref<EntityRelationshipModel>();
@@ -164,8 +169,10 @@ Pokemon *<-> Region
 
                 try {
                     entityRelationshipModel.value = entityRelationshipModelParser.value.parseModel(inputCode.value);
+                    config.value = configFromModal.value;
                 } catch (e) {
                     hasErrors.value = true;
+                    entityRelationshipModel.value = undefined;
                     console.error(e);
                 }
             }
@@ -266,12 +273,11 @@ Pokemon *<-> Region
                 generatedMysqlCode,
                 generatedJavaCode,
                 generatedTypeScriptCode,
-                entityRelationshipModel,
                 runERDiagram,
                 hasErrors,
                 handleTextAreaTab,
                 showingConfigModal,
-                config
+                configFromModal
             };
 
         }
