@@ -117,8 +117,6 @@
                     </div>
                 </div>
 
-                <pre v-text="internalConfig.java"></pre>
-
             </section>
 
         </template>
