@@ -6,15 +6,20 @@
                 <strong>ERDiagram</strong>
             </div>
 
-            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
-               data-target="navbarBasicExample">
+            <a
+                    role="button"
+                    class="navbar-burger"
+                    aria-label="menu"
+                    aria-expanded="false"
+                    @click="expanded = !expanded"
+            >
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
             </a>
         </div>
 
-        <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-menu" :class="{'is-active': expanded}">
             <div class="navbar-start">
                 <div class="navbar-item has-dropdown is-hoverable">
                     <a class="navbar-link">
@@ -46,7 +51,7 @@
                 </div>
 
                 <div class="navbar-item">
-                    <div class="buttons">
+                    <div class="buttons is-justify-content-flex-end">
                         <button class="button is-primary" title="Settings" @click="$emit('show-config')">
                             <span class="icon">
                                 <i class="fas fa-cog"></i>
@@ -60,10 +65,19 @@
 </template>
 
 <script lang="ts">
-    import {defineComponent} from 'vue';
+    import {defineComponent, ref} from 'vue';
 
     export default defineComponent({
         name: 'NavBar',
-        emits: ['show-config']
+        emits: ['show-config'],
+        setup() {
+
+            const expanded = ref(false);
+
+            return {
+                expanded
+            };
+
+        }
     });
 </script>

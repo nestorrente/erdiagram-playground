@@ -2,7 +2,7 @@
     <Modal
             :showing="showing"
             @update:showing="onModalShowingChange"
-            width="800px"
+            max-width="800px"
             append-body-class="p-0"
             append-body-style="height: 680px"
     >
@@ -177,23 +177,23 @@
                                         <td>
                                             <input
                                                     type="text"
-                                                    v-model="internalConfig.mysql.typesMap[inputType]"
+                                                    v-model="internalConfig.mysql.typeMappings[inputType]"
                                                     class="input is-small"
                                             >
                                         </td>
                                         <td>
                                             <input
                                                     type="text"
-                                                    :value="internalConfig.java.typesMap[inputType].canonicalName"
-                                                    @change="internalConfig.java.typesMap[inputType] = parseJavaType($event.currentTarget.value)"
+                                                    :value="internalConfig.java.typeMappings[inputType].canonicalName"
+                                                    @change="internalConfig.java.typeMappings[inputType] = parseJavaType($event.currentTarget.value)"
                                                     class="input is-small"
                                             >
                                         </td>
                                         <td>
                                             <input
                                                     type="text"
-                                                    :value="internalConfig.typescript.typesMap[inputType].name"
-                                                    @change="internalConfig.typescript.typesMap[inputType] = parseTypeScriptType($event.currentTarget.value)"
+                                                    :value="internalConfig.typescript.typeMappings[inputType].name"
+                                                    @change="internalConfig.typescript.typeMappings[inputType] = parseTypeScriptType($event.currentTarget.value)"
                                                     class="input is-small"
                                             >
                                         </td>
@@ -297,9 +297,14 @@
             }
 
             function saveChanges() {
-                context.emit('update:config', internalConfig.value);
-                configChanged.value = false;
+
+                if (configChanged.value) {
+                    context.emit('update:config', internalConfig.value);
+                    configChanged.value = false;
+                }
+
                 close();
+
             }
 
             async function close() {
@@ -396,7 +401,7 @@
             function parseJavaType(text: string) {
                 const lastDotIndex = text.lastIndexOf('.');
                 if (lastDotIndex === -1) {
-                    createJavaType(text);
+                    return createJavaType(text);
                 } else {
                     const packageName = text.substring(0, lastDotIndex);
                     const className = text.substring(lastDotIndex + 1);

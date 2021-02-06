@@ -19,7 +19,9 @@
                                         @click="runERDiagram"
                                 >
                                     <span v-show="modelOutdated">
-                                        Update output code (ctrl + &#9166;)
+                                        Update output code
+                                        (<span class="is-family-code">Ctrl + S</span>
+                                        or <span class="is-family-code">Ctrl + &#9166;</span>)
                                     </span>
                                     <span v-show="!modelOutdated && hasErrors">
                                         There's an error in your code (see console for more details)
@@ -30,17 +32,11 @@
                                 </button>
                             </div>
                             <div class="vfc-item vfc-grow">
-                                <textarea
-                                        class="textarea is-family-code is-full-height code-editor"
-                                        placeholder="Write your Entity-Relationship diagram here..."
-                                        autocomplete="off"
-                                        autocorrect="off"
-                                        autocapitalize="off"
-                                        spellcheck="false"
+                                <CodeEditor
                                         v-model="inputCode"
-                                        @keypress.ctrl.enter.prevent="runERDiagram"
-                                        @keydown.tab.prevent="handleTextAreaTab"
-                                ></textarea>
+                                        @keydown="onCodeEditorKeydown"
+                                        full-height
+                                />
                             </div>
                         </div>
                     </div>
@@ -106,11 +102,13 @@
     import ConfigModal from '@/components/ConfigModal.vue';
     import ERDiagramPlaygroundConfig, {defaultERDiagramPlaygroundConfig} from '@/config/ERDiagramPlaygroundConfig';
     import GlobalConfirmModal from '@/components/GlobalConfirmModal.vue';
+    import CodeEditor from '@/components/CodeEditor.vue';
     import pokemonSampleCode from '!!raw-loader!@/erd-samples/Pokemon.erd';
 
     export default defineComponent({
         name: 'App',
         components: {
+            CodeEditor,
             GlobalConfirmModal,
             ConfigModal,
             TabsSection,
@@ -122,7 +120,7 @@
             const configFromModal = ref<ERDiagramPlaygroundConfig>(defaultERDiagramPlaygroundConfig);
             const config = ref<ERDiagramPlaygroundConfig>(configFromModal.value);
 
-            const inputCode = ref(pokemonSampleCode as string);
+            const inputCode = ref(appendPoweredByText(pokemonSampleCode));
             onMounted(runERDiagram);
 
             const modelOutdated = ref(true);
@@ -135,6 +133,17 @@
             const entityRelationshipModelParser = computed(() => {
                 return new EntityRelationshipModelParser(config.value.erModel);
             });
+
+            function appendPoweredByText(code: string) {
+                return '# Powered by Ace editor (https://ace.c9.io/)\n\n' + code;
+            }
+
+            function onCodeEditorKeydown(event: KeyboardEvent) {
+                if (event.ctrlKey && (event.key === 's' || event.key === 'Enter')) {
+                    event.preventDefault();
+                    runERDiagram();
+                }
+            }
 
             function runERDiagram() {
 
@@ -198,51 +207,6 @@
                 });
             }
 
-            // FIXME move to another place (custom directive?)
-            function handleTextAreaTab(event: KeyboardEvent) {
-
-                const textarea = event.currentTarget as HTMLTextAreaElement;
-                const {selectionStart, selectionEnd, value: text} = textarea;
-
-                const textBeforeSelection = text.substring(0, selectionStart);
-                const textAfterSelection = text.substring(selectionEnd);
-
-                if (event.shiftKey) {
-
-                    const currentLineStartIndex = textBeforeSelection.lastIndexOf('\n') + 1;
-                    const endOfLineIndex = text.indexOf('\n', currentLineStartIndex);
-                    const currentLineEndIndex = endOfLineIndex === -1 ? text.length : endOfLineIndex;
-                    const currentLine = text.substring(currentLineStartIndex, currentLineEndIndex);
-
-                    if (currentLine[0] === '\t') {
-                        const textBeforeTab = text.substring(0, currentLineStartIndex);
-                        const textAfterTab = text.substring(currentLineStartIndex + 1);
-                        textarea.value = textBeforeTab + textAfterTab;
-                        textarea.setSelectionRange(Math.max(currentLineStartIndex, selectionStart - 1), Math.max(currentLineStartIndex, selectionEnd - 1));
-                        triggerInputEvent(textarea);
-                    } else if (currentLine.startsWith(' ')) {
-                        const howManySpaces = /^ {1,4}/.exec(currentLine)![0].length;
-                        const textBeforeSpaces = text.substring(0, currentLineStartIndex);
-                        const textAfterSpaces = text.substring(currentLineStartIndex + howManySpaces);
-                        textarea.value = textBeforeSpaces + textAfterSpaces;
-                        textarea.setSelectionRange(Math.max(currentLineStartIndex, selectionStart - howManySpaces), Math.max(currentLineStartIndex, selectionEnd - howManySpaces));
-                        triggerInputEvent(textarea);
-                    }
-                } else {
-                    textarea.value = textBeforeSelection + '\t' + textAfterSelection;
-                    textarea.selectionEnd = selectionStart + 1;
-                    triggerInputEvent(textarea);
-                }
-
-            }
-
-            function triggerInputEvent(element: HTMLElement) {
-                element.dispatchEvent(new Event('input', {
-                    bubbles: true,
-                    cancelable: true,
-                }));
-            }
-
             const showingConfigModal = ref(false);
 
             return {
@@ -251,9 +215,9 @@
                 generatedMysqlCode,
                 generatedJavaCode,
                 generatedTypeScriptCode,
+                onCodeEditorKeydown,
                 runERDiagram,
                 hasErrors,
-                handleTextAreaTab,
                 showingConfigModal,
                 configFromModal
             };

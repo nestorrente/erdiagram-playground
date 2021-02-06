@@ -7,6 +7,7 @@ body,
 }
 
 .textarea.is-full-height {
+    height: 100%;
     max-height: none;
 }
 
@@ -29,7 +30,12 @@ body,
 
         &.vfc-grow {
             flex-grow: 1;
-            height: 0;
+        }
+
+        @media(min-width: 769px) {
+            &.vfc-grow {
+                height: 0;
+            }
         }
 
     }

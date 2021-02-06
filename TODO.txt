@@ -1,1 +1,7 @@
-- Revisar el tema de la actualización del modelo y del código al cambiar la configuración.
+- Permitir exportar e importar las configuraciones.
+- Guardar la configuración en localStorage.
+    - Para ambos cambios sería muy útil tener un configStore.
+
+- Permitir guardar o cargar el código de entrada.
+
+- Copiar o exportar el código generado.

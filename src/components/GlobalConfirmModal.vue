@@ -3,14 +3,13 @@
             title="Confirm"
             :showing="globalConfirmModalStore.showing"
             @update:showing="onModalShowingChange"
-            width="420px"
-            close-on-background-click
+            max-width="420px"
     >
         <template #default>
             {{ globalConfirmModalStore.title }}
         </template>
         <template #footer>
-            <div class="has-text-right">
+            <div class="buttons is-justify-content-flex-end">
                 <button
                         v-if="globalConfirmModalStore.acceptButton"
                         class="button is-danger"

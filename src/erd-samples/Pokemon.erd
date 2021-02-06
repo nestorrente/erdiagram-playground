@@ -16,5 +16,3 @@ Region
 Pokemon *->* Move
 
 Pokemon *<-> Region
-
-# Hope you like it!
