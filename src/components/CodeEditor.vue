@@ -57,6 +57,8 @@
 
 				aceEditor.on('input', () => onCodeChanged(aceEditor.getValue()));
 
+				aceEditor.focus();
+
 				aceEditorRef.value = aceEditor;
 
 			}
