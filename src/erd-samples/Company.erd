@@ -10,4 +10,4 @@ Employee
 
 Company <->* Employee
 
-Employee *<-> Employee boss
+Employee *<->? Employee boss
