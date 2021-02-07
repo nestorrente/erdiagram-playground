@@ -15,4 +15,4 @@ Region
 
 Pokemon *->* Move
 
-Pokemon *<-> Region
+Pokemon native *<-> Region origin

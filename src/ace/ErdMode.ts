@@ -1,100 +1,247 @@
 // @ts-ignore
-import ace from 'ace-builds';
+import ace, {Ace, Range as RangeType} from 'ace-builds';
+
+type RequireFn = <T = any>(module: string) => T;
+type Exports = any;
 
 // @ts-ignore
-ace.define('ace/mode/erd_outdent', ['require', 'exports'], function(require: any, exports: any) {
-	exports.ErdOutdent = class ErdOutdent {
+ace.define('ace/mode/folding/erd', ['require', 'exports'], function (require: RequireFn, exports: Exports) {
 
-		checkOutdent(line: string, input: string) {
-			if (!/^\s+$/.test(line))
-				return false;
+	const oop = require('../../lib/oop');
+	const Range = require('../../range').Range as typeof RangeType;
+	const BaseFoldMode = require('./fold_mode').FoldMode;
 
-			console.log('checkOutdent()');
-			console.log('Line:', line);
-			console.log('Input:', input);
-			return /^}/.test(input);
-		}
-
-		autoOutdent() {
-			//
-		}
-
+	const FoldMode = exports.FoldMode = function () {
+		// constructor
 	};
+	oop.inherits(FoldMode, BaseFoldMode);
+
+	(function (this: any) {
+
+		// regular expressions that identify starting and stopping points
+		this.foldingStartMarker = /^[A-Za-z_][A-Za-z_0-9]*$/;
+		// this.foldingStopMarker = /^\s*$/;
+
+		this.getFoldWidgetRange = function (session: Ace.EditSession, foldStyle: string, startRow: number) {
+
+			const startLine = session.getLine(startRow);
+			const allLines = session.getDocument().getAllLines();
+
+			const entityEndRow = findEntityEndRow(startRow, allLines);
+
+			if (entityEndRow === startRow) {
+				return new Range(startRow, startLine.length, startRow, startLine.length);
+			}
+
+			return new Range(startRow, startLine.length, entityEndRow, allLines[entityEndRow].length);
+
+		};
+
+		const EMPTY_LINE_REGEX = /^\s*$/;
+		const COMMENTED_LINE_REGEX = /^\s*#/;
+		const INDENTED_LINE_REGEX = /^[ \t]/;
+
+		function findEntityEndRow(startRow: number, allLines: string[]): number {
+
+			let entityEndRow = startRow;
+
+			for (let currentRow = startRow + 1; currentRow < allLines.length; ++currentRow) {
+
+				const currentLine = allLines[currentRow];
+
+				if (EMPTY_LINE_REGEX.test(currentLine) || COMMENTED_LINE_REGEX.test(currentLine)) {
+					// Empty line or comment
+				} else if (INDENTED_LINE_REGEX.test(currentLine)) {
+					// Indented line - still part of the entity
+					entityEndRow = currentRow;
+				} else {
+					break;
+				}
+
+			}
+
+			return entityEndRow;
+
+		}
+
+	}).call(FoldMode.prototype);
+
+});
+
+interface SyntaxHighlightRule {
+	token?: string | string[] | ((text: string) => string | string[]);
+	regex: RegExp;
+	next?: string;
+}
+
+// @ts-ignore
+ace.define('ace/mode/erd_highlight_rules', ['require', 'exports'], function (require: RequireFn, exports: Exports) {
+
+	const TextHighlightRules = require('./text_highlight_rules').TextHighlightRules;
+
+	exports.ErdHighlightRules = class ErdHighlightRules extends TextHighlightRules {
+		constructor() {
+			super();
+			this.$rules = this.getRules();
+		}
+
+		private getRules(): Record<string, SyntaxHighlightRule[]> {
+			const DEFAULT_INVALID_RULE = {
+				token: 'invalid.illegal',
+				regex: /.*$/,
+				next: 'start'
+			};
+			return {
+				'start': [
+					{
+						// Entity name (only)
+						token: 'storage.type', // String, Array, or Function: the CSS token to apply
+						regex: /^[A-Za-z_][A-Za-z_0-9]*\s*$/
+					},
+					{
+						// Entity name (and something more)
+						token: 'storage.type',
+						regex: /^[A-Za-z_][A-Za-z_0-9]*\s*/,
+						next: 'afterEntityName'
+					},
+					{
+						token: 'comment.line.number-sign',
+						regex: /^\s*#.*$/,
+					},
+					{
+						token: 'variable.other',
+						regex: /^\s+/,
+						next: 'entityPropertyName'
+					}
+				],
+				afterEntityName: [
+					{
+						// token: ['markup.other', 'markup.italic', 'constant.language', 'markup.italic', 'markup.other'],
+						token: ['variable.other', 'constant.language'],
+						regex: /([A-Za-z_][A-Za-z_0-9]*\s+)?([?!]*[*1]?(?:->|<->?)[*1]?[?!]*)/,
+						next: 'waitingRelationshipRightEntity'
+					},
+					{
+						token: 'invalid.other',
+						regex: /.*$/,
+						next: 'start'
+					},
+				],
+				waitingRelationshipRightEntity: [
+					{
+						token: ['text', 'storage.type', 'variable.other', 'text'],
+						regex: /(\s*)([A-Za-z_][A-Za-z_0-9]*)(\s+[A-Za-z_][A-Za-z_0-9]*)?(\s*)$/,
+						next: 'start'
+					},
+					{
+						token: 'invalid.other',
+						regex: /.*$/,
+						next: 'start'
+					},
+				],
+				entityPropertyName: [
+					{
+						token: 'variable.other',
+						regex: /[A-Za-z_][A-Za-z_0-9]*/,
+						next: 'entityPropertyType'
+					},
+					DEFAULT_INVALID_RULE,
+				],
+				entityPropertyType: [
+					{
+						// Type without length
+						token: 'keyword.other',
+						regex: /\s+\b(bool|short|int|long|decimal|text|date|time|datetime)\b$/,
+						next: 'start'
+					},
+					{
+						// Type with length
+						token: 'keyword.other',
+						regex: /\s+\b(bool|short|int|long|decimal|text|date|time|datetime)\b/,
+						next: 'entityPropertyTypeLengthStart'
+					},
+					DEFAULT_INVALID_RULE,
+				],
+				entityPropertyTypeLengthOLD: [
+					{
+						token: 'constant.numeric',
+						regex: /(?:\(\d+(?:\s*,\s*\d+)*\))$/,
+						next: 'start'
+					},
+					DEFAULT_INVALID_RULE,
+				],
+				entityPropertyTypeLengthStart: [
+					{
+						token: 'text',
+						regex: /\(\s*/,
+						next: 'entityPropertyTypeLengthNumber'
+					},
+					DEFAULT_INVALID_RULE,
+				],
+				entityPropertyTypeLengthNumber: [
+					{
+						token: 'constant.numeric',
+						regex: /\d+/,
+						next: 'entityPropertyTypeLengthAfterNumber'
+					},
+					DEFAULT_INVALID_RULE,
+				],
+				entityPropertyTypeLengthAfterNumber: [
+					{
+						token: ['text', 'constant.numeric'],
+						regex: /(\s*,\s*)(\d+)/
+					},
+					{
+						token: 'text',
+						regex: /\s*\)\s*$/,
+						next: 'start'
+					},
+					{
+						token: ['text', 'invalid.other'],
+						regex: /(\s*\)\s*)(.*)/,
+						next: 'start'
+					},
+					DEFAULT_INVALID_RULE,
+				]
+			};
+		}
+	};
+
 });
 
 // @ts-ignore
-ace.define('ace/mode/erd', ['require', 'exports', 'ace/lib/oop', 'ace/mode/text', 'ace/mode/custom_highlight_rules'], function(require: any, exports: any/*, module: any*/) {
+ace.define('ace/mode/erd', ['require', 'exports'], function (require: RequireFn, exports: Exports) {
 	'use strict';
 
-	const oop = require('../lib/oop');
 	const TextMode = require('./text').Mode;
-	const HighlightRules = require('./json_highlight_rules').JsonHighlightRules;
-	const ErdOutdent = require('./erd_outdent').ErdOutdent;
-	const CstyleBehaviour = require('./behaviour/cstyle').CstyleBehaviour;
-	const CStyleFoldMode = require('./folding/cstyle').FoldMode;
-	const WorkerClient = require('../worker/worker_client').WorkerClient;
+	const ErdHighlightRules = require('./erd_highlight_rules').ErdHighlightRules;
+	// const CstyleBehaviour = require('./behaviour/cstyle').CstyleBehaviour;
+	const ErdFoldMode = require('./folding/erd').FoldMode;
 
-	const Mode = function(this: any) {
-		this.HighlightRules = HighlightRules;
-		this.$outdent = new ErdOutdent();
-		console.log('$outdent:', this.$outdent);
-		this.$behaviour = new CstyleBehaviour();
-		this.foldingRules = new CStyleFoldMode();
-	};
-	oop.inherits(Mode, TextMode);
+	exports.Mode = class Mode extends TextMode {
 
-	(function(this: any) {
+		$id = 'ace/mode/erd';
+		lineCommentStart = '#';
 
-		this.lineCommentStart = '//';
-		// this.blockComment = {start: '/*', end: '*/'};
+		constructor() {
+			super();
+			this.HighlightRules = ErdHighlightRules;
+			// this.$behaviour = new CstyleBehaviour();
+			this.$behaviour = null;
+			this.foldingRules = new ErdFoldMode();
+		}
 
-		// @ts-ignore
-		this.getNextLineIndent = function(state, line, tab) {
-			let indent = this.$getIndent(line);
+		getNextLineIndent(state: string, line: string, tab: string) {
+			const indent = this.$getIndent(line);
 
-			if (state == 'start') {
-				// eslint-disable-next-line
-				const match = line.match(/^.*[\{\(\[]\s*$/);
-				if (match) {
-					indent += tab;
-				}
+			// eslint-disable-next-line
+			if (state == 'start' && line.match(/^.*[\{\(\[]\s*$/)) {
+				return indent + tab;
+			} else {
+				return indent;
 			}
+		}
 
-			return indent;
-		};
+	};
 
-		// @ts-ignore
-		this.checkOutdent = function(state, line, input) {
-			console.log('Check outdent');
-			console.log('$outdent:', this.$outdent);
-			console.log('$outdent.checkOutdent:', this.$outdent.checkOutdent);
-			return this.$outdent.checkOutdent(line, input);
-		};
-
-		// @ts-ignore
-		this.autoOutdent = function(state, doc, row) {
-			this.$outdent.autoOutdent(doc, row);
-		};
-
-		// @ts-ignore
-		this.createWorker = function(session) {
-			const worker = new WorkerClient(['ace'], 'ace/mode/json_worker', 'JsonWorker');
-			worker.attachToDocument(session.getDocument());
-
-			// @ts-ignore
-			worker.on('annotate', function(e) {
-				session.setAnnotations(e.data);
-			});
-
-			worker.on('terminate', function() {
-				session.clearAnnotations();
-			});
-
-			return worker;
-		};
-
-		this.$id = 'ace/mode/custom';
-	}).call(Mode.prototype);
-
-	exports.Mode = Mode;
 });

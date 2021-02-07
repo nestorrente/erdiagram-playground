@@ -103,7 +103,7 @@
     import ERDiagramPlaygroundConfig, {defaultERDiagramPlaygroundConfig} from '@/config/ERDiagramPlaygroundConfig';
     import GlobalConfirmModal from '@/components/GlobalConfirmModal.vue';
     import CodeEditor from '@/components/CodeEditor.vue';
-    import pokemonSampleCode from '!!raw-loader!@/erd-samples/Pokemon.erd';
+    import companySampleCode from '!!raw-loader!@/erd-samples/Company.erd';
 
     export default defineComponent({
         name: 'App',
@@ -120,7 +120,7 @@
             const configFromModal = ref<ERDiagramPlaygroundConfig>(defaultERDiagramPlaygroundConfig);
             const config = ref<ERDiagramPlaygroundConfig>(configFromModal.value);
 
-            const inputCode = ref(appendPoweredByText(pokemonSampleCode));
+            const inputCode = ref(appendPoweredByText(companySampleCode));
             onMounted(runERDiagram);
 
             const modelOutdated = ref(true);

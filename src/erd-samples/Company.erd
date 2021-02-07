@@ -1,0 +1,11 @@
+Company
+    name text(30)
+    foundationDate date
+    active bool
+
+Employee
+    name text(50)
+    salary decimal(10, 2)
+    active bool
+
+Company <->* Employee
