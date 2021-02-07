@@ -5,29 +5,27 @@ type RequireFn = <T = any>(module: string) => T;
 type Exports = any;
 
 // @ts-ignore
-ace.define('ace/mode/folding/erd', ['require', 'exports'], function (require: RequireFn, exports: Exports) {
+ace.define('ace/mode/folding/erd', ['require', 'exports'], function(require: RequireFn, exports: Exports) {
 
 	const oop = require('../../lib/oop');
 	const Range = require('../../range').Range as typeof RangeType;
 	const BaseFoldMode = require('./fold_mode').FoldMode;
 
-	const FoldMode = exports.FoldMode = function () {
-		// constructor
-	};
-	oop.inherits(FoldMode, BaseFoldMode);
+	const EMPTY_LINE_REGEX = /^\s*$/;
+	const COMMENTED_LINE_REGEX = /^\s*#/;
+	const INDENTED_LINE_REGEX = /^[ \t]/;
 
-	(function (this: any) {
+	exports.FoldMode = class FoldMode extends BaseFoldMode {
 
 		// regular expressions that identify starting and stopping points
-		this.foldingStartMarker = /^[A-Za-z_][A-Za-z_0-9]*$/;
-		// this.foldingStopMarker = /^\s*$/;
+		public foldingStartMarker = /^[A-Za-z_][A-Za-z_0-9]*$/;
 
-		this.getFoldWidgetRange = function (session: Ace.EditSession, foldStyle: string, startRow: number) {
+		public getFoldWidgetRange(session: Ace.EditSession, foldStyle: string, startRow: number) {
 
 			const startLine = session.getLine(startRow);
 			const allLines = session.getDocument().getAllLines();
 
-			const entityEndRow = findEntityEndRow(startRow, allLines);
+			const entityEndRow = this.findEntityEndRow(startRow, allLines);
 
 			if (entityEndRow === startRow) {
 				return new Range(startRow, startLine.length, startRow, startLine.length);
@@ -35,13 +33,9 @@ ace.define('ace/mode/folding/erd', ['require', 'exports'], function (require: Re
 
 			return new Range(startRow, startLine.length, entityEndRow, allLines[entityEndRow].length);
 
-		};
+		}
 
-		const EMPTY_LINE_REGEX = /^\s*$/;
-		const COMMENTED_LINE_REGEX = /^\s*#/;
-		const INDENTED_LINE_REGEX = /^[ \t]/;
-
-		function findEntityEndRow(startRow: number, allLines: string[]): number {
+		private findEntityEndRow(startRow: number, allLines: string[]): number {
 
 			let entityEndRow = startRow;
 
@@ -64,7 +58,7 @@ ace.define('ace/mode/folding/erd', ['require', 'exports'], function (require: Re
 
 		}
 
-	}).call(FoldMode.prototype);
+	};
 
 });
 
@@ -75,7 +69,7 @@ interface SyntaxHighlightRule {
 }
 
 // @ts-ignore
-ace.define('ace/mode/erd_highlight_rules', ['require', 'exports'], function (require: RequireFn, exports: Exports) {
+ace.define('ace/mode/erd_highlight_rules', ['require', 'exports'], function(require: RequireFn, exports: Exports) {
 
 	const TextHighlightRules = require('./text_highlight_rules').TextHighlightRules;
 
@@ -95,21 +89,21 @@ ace.define('ace/mode/erd_highlight_rules', ['require', 'exports'], function (req
 				'start': [
 					{
 						// Entity name (only)
-						token: 'storage.type', // String, Array, or Function: the CSS token to apply
-						regex: /^[A-Za-z_][A-Za-z_0-9]*\s*$/
+						token: ['storage.type', 'text'], // String, Array, or Function: the CSS token to apply
+						regex: /^([A-Za-z_][A-Za-z_0-9]*)(\s*)$/
 					},
 					{
 						// Entity name (and something more)
-						token: 'storage.type',
-						regex: /^[A-Za-z_][A-Za-z_0-9]*\s*/,
+						token: ['storage.type', 'text'],
+						regex: /^([A-Za-z_][A-Za-z_0-9]*)(\s*)/,
 						next: 'afterEntityName'
 					},
 					{
-						token: 'comment.line.number-sign',
-						regex: /^\s*#.*$/,
+						token: ['text', 'comment.line.number-sign'],
+						regex: /^(\s*)(#.*)$/,
 					},
 					{
-						token: 'variable.other',
+						token: 'text',
 						regex: /^\s+/,
 						next: 'entityPropertyName'
 					}
@@ -141,8 +135,8 @@ ace.define('ace/mode/erd_highlight_rules', ['require', 'exports'], function (req
 				],
 				entityPropertyName: [
 					{
-						token: 'variable.other',
-						regex: /[A-Za-z_][A-Za-z_0-9]*/,
+						token: ['variable.other', 'constant.language'],
+						regex: /([A-Za-z_][A-Za-z_0-9]*)([?!+]*)/,
 						next: 'entityPropertyType'
 					},
 					DEFAULT_INVALID_RULE,
@@ -150,14 +144,26 @@ ace.define('ace/mode/erd_highlight_rules', ['require', 'exports'], function (req
 				entityPropertyType: [
 					{
 						// Type without length
-						token: 'keyword.other',
-						regex: /\s+\b(bool|short|int|long|decimal|text|date|time|datetime)\b$/,
+						token: ['text', 'keyword.other'],
+						regex: /(\s+)\b(bool|short|int|long|decimal|text|date|time|datetime)\b$/,
+						next: 'start'
+					},
+					{
+						// Uknown type without length
+						token: ['text', 'invalid.other'],
+						regex: /(\s+)\b([A-Za-z_][A-Za-z_0-9]*)\b$/,
 						next: 'start'
 					},
 					{
 						// Type with length
-						token: 'keyword.other',
-						regex: /\s+\b(bool|short|int|long|decimal|text|date|time|datetime)\b/,
+						token: ['text', 'keyword.other'],
+						regex: /(\s+)\b(bool|short|int|long|decimal|text|date|time|datetime)\b/,
+						next: 'entityPropertyTypeLengthStart'
+					},
+					{
+						// Uknown type with length
+						token: ['text', 'invalid.other'],
+						regex: /(\s+)\b([A-Za-z_][A-Za-z_0-9]*)\b/,
 						next: 'entityPropertyTypeLengthStart'
 					},
 					DEFAULT_INVALID_RULE,
@@ -181,7 +187,12 @@ ace.define('ace/mode/erd_highlight_rules', ['require', 'exports'], function (req
 				entityPropertyTypeLengthNumber: [
 					{
 						token: 'constant.numeric',
-						regex: /\d+/,
+						regex: /\b\d+\b/,
+						next: 'entityPropertyTypeLengthAfterNumber'
+					},
+					{
+						token: 'invalid.error',
+						regex: /\b[a-zA-Z_0-9]+\b/,
 						next: 'entityPropertyTypeLengthAfterNumber'
 					},
 					DEFAULT_INVALID_RULE,
@@ -210,7 +221,7 @@ ace.define('ace/mode/erd_highlight_rules', ['require', 'exports'], function (req
 });
 
 // @ts-ignore
-ace.define('ace/mode/erd', ['require', 'exports'], function (require: RequireFn, exports: Exports) {
+ace.define('ace/mode/erd', ['require', 'exports'], function(require: RequireFn, exports: Exports) {
 	'use strict';
 
 	const TextMode = require('./text').Mode;
@@ -220,8 +231,8 @@ ace.define('ace/mode/erd', ['require', 'exports'], function (require: RequireFn,
 
 	exports.Mode = class Mode extends TextMode {
 
-		$id = 'ace/mode/erd';
-		lineCommentStart = '#';
+		public $id = 'ace/mode/erd';
+		public lineCommentStart = '#';
 
 		constructor() {
 			super();

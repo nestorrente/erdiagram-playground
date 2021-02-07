@@ -5,6 +5,7 @@ Company
 
 Employee
     name text(50)
+    birthdate? date
     salary decimal(10, 2)
     active bool
 
