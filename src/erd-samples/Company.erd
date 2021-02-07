@@ -9,3 +9,5 @@ Employee
     active bool
 
 Company <->* Employee
+
+Employee *<-> Employee boss
