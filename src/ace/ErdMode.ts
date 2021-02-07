@@ -1,80 +1,100 @@
+// @ts-ignore
 import ace from 'ace-builds';
 
-const oop = ace.require('./lib/oop');
-const TextHighlightRules = ace.require('./mode/text_highlight_rules').TextHighlightRules;
+// @ts-ignore
+ace.define('ace/mode/erd_outdent', ['require', 'exports'], function(require: any, exports: any) {
+	exports.ErdOutdent = class ErdOutdent {
 
-// @ts-expect-error
-console.log('Ace define', ace.define);
-// https://github.com/ajaxorg/ace/tree/master/lib/ace/mode
-const JsonHighlightRules = function (this: any) {
+		checkOutdent(line: string, input: string) {
+			if (!/^\s+$/.test(line))
+				return false;
 
-	// regexp must not have capturing parentheses. Use (?:) instead.
-	// regexps are ordered -> the first match is used
-	this.$rules = {
-		'start': [
-			{
-				token: 'variable', // single line
-				regex: '["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]\\s*(?=:)'
-			}, {
-				token: 'string', // single line
-				regex: '"',
-				next: 'string'
-			}, {
-				token: 'constant.numeric', // hex
-				regex: '0[xX][0-9a-fA-F]+\\b'
-			}, {
-				token: 'constant.numeric', // float
-				regex: '[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?\\b'
-			}, {
-				token: 'constant.language.boolean',
-				regex: '(?:true|false)\\b'
-			}, {
-				token: 'text', // single quoted strings are not allowed
-				regex: '[\'](?:(?:\\\\.)|(?:[^\'\\\\]))*?[\']'
-			}, {
-				token: 'comment', // comments are not allowed, but who cares?
-				regex: '\\/\\/.*$'
-			}, {
-				token: 'comment.start', // comments are not allowed, but who cares?
-				regex: '\\/\\*',
-				next: 'comment'
-			}, {
-				token: 'paren.lparen',
-				regex: '[[({]'
-			}, {
-				token: 'paren.rparen',
-				regex: '[\\])}]'
-			}, {
-				token: 'text',
-				regex: '\\s+'
-			}
-		],
-		'string': [
-			{
-				token: 'constant.language.escape',
-				// eslint-disable-next-line
-				regex: /\\(?:x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|["\\\/bfnrt])/
-			}, {
-				token: 'string',
-				regex: '"|$',
-				next: 'start'
-			}, {
-				defaultToken: 'string'
-			}
-		],
-		'comment': [
-			{
-				token: 'comment.end', // comments are not allowed, but who cares?
-				regex: '\\*\\/',
-				next: 'start'
-			}, {
-				defaultToken: 'comment'
-			}
-		]
+			console.log('checkOutdent()');
+			console.log('Line:', line);
+			console.log('Input:', input);
+			return /^}/.test(input);
+		}
+
+		autoOutdent() {
+			//
+		}
+
 	};
+});
 
-};
+// @ts-ignore
+ace.define('ace/mode/erd', ['require', 'exports', 'ace/lib/oop', 'ace/mode/text', 'ace/mode/custom_highlight_rules'], function(require: any, exports: any/*, module: any*/) {
+	'use strict';
 
-oop.inherits(JsonHighlightRules, TextHighlightRules);
+	const oop = require('../lib/oop');
+	const TextMode = require('./text').Mode;
+	const HighlightRules = require('./json_highlight_rules').JsonHighlightRules;
+	const ErdOutdent = require('./erd_outdent').ErdOutdent;
+	const CstyleBehaviour = require('./behaviour/cstyle').CstyleBehaviour;
+	const CStyleFoldMode = require('./folding/cstyle').FoldMode;
+	const WorkerClient = require('../worker/worker_client').WorkerClient;
 
-export {JsonHighlightRules};
+	const Mode = function(this: any) {
+		this.HighlightRules = HighlightRules;
+		this.$outdent = new ErdOutdent();
+		console.log('$outdent:', this.$outdent);
+		this.$behaviour = new CstyleBehaviour();
+		this.foldingRules = new CStyleFoldMode();
+	};
+	oop.inherits(Mode, TextMode);
+
+	(function(this: any) {
+
+		this.lineCommentStart = '//';
+		// this.blockComment = {start: '/*', end: '*/'};
+
+		// @ts-ignore
+		this.getNextLineIndent = function(state, line, tab) {
+			let indent = this.$getIndent(line);
+
+			if (state == 'start') {
+				// eslint-disable-next-line
+				const match = line.match(/^.*[\{\(\[]\s*$/);
+				if (match) {
+					indent += tab;
+				}
+			}
+
+			return indent;
+		};
+
+		// @ts-ignore
+		this.checkOutdent = function(state, line, input) {
+			console.log('Check outdent');
+			console.log('$outdent:', this.$outdent);
+			console.log('$outdent.checkOutdent:', this.$outdent.checkOutdent);
+			return this.$outdent.checkOutdent(line, input);
+		};
+
+		// @ts-ignore
+		this.autoOutdent = function(state, doc, row) {
+			this.$outdent.autoOutdent(doc, row);
+		};
+
+		// @ts-ignore
+		this.createWorker = function(session) {
+			const worker = new WorkerClient(['ace'], 'ace/mode/json_worker', 'JsonWorker');
+			worker.attachToDocument(session.getDocument());
+
+			// @ts-ignore
+			worker.on('annotate', function(e) {
+				session.setAnnotations(e.data);
+			});
+
+			worker.on('terminate', function() {
+				session.clearAnnotations();
+			});
+
+			return worker;
+		};
+
+		this.$id = 'ace/mode/custom';
+	}).call(Mode.prototype);
+
+	exports.Mode = Mode;
+});
