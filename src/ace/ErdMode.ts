@@ -85,6 +85,11 @@ ace.define('ace/mode/erd_highlight_rules', ['require', 'exports'], function(requ
 				regex: /.*$/,
 				next: 'start'
 			};
+			const COMMENT_RULE = {
+				token: ['text', 'comment.line.number-sign'],
+				regex: /^(\s*)(#.*)$/,
+				next: 'start'
+			};
 			return {
 				'start': [
 					{
@@ -98,10 +103,7 @@ ace.define('ace/mode/erd_highlight_rules', ['require', 'exports'], function(requ
 						regex: /^([A-Za-z_][A-Za-z_0-9]*)(\s*)/,
 						next: 'afterEntityName'
 					},
-					{
-						token: ['text', 'comment.line.number-sign'],
-						regex: /^(\s*)(#.*)$/,
-					},
+					COMMENT_RULE,
 					{
 						token: 'text',
 						regex: /^\s+/,
@@ -127,11 +129,7 @@ ace.define('ace/mode/erd_highlight_rules', ['require', 'exports'], function(requ
 						regex: /(\s*)([A-Za-z_][A-Za-z_0-9]*)(\s+[A-Za-z_][A-Za-z_0-9]*)?(\s*)$/,
 						next: 'start'
 					},
-					{
-						token: 'invalid.other',
-						regex: /.*$/,
-						next: 'start'
-					},
+					DEFAULT_INVALID_RULE,
 				],
 				entityPropertyName: [
 					{
