@@ -5,9 +5,8 @@ type RequireFn = <T = any>(module: string) => T;
 type Exports = any;
 
 // @ts-ignore
-ace.define('ace/mode/folding/erd', ['require', 'exports'], function(require: RequireFn, exports: Exports) {
+ace.define('ace/mode/folding/erd', ['require', 'exports'], function (require: RequireFn, exports: Exports) {
 
-	const oop = require('../../lib/oop');
 	const Range = require('../../range').Range as typeof RangeType;
 	const BaseFoldMode = require('./fold_mode').FoldMode;
 
@@ -69,7 +68,7 @@ interface SyntaxHighlightRule {
 }
 
 // @ts-ignore
-ace.define('ace/mode/erd_highlight_rules', ['require', 'exports'], function(require: RequireFn, exports: Exports) {
+ace.define('ace/mode/erd_highlight_rules', ['require', 'exports'], function (require: RequireFn, exports: Exports) {
 
 	const TextHighlightRules = require('./text_highlight_rules').TextHighlightRules;
 
@@ -125,8 +124,21 @@ ace.define('ace/mode/erd_highlight_rules', ['require', 'exports'], function(requ
 				],
 				waitingRelationshipRightEntity: [
 					{
-						token: ['text', 'storage.type', 'variable.other', 'text'],
-						regex: /(\s*)([A-Za-z_][A-Za-z_0-9]*)(\s+[A-Za-z_][A-Za-z_0-9]*)?(\s*)$/,
+						token: ['text', 'storage.type', 'variable.other'],
+						regex: /(\s*)([A-Za-z_][A-Za-z_0-9]*)(\s+[A-Za-z_][A-Za-z_0-9]*)?/,
+						next: 'waitingRelationshipName'
+					},
+					DEFAULT_INVALID_RULE,
+				],
+				waitingRelationshipName: [
+					{
+						token: ['text', 'variable.other', 'text'],
+						regex: /(\s+\()([A-Za-z_][A-Za-z_0-9]*)(\)\s*)$/,
+						next: 'start'
+					},
+					{
+						token: 'text',
+						regex: /\s*$/,
 						next: 'start'
 					},
 					DEFAULT_INVALID_RULE,
@@ -219,12 +231,12 @@ ace.define('ace/mode/erd_highlight_rules', ['require', 'exports'], function(requ
 });
 
 // @ts-ignore
-ace.define('ace/mode/erd', ['require', 'exports'], function(require: RequireFn, exports: Exports) {
+ace.define('ace/mode/erd', ['require', 'exports'], function (require: RequireFn, exports: Exports) {
 	'use strict';
 
 	const TextMode = require('./text').Mode;
 	const ErdHighlightRules = require('./erd_highlight_rules').ErdHighlightRules;
-	// const CstyleBehaviour = require('./behaviour/cstyle').CstyleBehaviour;
+	const CstyleBehaviour = require('./behaviour/cstyle').CstyleBehaviour;
 	const ErdFoldMode = require('./folding/erd').FoldMode;
 
 	exports.Mode = class Mode extends TextMode {
@@ -235,8 +247,8 @@ ace.define('ace/mode/erd', ['require', 'exports'], function(require: RequireFn, 
 		constructor() {
 			super();
 			this.HighlightRules = ErdHighlightRules;
-			// this.$behaviour = new CstyleBehaviour();
-			this.$behaviour = null;
+			this.$behaviour = new CstyleBehaviour();
+			// this.$behaviour = null;
 			this.foldingRules = new ErdFoldMode();
 		}
 
