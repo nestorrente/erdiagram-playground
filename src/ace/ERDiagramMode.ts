@@ -5,7 +5,7 @@ type RequireFn = <T = any>(module: string) => T;
 type Exports = any;
 
 // @ts-ignore
-ace.define('ace/mode/folding/erd', ['require', 'exports'], function (require: RequireFn, exports: Exports) {
+ace.define('ace/mode/folding/erdiagram', ['require', 'exports'], function (require: RequireFn, exports: Exports) {
 
 	const Range = require('../../range').Range as typeof RangeType;
 	const BaseFoldMode = require('./fold_mode').FoldMode;
@@ -68,7 +68,7 @@ interface SyntaxHighlightRule {
 }
 
 // @ts-ignore
-ace.define('ace/mode/erd_highlight_rules', ['require', 'exports'], function (require: RequireFn, exports: Exports) {
+ace.define('ace/mode/erdiagram_highlight_rules', ['require', 'exports'], function (require: RequireFn, exports: Exports) {
 
 	const TextHighlightRules = require('./text_highlight_rules').TextHighlightRules;
 
@@ -231,24 +231,24 @@ ace.define('ace/mode/erd_highlight_rules', ['require', 'exports'], function (req
 });
 
 // @ts-ignore
-ace.define('ace/mode/erd', ['require', 'exports'], function (require: RequireFn, exports: Exports) {
+ace.define('ace/mode/erdiagram', ['require', 'exports'], function (require: RequireFn, exports: Exports) {
 	'use strict';
 
 	const TextMode = require('./text').Mode;
-	const ErdHighlightRules = require('./erd_highlight_rules').ErdHighlightRules;
-	const CstyleBehaviour = require('./behaviour/cstyle').CstyleBehaviour;
-	const ErdFoldMode = require('./folding/erd').FoldMode;
+	const ErdHighlightRules = require('./erdiagram_highlight_rules').ErdHighlightRules;
+	// const CstyleBehaviour = require('./behaviour/cstyle').CstyleBehaviour;
+	const ErdFoldMode = require('./folding/erdiagram').FoldMode;
 
 	exports.Mode = class Mode extends TextMode {
 
-		public $id = 'ace/mode/erd';
+		public $id = 'ace/mode/erdiagram';
 		public lineCommentStart = '#';
 
 		constructor() {
 			super();
 			this.HighlightRules = ErdHighlightRules;
-			this.$behaviour = new CstyleBehaviour();
-			// this.$behaviour = null;
+			// this.$behaviour = new CstyleBehaviour();
+			this.$behaviour = null;
 			this.foldingRules = new ErdFoldMode();
 		}
 
