@@ -4,4 +4,6 @@
 
 - Permitir guardar o cargar el código de entrada.
 
-- Copiar o exportar el código generado.
+- Copiar y exportar el código generado.
+    - [HECHO] Copiar
+    - Exportar

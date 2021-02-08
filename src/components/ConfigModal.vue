@@ -229,10 +229,7 @@
 <script lang="ts">
     import {defineComponent, nextTick, Ref, ref, watch} from 'vue';
     import Modal from '@/components/Modal.vue';
-    import ERDiagramPlaygroundConfig, {
-        defaultERDiagramPlaygroundConfig,
-        mergeERDiagramPlaygroundConfigs
-    } from '@/config/ERDiagramPlaygroundConfig';
+    import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
     import SelectInput from '@/components/SelectInput.vue';
     import {
         CaseFormat,
@@ -245,6 +242,7 @@
     } from '@nestorrente/erdiagram';
     import {showConfirmModal} from '@/store/globalConfirmModalStore';
     import TabsSection from '@/components/TabsSection.vue';
+    import erdiagramPlaygroundConfigManager from '@/config/ERDiagramPlaygroundConfigManager';
 
     interface Props {
         showing: boolean;
@@ -278,14 +276,14 @@
 
             const props = uncastedProps as Props;
 
-            const internalConfig = ref(mergeERDiagramPlaygroundConfigs(defaultERDiagramPlaygroundConfig));
+            const internalConfig = ref(erdiagramPlaygroundConfigManager.getDefaultConfig());
 
             const configChanged = ref(false);
             watch(internalConfig, () => configChanged.value = true, {deep: true});
 
             watch(() => props.showing, showing => {
                 if (showing) {
-                    internalConfig.value = mergeERDiagramPlaygroundConfigs(props.config);
+                    internalConfig.value = erdiagramPlaygroundConfigManager.cloneConfig(props.config);
                     nextTick(() => configChanged.value = false);
                 }
             });

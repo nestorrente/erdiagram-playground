@@ -14,20 +14,35 @@
                                         :class="{
                                             'is-warning': modelOutdated,
                                             'is-danger is-light': !modelOutdated && hasErrors,
-                                            'is-primary is-light': !modelOutdated && !hasErrors
+                                            'is-success is-light': !modelOutdated && !hasErrors
                                         }"
                                         @click="runERDiagram"
                                 >
                                     <span v-show="modelOutdated">
-                                        Update output code
-                                        (<span class="is-family-code">Ctrl + S</span>
-                                        or <span class="is-family-code">Ctrl + &#9166;</span>)
+                                        <span class="icon">
+                                            <i class="fas fa-sync"></i>
+                                        </span>
+                                        <span>
+                                            Update output code
+                                            (<span class="is-family-code">Ctrl + S</span>
+                                            or <span class="is-family-code">Ctrl + &#9166;</span>)
+                                        </span>
                                     </span>
                                     <span v-show="!modelOutdated && hasErrors">
-                                        There's an error in your code (see console for more details)
+                                        <span class="icon">
+                                            <i class="fas fa-times"></i>
+                                        </span>
+                                        <span>
+                                            There's an error in your code (see console for more details)
+                                        </span>
                                     </span>
                                     <span v-show="!modelOutdated && !hasErrors">
-                                        Output code is up-to-date :)
+                                        <span class="icon">
+                                            <i class="fas fa-check"></i>
+                                        </span>
+                                        <span>
+                                            Output code is up-to-date :)
+                                        </span>
                                     </span>
                                 </button>
                             </div>
@@ -69,6 +84,23 @@
                                             full-height
                                     />
                                 </template>
+                                <template #afterTabs>
+                                    <ul class="is-justify-content-flex-end">
+                                        <li class="buttons">
+                                            <button
+                                                    class="button is-small is-link is-rounded"
+                                                    @click="showingConfigModal = true"
+                                            >
+                                                <span class="icon">
+                                                    <i class="fas fa-cog"></i>
+                                                </span>
+                                                <span>
+                                                    Settings
+                                                </span>
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </template>
                             </TabsSection>
                         </div>
                     </div>
@@ -101,10 +133,11 @@
         TypeScriptClassModelToCodeConverter
     } from '@nestorrente/erdiagram';
     import ConfigModal from '@/components/ConfigModal.vue';
-    import ERDiagramPlaygroundConfig, {defaultERDiagramPlaygroundConfig} from '@/config/ERDiagramPlaygroundConfig';
+    import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
     import GlobalConfirmModal from '@/components/GlobalConfirmModal.vue';
     import CodeEditor from '@/components/CodeEditor.vue';
     import companySampleCode from '!!raw-loader!@/sample-erd-files/Company.erd';
+    import erdiagramPlaygroundConfigManager from '@/config/ERDiagramPlaygroundConfigManager';
 
     export default defineComponent({
         name: 'App',
@@ -118,7 +151,7 @@
         },
         setup() {
 
-            const configFromModal = ref<ERDiagramPlaygroundConfig>(defaultERDiagramPlaygroundConfig);
+            const configFromModal = ref<ERDiagramPlaygroundConfig>(erdiagramPlaygroundConfigManager.getDefaultConfig());
             const config = ref<ERDiagramPlaygroundConfig>(configFromModal.value);
 
             const inputCode = ref(appendPoweredByText(companySampleCode));
@@ -161,7 +194,10 @@
                 } catch (e) {
                     hasErrors.value = true;
                     entityRelationshipModel.value = undefined;
-                    console.error(e);
+
+                    if (e instanceof Error) {
+                        console.error(`Parse error: ${e.message}`);
+                    }
                 }
             }
 

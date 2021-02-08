@@ -4,16 +4,18 @@
             :class="appendTabsClass"
             :style="appendTabsStyle"
     >
+        <slot name="beforeTabs"></slot>
         <ul>
             <li
                     v-for="(header, index) in headers"
                     :key="index"
-                    :class="{'is-active': index === selectedTabIndex}"
+                    :class="{'is-active': selectedTabIndex === index}"
                     @click="selectedTabIndex = index"
             >
                 <a>{{ header }}</a>
             </li>
         </ul>
+        <slot name="afterTabs"></slot>
     </div>
     <div
             :class="appendTabsContentClass"
