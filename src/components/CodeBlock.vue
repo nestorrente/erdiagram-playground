@@ -4,26 +4,20 @@
             :class="{'is-full-height': fullHeight}"
     >
 
-        <button
-                class="button is-small is-warning copy-button"
-                :class="{'is-outlined': copiedState}"
+        <Button
+                color="warning"
+                small
+                :outlined="copiedState"
+                :icon="copiedState ? 'fas fa-clipboard-check' : 'fas fa-clipboard'"
+                class="copy-button"
                 :style="{
                     '--scrollbar-size': `${codeBlockScrollbarsSize.vertical}px`
                 }"
                 @click="copyCode"
                 @mouseleave="copiedState = false"
         >
-            <span class="icon">
-                <i :class="{
-                    'fas fa-clipboard': !copiedState,
-                    'fas fa-clipboard-check': copiedState
-                }"></i>
-            </span>
-            <span
-                    class="copy-text"
-                    v-text="copiedState ? 'Copied!' : 'Copy'"
-            ></span>
-        </button>
+            {{ copiedState ? 'Copied!' : 'Copy' }}
+        </Button>
 
         <pre
                 class="code-container"
@@ -41,9 +35,11 @@
     import {defineComponent, onMounted, onUpdated, ref} from 'vue';
     import hljs from 'highlight.js';
     import useElementScrollbarsSize from '@/components/useElementScrollbarsSize';
+    import Button from '@/components/Button.vue';
 
     export default defineComponent({
         name: 'CodeBlock',
+        components: {Button},
         props: {
             lang: {
                 type: String,
@@ -107,7 +103,7 @@
         top: 1em;
         right: calc(1em + var(--scrollbar-size));
 
-        > .copy-text {
+        > .button-text {
             width: 3em;
         }
 

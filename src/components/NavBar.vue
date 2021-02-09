@@ -49,16 +49,6 @@
                         </div>
                     </article>
                 </div>
-
-                <!--                <div class="navbar-item">-->
-                <!--                    <div class="buttons is-justify-content-flex-end">-->
-                <!--                        <button class="button is-primary" title="Settings" @click="$emit('show-config')">-->
-                <!--                            <span class="icon">-->
-                <!--                                <i class="fas fa-cog"></i>-->
-                <!--                            </span>-->
-                <!--                        </button>-->
-                <!--                    </div>-->
-                <!--                </div>-->
             </div>
         </div>
     </nav>
@@ -69,7 +59,6 @@
 
     export default defineComponent({
         name: 'NavBar',
-        emits: ['show-config'],
         setup() {
 
             const expanded = ref(false);

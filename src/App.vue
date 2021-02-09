@@ -1,7 +1,7 @@
 <template>
     <div class="vertical-full-container">
         <div class="vfc-item">
-            <NavBar @show-config="showingConfigModal = true"/>
+            <NavBar/>
         </div>
         <section class="section pb-3 vfc-item vfc-grow">
             <div class="container vertical-full-container">
@@ -59,7 +59,7 @@
                     <div class="column is-half">
                         <div class="vertical-full-container">
                             <TabsSection
-                                    :headers="['MySQL', 'Java POJO', 'TypeScript']"
+                                    :headers="['MySQL', 'SQL Server', 'Java POJO', 'TypeScript']"
                                     append-tabs-class="vfc-item"
                                     append-tabs-content-class="vfc-item vfc-grow"
                             >
@@ -72,12 +72,19 @@
                                 </template>
                                 <template #tab1>
                                     <CodeBlock
+                                            lang="sql"
+                                            :code="generatedSqlServerCode"
+                                            full-height
+                                    />
+                                </template>
+                                <template #tab2>
+                                    <CodeBlock
                                             lang="java"
                                             :code="generatedJavaCode"
                                             full-height
                                     />
                                 </template>
-                                <template #tab2>
+                                <template #tab3>
                                     <CodeBlock
                                             lang="typescript"
                                             :code="generatedTypeScriptCode"
@@ -85,19 +92,18 @@
                                     />
                                 </template>
                                 <template #afterTabs>
-                                    <ul class="is-justify-content-flex-end">
+                                    <ul class="is-justify-content-flex-end is-flex-shrink-1 is-flex-grow-0">
                                         <li class="buttons">
-                                            <button
-                                                    class="button is-small is-link is-rounded is-button-text-hidden-mobile"
+                                            <Button
+                                                    color="link"
+                                                    small
+                                                    rounded
+                                                    class="is-button-text-hidden-mobile"
+                                                    icon="fas fa-cog"
                                                     @click="showingConfigModal = true"
                                             >
-                                                <span class="icon">
-                                                    <i class="fas fa-cog"></i>
-                                                </span>
-                                                <span>
-                                                    Settings
-                                                </span>
-                                            </button>
+                                                Settings
+                                            </Button>
                                         </li>
                                     </ul>
                                 </template>
@@ -130,6 +136,7 @@
         EntityRelationshipModelToDatabaseCodeConverter,
         JavaClassModelToCodeConverter,
         MySqlDatabaseModelToCodeConverter,
+        SqlServerDatabaseModelToCodeConverter,
         TypeScriptClassModelToCodeConverter
     } from '@nestorrente/erdiagram';
     import ConfigModal from '@/components/ConfigModal.vue';
@@ -138,10 +145,12 @@
     import CodeEditor from '@/components/CodeEditor.vue';
     import companySampleCode from '!!raw-loader!@/sample-erd-files/Company.erd';
     import erdiagramPlaygroundConfigManager from '@/config/ERDiagramPlaygroundConfigManager';
+    import Button from '@/components/Button.vue';
 
     export default defineComponent({
         name: 'App',
         components: {
+            Button,
             CodeEditor,
             GlobalConfirmModal,
             ConfigModal,
@@ -201,14 +210,25 @@
                 }
             }
 
-            const databaseModelGenerator = computed(() => {
-                return new DatabaseModelGenerator(config.value.database);
+            const mysqlDatabaseModelGenerator = computed(() => {
+                return new DatabaseModelGenerator(config.value.mysqlDatabaseModel);
             });
 
             const mysqlConverter = computed(() => {
                 return new EntityRelationshipModelToDatabaseCodeConverter(
-                        databaseModelGenerator.value,
+                        mysqlDatabaseModelGenerator.value,
                         new MySqlDatabaseModelToCodeConverter(config.value.mysql)
+                );
+            });
+
+            const sqlServerDatabaseModelGenerator = computed(() => {
+                return new DatabaseModelGenerator(config.value.sqlServerDatabaseModel);
+            });
+
+            const sqlServerConverter = computed(() => {
+                return new EntityRelationshipModelToDatabaseCodeConverter(
+                        sqlServerDatabaseModelGenerator.value,
+                        new SqlServerDatabaseModelToCodeConverter(config.value.sqlserver)
                 );
             });
 
@@ -229,6 +249,7 @@
             });
 
             const generatedMysqlCode = createComputedCompiledCode(mysqlConverter);
+            const generatedSqlServerCode = createComputedCompiledCode(sqlServerConverter);
             const generatedJavaCode = createComputedCompiledCode(javaConverter);
             const generatedTypeScriptCode = createComputedCompiledCode(typeScriptConverter);
 
@@ -250,6 +271,7 @@
                 inputCode,
                 modelOutdated,
                 generatedMysqlCode,
+                generatedSqlServerCode,
                 generatedJavaCode,
                 generatedTypeScriptCode,
                 onCodeEditorKeydown,

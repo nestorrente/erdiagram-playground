@@ -10,19 +10,19 @@
         </template>
         <template #footer>
             <div class="buttons is-justify-content-flex-end">
-                <button
+                <Button
                         v-if="globalConfirmModalStore.acceptButton"
-                        class="button is-danger"
+                        color="danger"
                         @click="globalConfirmModalStore.accept()"
                 >
                     {{ globalConfirmModalStore.acceptButtonText }}
-                </button>
-                <button
-                        class="button"
+                </Button>
+                <Button
+                        v-if="globalConfirmModalStore.cancelButton"
                         @click="globalConfirmModalStore.cancel()"
                 >
                     {{ globalConfirmModalStore.cancelButtonText }}
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>
@@ -32,10 +32,12 @@
     import {defineComponent} from 'vue';
     import Modal from '@/components/Modal.vue';
     import globalConfirmModalStore from '@/store/globalConfirmModalStore';
+    import Button from '@/components/Button.vue';
 
     export default defineComponent({
         name: 'GlobalConfirmModal',
         components: {
+            Button,
             Modal
         },
         setup() {

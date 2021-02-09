@@ -63,7 +63,7 @@
                                             <label class="checkbox">
                                                 <input
                                                         type="checkbox"
-                                                        v-model="internalConfig.database.pluralizeTableNames"
+                                                        v-model="internalConfig.mysqlDatabaseModel.pluralizeTableNames"
                                                         class="mr-1"
                                                 >
                                             </label>
@@ -90,7 +90,7 @@
                                         <td class="setting-value">
                                             <SelectInput
                                                     :items="caseFormatOptions"
-                                                    v-model="selectedTableNameCaseFormatOption"
+                                                    v-model="selectedMysqlTableNameCaseFormatOption"
                                                     text-field="text"
                                                     id-field="text"
                                                     block
@@ -104,7 +104,68 @@
                                         <td class="setting-value">
                                             <SelectInput
                                                     :items="caseFormatOptions"
-                                                    v-model="selectedColumnNameCaseFormatOption"
+                                                    v-model="selectedMysqlColumnNameCaseFormatOption"
+                                                    text-field="text"
+                                                    id-field="text"
+                                                    block
+                                            ></SelectInput>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <h2>SQL Server</h2>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="setting-description">
+                                            Plural table names:
+                                        </td>
+                                        <td class="setting-value">
+                                            <label class="checkbox">
+                                                <input
+                                                        type="checkbox"
+                                                        v-model="internalConfig.sqlServerDatabaseModel.pluralizeTableNames"
+                                                        class="mr-1"
+                                                >
+                                            </label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="setting-description">
+                                            ID naming strategy:
+                                        </td>
+                                        <td class="setting-value">
+                                            <SelectInput
+                                                    :items="idNamingStrategyOptions"
+                                                    v-model="selectedSqlServerIdNamingStrategyOption"
+                                                    text-field="text"
+                                                    id-field="value"
+                                                    block
+                                            ></SelectInput>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="setting-description">
+                                            Table name case format:
+                                        </td>
+                                        <td class="setting-value">
+                                            <SelectInput
+                                                    :items="caseFormatOptions"
+                                                    v-model="selectedSqlServerTableNameCaseFormatOption"
+                                                    text-field="text"
+                                                    id-field="text"
+                                                    block
+                                            ></SelectInput>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="setting-description">
+                                            Column name case format:
+                                        </td>
+                                        <td class="setting-value">
+                                            <SelectInput
+                                                    :items="caseFormatOptions"
+                                                    v-model="selectedSqlServerColumnNameCaseFormatOption"
                                                     text-field="text"
                                                     id-field="text"
                                                     block
@@ -162,6 +223,7 @@
                                     <tr>
                                         <th>Input type</th>
                                         <th>MySQL</th>
+                                        <th>SQL Server</th>
                                         <th>Java</th>
                                         <th>TypeScript</th>
                                     </tr>
@@ -178,6 +240,13 @@
                                             <input
                                                     type="text"
                                                     v-model="internalConfig.mysql.typeMappings[inputType]"
+                                                    class="input is-small"
+                                            >
+                                        </td>
+                                        <td>
+                                            <input
+                                                    type="text"
+                                                    v-model="internalConfig.sqlserver.typeMappings[inputType]"
                                                     class="input is-small"
                                             >
                                         </td>
@@ -209,18 +278,12 @@
         </template>
         <template #footer>
             <div class="has-text-right">
-                <button
-                        class="button is-success"
-                        @click="saveChanges"
-                >
+                <Button color="success" @click="saveChanges">
                     Save changes
-                </button>
-                <button
-                        class="button"
-                        @click="close"
-                >
+                </Button>
+                <Button @click="close">
                     Cancel
-                </button>
+                </Button>
             </div>
         </template>
     </Modal>
@@ -231,18 +294,11 @@
     import Modal from '@/components/Modal.vue';
     import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
     import SelectInput from '@/components/SelectInput.vue';
-    import {
-        CaseFormat,
-        createJavaType,
-        createTypeScriptType,
-        EntityPropertyType,
-        IdNamingStrategy,
-        StandardCaseFormats,
-        StandardIdNamingStrategies
-    } from '@nestorrente/erdiagram';
+    import {CaseFormat, createJavaType, createTypeScriptType, EntityPropertyType, IdNamingStrategy, StandardCaseFormats, StandardIdNamingStrategies} from '@nestorrente/erdiagram';
     import {showConfirmModal} from '@/store/globalConfirmModalStore';
     import TabsSection from '@/components/TabsSection.vue';
     import erdiagramPlaygroundConfigManager from '@/config/ERDiagramPlaygroundConfigManager';
+    import Button from '@/components/Button.vue';
 
     interface Props {
         showing: boolean;
@@ -257,6 +313,7 @@
     export default defineComponent({
         name: 'ConfigModal',
         components: {
+            Button,
             TabsSection,
             SelectInput,
             Modal
@@ -346,16 +403,28 @@
                 }
             ];
 
-            const selectedTableNameCaseFormatOption = useSelectInputOptions(
+            const selectedMysqlTableNameCaseFormatOption = useSelectInputOptions(
                     caseFormatOptions,
                     () => internalConfig.value.mysql.tableNameCaseFormat,
                     newValue => internalConfig.value.mysql.tableNameCaseFormat = newValue
             );
 
-            const selectedColumnNameCaseFormatOption = useSelectInputOptions(
+            const selectedMysqlColumnNameCaseFormatOption = useSelectInputOptions(
                     caseFormatOptions,
                     () => internalConfig.value.mysql.columnNameCaseFormat,
                     newValue => internalConfig.value.mysql.columnNameCaseFormat = newValue
+            );
+
+            const selectedSqlServerTableNameCaseFormatOption = useSelectInputOptions(
+                    caseFormatOptions,
+                    () => internalConfig.value.sqlserver.tableNameCaseFormat,
+                    newValue => internalConfig.value.sqlserver.tableNameCaseFormat = newValue
+            );
+
+            const selectedSqlServerColumnNameCaseFormatOption = useSelectInputOptions(
+                    caseFormatOptions,
+                    () => internalConfig.value.sqlserver.columnNameCaseFormat,
+                    newValue => internalConfig.value.sqlserver.columnNameCaseFormat = newValue
             );
 
             const idNamingStrategyOptions: SelectInputOption<IdNamingStrategy>[] = [
@@ -373,6 +442,12 @@
                     idNamingStrategyOptions,
                     () => internalConfig.value.mysql.idNamingStrategy,
                     newValue => internalConfig.value.mysql.idNamingStrategy = newValue
+            );
+
+            const selectedSqlServerIdNamingStrategyOption = useSelectInputOptions(
+                    idNamingStrategyOptions,
+                    () => internalConfig.value.sqlserver.idNamingStrategy,
+                    newValue => internalConfig.value.sqlserver.idNamingStrategy = newValue
             );
 
             function useSelectInputOptions<T>(
@@ -417,10 +492,13 @@
                 saveChanges,
                 close,
                 caseFormatOptions,
-                selectedTableNameCaseFormatOption,
-                selectedColumnNameCaseFormatOption,
+                selectedMysqlTableNameCaseFormatOption,
+                selectedMysqlColumnNameCaseFormatOption,
+                selectedSqlServerTableNameCaseFormatOption,
+                selectedSqlServerColumnNameCaseFormatOption,
                 idNamingStrategyOptions,
                 selectedMysqlIdNamingStrategyOption,
+                selectedSqlServerIdNamingStrategyOption,
                 configChanged,
                 inputTypes,
                 parseJavaType,
