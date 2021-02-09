@@ -88,7 +88,7 @@
                                     <ul class="is-justify-content-flex-end">
                                         <li class="buttons">
                                             <button
-                                                    class="button is-small is-link is-rounded"
+                                                    class="button is-small is-link is-rounded is-button-text-hidden-mobile"
                                                     @click="showingConfigModal = true"
                                             >
                                                 <span class="icon">

@@ -38,3 +38,17 @@ $body-overflow-y: auto;
 .select.is-block > select {
     width: 100%;
 }
+
+@media (max-width: 768px) {
+    button.is-button-text-hidden-mobile {
+
+        // Sames styles that Bulma applies where the button has no text
+        .icon:first-child:not(:last-child) {
+            margin-right: calc(-0.5em - 1px);
+        }
+
+        > :not(.icon) {
+            display: none
+        }
+    }
+}
