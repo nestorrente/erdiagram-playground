@@ -65,14 +65,14 @@
                             >
                                 <template #tab0>
                                     <CodeBlock
-                                            lang="mysql"
+                                            lang="sql_more"
                                             :code="generatedMysqlCode"
                                             full-height
                                     />
                                 </template>
                                 <template #tab1>
                                     <CodeBlock
-                                            lang="sql"
+                                            lang="sql_more"
                                             :code="generatedSqlServerCode"
                                             full-height
                                     />
