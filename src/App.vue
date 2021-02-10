@@ -76,9 +76,13 @@
                                 <!--<Tab title="SQLite">-->
                                 <!--    Not supported yet.-->
                                 <!--</Tab>-->
-                                <!--<Tab title="Oracle DB">-->
-                                <!--    Not supported yet.-->
-                                <!--</Tab>-->
+                                <Tab title="Oracle DB">
+                                    <CodeBlock
+                                            lang="sql_more"
+                                            :code="generatedOracleCode"
+                                            full-height
+                                    />
+                                </Tab>
                                 <Tab title="SQL Server">
                                     <CodeBlock
                                             lang="sql_more"
@@ -145,6 +149,7 @@
         EntityRelationshipModelToDatabaseCodeConverter,
         JavaClassModelToCodeConverter,
         MySqlDatabaseModelToCodeConverter,
+        OracleDatabaseModelToCodeConverter,
         SqlServerDatabaseModelToCodeConverter,
         TypeScriptClassModelToCodeConverter
     } from '@nestorrente/erdiagram';
@@ -243,6 +248,17 @@
                 );
             });
 
+            const oracleDatabaseModelGenerator = computed(() => {
+                return new DatabaseModelGenerator(config.value.oracleDatabaseModel);
+            });
+
+            const oracleConverter = computed(() => {
+                return new EntityRelationshipModelToDatabaseCodeConverter(
+                        oracleDatabaseModelGenerator.value,
+                        new OracleDatabaseModelToCodeConverter(config.value.oracle)
+                );
+            });
+
             const classModelGenerator = computed(() => new ClassModelGenerator());
 
             const javaConverter = computed(() => {
@@ -261,6 +277,7 @@
 
             const generatedMysqlCode = createComputedCompiledCode(mysqlConverter);
             const generatedSqlServerCode = createComputedCompiledCode(sqlServerConverter);
+            const generatedOracleCode = createComputedCompiledCode(oracleConverter);
             const generatedJavaCode = createComputedCompiledCode(javaConverter);
             const generatedTypeScriptCode = createComputedCompiledCode(typeScriptConverter);
 
@@ -283,6 +300,7 @@
                 modelOutdated,
                 generatedMysqlCode,
                 generatedSqlServerCode,
+                generatedOracleCode,
                 generatedJavaCode,
                 generatedTypeScriptCode,
                 onCodeEditorKeydown,

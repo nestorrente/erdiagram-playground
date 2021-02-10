@@ -90,9 +90,11 @@
             }
 
             function scrollHorizontally(event: WheelEvent) {
-                event.preventDefault();
-                const target = event.currentTarget as HTMLElement;
-                target.scrollLeft += (event.deltaY * 0.75);
+                if (event.deltaY !== 0) {
+                    event.preventDefault();
+                    const target = event.currentTarget as HTMLElement;
+                    target.scrollLeft += (event.deltaY * 0.75);
+                }
             }
 
             return {

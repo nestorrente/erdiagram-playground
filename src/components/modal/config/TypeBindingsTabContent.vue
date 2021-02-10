@@ -11,8 +11,9 @@
         <table class="table is-fullwidth is-striped is-hoverable is-narrow">
             <thead>
                 <tr>
-                    <th>Input type</th>
+                    <th>ERDiagram</th>
                     <th>MySQL</th>
+                    <th>Oracle DB</th>
                     <th>SQL Server</th>
                     <th>Java</th>
                     <th>TypeScript</th>
@@ -30,6 +31,13 @@
                         <input
                                 type="text"
                                 v-model="config.mysql.typeMappings[inputPropertyType]"
+                                class="input is-small"
+                        >
+                    </td>
+                    <td>
+                        <input
+                                type="text"
+                                v-model="config.oracle.typeMappings[inputPropertyType]"
                                 class="input is-small"
                         >
                     </td>
