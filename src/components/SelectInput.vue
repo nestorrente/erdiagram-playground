@@ -59,6 +59,7 @@
         },
         setup(uncastedProps, context) {
 
+            // Workaround for an issue with TS types
             const props = uncastedProps as Props<any>;
 
             const idFieldCallback = computed((): MapperCallback<any, any> => {

@@ -59,6 +59,7 @@
                     <div class="column is-half">
                         <div class="vertical-full-container">
                             <Tabs
+                                    toggle
                                     append-tabs-class="vfc-item"
                                     append-tabs-content-class="vfc-item vfc-grow"
                             >
@@ -69,6 +70,15 @@
                                             full-height
                                     />
                                 </Tab>
+                                <!--<Tab title="PostgreSQL">-->
+                                <!--    Not supported yet.-->
+                                <!--</Tab>-->
+                                <!--<Tab title="SQLite">-->
+                                <!--    Not supported yet.-->
+                                <!--</Tab>-->
+                                <!--<Tab title="Oracle DB">-->
+                                <!--    Not supported yet.-->
+                                <!--</Tab>-->
                                 <Tab title="SQL Server">
                                     <CodeBlock
                                             lang="sql_more"
@@ -91,7 +101,7 @@
                                     />
                                 </Tab>
                                 <template #afterTabs>
-                                    <ul class="is-justify-content-flex-end is-flex-shrink-1 is-flex-grow-0">
+                                    <ul class="is-justify-content-flex-end is-flex-shrink-1 is-flex-grow-0 pl-4">
                                         <li class="buttons">
                                             <Button
                                                     color="link"

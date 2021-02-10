@@ -1,16 +1,23 @@
 <template>
     <div
             class="tabs"
-            :class="appendTabsClass"
+            :class="[appendTabsClass, {
+                'is-boxed': boxed,
+                'is-toggle': toggle
+            }]"
             :style="appendTabsStyle"
     >
         <slot name="beforeTabs"></slot>
-        <ul>
+        <ul
+                class="is-flex-shrink-1 has-hidden-scrollbar"
+                style="overflow-y: hidden; overflow-x: auto;"
+                @wheel="scrollHorizontally"
+        >
             <li
                     v-for="(title, index) in tabTitles"
                     :key="index"
                     :class="{'is-active': selectedTabIndex === index}"
-                    @click="selectedTabIndex = index"
+                    @click="selectTab($event, index)"
             >
                 <a>{{ title }}</a>
             </li>
@@ -41,6 +48,8 @@
         name: 'Tabs',
         components: {VNodes},
         props: {
+            // boxed: Boolean,
+            toggle: Boolean,
             appendTabsClass: {
                 type: [String, Array, Object],
                 required: false
@@ -71,10 +80,27 @@
 
             const selectedTabIndex = ref(0);
 
+            function selectTab(event: Event, index: number) {
+
+                const target = event.currentTarget as HTMLElement;
+                target.scrollIntoView(false);
+
+                selectedTabIndex.value = index;
+
+            }
+
+            function scrollHorizontally(event: WheelEvent) {
+                event.preventDefault();
+                const target = event.currentTarget as HTMLElement;
+                target.scrollLeft += (event.deltaY * 0.75);
+            }
+
             return {
                 tabNodes,
                 tabTitles,
-                selectedTabIndex
+                selectedTabIndex,
+                selectTab,
+                scrollHorizontally
             };
 
         }

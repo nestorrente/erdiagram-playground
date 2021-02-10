@@ -181,18 +181,19 @@
 </template>
 
 <script lang="ts">
-    import {defineComponent, Ref, ref, watch} from 'vue';
+    import {defineComponent} from 'vue';
     import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
     import SelectInput from '@/components/SelectInput.vue';
-    import {CaseFormat, IdNamingStrategy, StandardCaseFormats, StandardIdNamingStrategies} from '@nestorrente/erdiagram';
+    import {
+        CaseFormat,
+        IdNamingStrategy,
+        StandardCaseFormats,
+        StandardIdNamingStrategies
+    } from '@nestorrente/erdiagram';
+    import useSelectInputOptions, {SelectInputOption} from '@/components/useSelectInputOptions';
 
     interface Props {
         config: ERDiagramPlaygroundConfig;
-    }
-
-    interface SelectInputOption<T> {
-        text: string;
-        value: T;
     }
 
     export default defineComponent({
@@ -200,15 +201,15 @@
         components: {
             SelectInput
         },
-        // emits: ['update:showing', 'update:config'],
         props: {
             config: {
                 type: Object,
                 required: true
             }
         },
-        setup(uncastedProps, context) {
+        setup(uncastedProps) {
 
+            // Workaround for an issue with TS types
             const props = uncastedProps as Props;
 
             const caseFormatOptions: SelectInputOption<CaseFormat>[] = [
@@ -280,25 +281,6 @@
                     () => props.config.sqlserver.idNamingStrategy,
                     newValue => props.config.sqlserver.idNamingStrategy = newValue
             );
-
-            function useSelectInputOptions<T>(
-                    options: SelectInputOption<T>[],
-                    valueGetter: () => T,
-                    valueSetter: (newValue: T) => void
-            ) {
-
-                const selectedOption = ref(findOptionFromValue(valueGetter())) as Ref<SelectInputOption<T>>;
-
-                watch(valueGetter, value => selectedOption.value = findOptionFromValue(value));
-                watch(selectedOption, option => valueSetter(option.value));
-
-                function findOptionFromValue(value: T) {
-                    return options.find(option => option.value === value)!;
-                }
-
-                return selectedOption;
-
-            }
 
             return {
                 caseFormatOptions,

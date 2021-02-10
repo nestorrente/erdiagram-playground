@@ -30,68 +30,7 @@
                         <GeneralTabContent :config="internalConfig"/>
                     </Tab>
                     <Tab title="Type bindings">
-                        <section class="section settings-tab-section">
-
-                            <article class="message is-warning">
-                                <div class="message-body">
-                                    <strong>Be careful editing these types.</strong>
-                                    Any mistake can make your code uncompilable.
-                                </div>
-                            </article>
-
-                            <table class="table is-fullwidth is-striped is-hoverable is-narrow">
-                                <thead>
-                                    <tr>
-                                        <th>Input type</th>
-                                        <th>MySQL</th>
-                                        <th>SQL Server</th>
-                                        <th>Java</th>
-                                        <th>TypeScript</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr
-                                            v-for="inputType in inputTypes"
-                                            :key="inputType"
-                                    >
-                                        <td>
-                                            {{ inputType }}
-                                        </td>
-                                        <td>
-                                            <input
-                                                    type="text"
-                                                    v-model="internalConfig.mysql.typeMappings[inputType]"
-                                                    class="input is-small"
-                                            >
-                                        </td>
-                                        <td>
-                                            <input
-                                                    type="text"
-                                                    v-model="internalConfig.sqlserver.typeMappings[inputType]"
-                                                    class="input is-small"
-                                            >
-                                        </td>
-                                        <td>
-                                            <input
-                                                    type="text"
-                                                    :value="internalConfig.java.typeMappings[inputType].canonicalName"
-                                                    @change="internalConfig.java.typeMappings[inputType] = parseJavaType($event.currentTarget.value)"
-                                                    class="input is-small"
-                                            >
-                                        </td>
-                                        <td>
-                                            <input
-                                                    type="text"
-                                                    :value="internalConfig.typescript.typeMappings[inputType].name"
-                                                    @change="internalConfig.typescript.typeMappings[inputType] = parseTypeScriptType($event.currentTarget.value)"
-                                                    class="input is-small"
-                                            >
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                        </section>
+                        <TypeBindingsTabContent :config="internalConfig"/>
                     </Tab>
                 </Tabs>
             </div>
@@ -111,17 +50,17 @@
 </template>
 
 <script lang="ts">
-    import {defineComponent, nextTick, Ref, ref, watch} from 'vue';
+    import {defineComponent, nextTick, ref, watch} from 'vue';
     import Modal from '@/components/modal/Modal.vue';
     import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
-    import SelectInput from '@/components/SelectInput.vue';
-    import {CaseFormat, createJavaType, createTypeScriptType, EntityPropertyType, IdNamingStrategy, StandardCaseFormats, StandardIdNamingStrategies} from '@nestorrente/erdiagram';
+    import {createJavaType, createTypeScriptType, EntityPropertyType} from '@nestorrente/erdiagram';
     import {showConfirmModal} from '@/store/globalConfirmModalStore';
     import Tabs from '@/components/tabs/Tabs.vue';
     import erdiagramPlaygroundConfigManager from '@/config/ERDiagramPlaygroundConfigManager';
     import Button from '@/components/Button.vue';
     import Tab from '@/components/tabs/Tab.vue';
     import GeneralTabContent from '@/components/modal/config/GeneralTabContent.vue';
+    import TypeBindingsTabContent from '@/components/modal/config/TypeBindingsTabContent.vue';
 
     interface Props {
         showing: boolean;
@@ -136,11 +75,11 @@
     export default defineComponent({
         name: 'ConfigModal',
         components: {
+            TypeBindingsTabContent,
             GeneralTabContent,
             Tab,
             Button,
             Tabs,
-            SelectInput,
             Modal
         },
         emits: ['update:showing', 'update:config'],
@@ -156,6 +95,7 @@
         },
         setup(uncastedProps, context) {
 
+            // Workaround for an issue with TS types
             const props = uncastedProps as Props;
 
             const internalConfig = ref(erdiagramPlaygroundConfigManager.getDefaultConfig());
@@ -205,96 +145,7 @@
                 });
             }
 
-            const caseFormatOptions: SelectInputOption<CaseFormat>[] = [
-                {
-                    text: 'UpperCammelCase',
-                    value: StandardCaseFormats.UPPER_CAMEL
-                },
-                {
-                    text: 'lowerCammelCase',
-                    value: StandardCaseFormats.LOWER_CAMEL
-                },
-                {
-                    text: 'UPPER_UNDERSCORE_CASE',
-                    value: StandardCaseFormats.UPPER_UNDERSCORE
-                },
-                {
-                    text: 'lower_underscore_case',
-                    value: StandardCaseFormats.LOWER_UNDERSCORE
-                },
-                {
-                    text: 'Capitalized_Underscore_Case',
-                    value: StandardCaseFormats.CAPITALIZED_UNDERSCORE
-                }
-            ];
-
-            const selectedMysqlTableNameCaseFormatOption = useSelectInputOptions(
-                    caseFormatOptions,
-                    () => internalConfig.value.mysql.tableNameCaseFormat,
-                    newValue => internalConfig.value.mysql.tableNameCaseFormat = newValue
-            );
-
-            const selectedMysqlColumnNameCaseFormatOption = useSelectInputOptions(
-                    caseFormatOptions,
-                    () => internalConfig.value.mysql.columnNameCaseFormat,
-                    newValue => internalConfig.value.mysql.columnNameCaseFormat = newValue
-            );
-
-            const selectedSqlServerTableNameCaseFormatOption = useSelectInputOptions(
-                    caseFormatOptions,
-                    () => internalConfig.value.sqlserver.tableNameCaseFormat,
-                    newValue => internalConfig.value.sqlserver.tableNameCaseFormat = newValue
-            );
-
-            const selectedSqlServerColumnNameCaseFormatOption = useSelectInputOptions(
-                    caseFormatOptions,
-                    () => internalConfig.value.sqlserver.columnNameCaseFormat,
-                    newValue => internalConfig.value.sqlserver.columnNameCaseFormat = newValue
-            );
-
-            const idNamingStrategyOptions: SelectInputOption<IdNamingStrategy>[] = [
-                {
-                    text: 'Default ("id")',
-                    value: StandardIdNamingStrategies.DEFAULT
-                },
-                {
-                    text: 'Prefix entity name ("userId")',
-                    value: StandardIdNamingStrategies.ENTITY_NAME_PREFIX
-                }
-            ];
-
-            const selectedMysqlIdNamingStrategyOption = useSelectInputOptions(
-                    idNamingStrategyOptions,
-                    () => internalConfig.value.mysql.idNamingStrategy,
-                    newValue => internalConfig.value.mysql.idNamingStrategy = newValue
-            );
-
-            const selectedSqlServerIdNamingStrategyOption = useSelectInputOptions(
-                    idNamingStrategyOptions,
-                    () => internalConfig.value.sqlserver.idNamingStrategy,
-                    newValue => internalConfig.value.sqlserver.idNamingStrategy = newValue
-            );
-
-            function useSelectInputOptions<T>(
-                    options: SelectInputOption<T>[],
-                    valueGetter: () => T,
-                    valueSetter: (newValue: T) => void
-            ) {
-
-                const selectedOption = ref(findOptionFromValue(valueGetter())) as Ref<SelectInputOption<T>>;
-
-                watch(valueGetter, value => selectedOption.value = findOptionFromValue(value));
-                watch(selectedOption, option => valueSetter(option.value));
-
-                function findOptionFromValue(value: T) {
-                    return options.find(option => option.value === value)!;
-                }
-
-                return selectedOption;
-
-            }
-
-            const inputTypes: string[] = Object.values(EntityPropertyType);
+            const inputPropertyTypes: string[] = Object.values(EntityPropertyType);
 
             function parseJavaType(text: string) {
                 const lastDotIndex = text.lastIndexOf('.');
@@ -316,16 +167,8 @@
                 onModalShowingChange,
                 saveChanges,
                 close,
-                caseFormatOptions,
-                selectedMysqlTableNameCaseFormatOption,
-                selectedMysqlColumnNameCaseFormatOption,
-                selectedSqlServerTableNameCaseFormatOption,
-                selectedSqlServerColumnNameCaseFormatOption,
-                idNamingStrategyOptions,
-                selectedMysqlIdNamingStrategyOption,
-                selectedSqlServerIdNamingStrategyOption,
                 configChanged,
-                inputTypes,
+                inputPropertyTypes,
                 parseJavaType,
                 parseTypeScriptType
             };

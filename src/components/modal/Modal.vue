@@ -88,6 +88,7 @@
         },
         setup(uncastedProps, context) {
 
+            // Workaround for an issue with TS types
             const props = uncastedProps as Props;
 
             function onBackgroundClick() {

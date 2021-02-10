@@ -42,3 +42,18 @@ body,
         height: 400px;
     }
 }
+
+.code-container.is-full-height {
+    @media(max-width: 768px) {
+        height: 600px;
+    }
+}
+
+.has-hidden-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.has-hidden-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
