@@ -21,199 +21,20 @@
             <!--<pre v-text="internalConfig"></pre>-->
 
             <div class="vertical-full-container">
-                <TabsSection
-                        :headers="['General', 'Type bindings']"
+                <Tabs
                         append-tabs-class="vfc-item mb-0"
                         append-tabs-content-class="vfc-item vfc-grow"
                         append-tabs-content-style="overflow-y: auto"
                 >
-                    <template #tab0>
-                        <section class="section settings-tab-section">
-                            <table class="table is-fullwidth is-striped is-hoverable settings-table">
-                                <tbody>
-                                    <tr>
-                                        <td colspan="2">
-                                            <h2>Input code</h2>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="setting-description">
-                                            Allow using unknown entities in relationships:
-                                        </td>
-                                        <td class="setting-value">
-                                            <label class="checkbox">
-                                                <input
-                                                        type="checkbox"
-                                                        v-model="internalConfig.erModel.allowUnknownEntities"
-                                                        class="mr-1"
-                                                >
-                                            </label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2">
-                                            <h2>MySQL</h2>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="setting-description">
-                                            Plural table names:
-                                        </td>
-                                        <td class="setting-value">
-                                            <label class="checkbox">
-                                                <input
-                                                        type="checkbox"
-                                                        v-model="internalConfig.mysqlDatabaseModel.pluralizeTableNames"
-                                                        class="mr-1"
-                                                >
-                                            </label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="setting-description">
-                                            ID naming strategy:
-                                        </td>
-                                        <td class="setting-value">
-                                            <SelectInput
-                                                    :items="idNamingStrategyOptions"
-                                                    v-model="selectedMysqlIdNamingStrategyOption"
-                                                    text-field="text"
-                                                    id-field="value"
-                                                    block
-                                            ></SelectInput>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="setting-description">
-                                            Table name case format:
-                                        </td>
-                                        <td class="setting-value">
-                                            <SelectInput
-                                                    :items="caseFormatOptions"
-                                                    v-model="selectedMysqlTableNameCaseFormatOption"
-                                                    text-field="text"
-                                                    id-field="text"
-                                                    block
-                                            ></SelectInput>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="setting-description">
-                                            Column name case format:
-                                        </td>
-                                        <td class="setting-value">
-                                            <SelectInput
-                                                    :items="caseFormatOptions"
-                                                    v-model="selectedMysqlColumnNameCaseFormatOption"
-                                                    text-field="text"
-                                                    id-field="text"
-                                                    block
-                                            ></SelectInput>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2">
-                                            <h2>SQL Server</h2>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="setting-description">
-                                            Plural table names:
-                                        </td>
-                                        <td class="setting-value">
-                                            <label class="checkbox">
-                                                <input
-                                                        type="checkbox"
-                                                        v-model="internalConfig.sqlServerDatabaseModel.pluralizeTableNames"
-                                                        class="mr-1"
-                                                >
-                                            </label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="setting-description">
-                                            ID naming strategy:
-                                        </td>
-                                        <td class="setting-value">
-                                            <SelectInput
-                                                    :items="idNamingStrategyOptions"
-                                                    v-model="selectedSqlServerIdNamingStrategyOption"
-                                                    text-field="text"
-                                                    id-field="value"
-                                                    block
-                                            ></SelectInput>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="setting-description">
-                                            Table name case format:
-                                        </td>
-                                        <td class="setting-value">
-                                            <SelectInput
-                                                    :items="caseFormatOptions"
-                                                    v-model="selectedSqlServerTableNameCaseFormatOption"
-                                                    text-field="text"
-                                                    id-field="text"
-                                                    block
-                                            ></SelectInput>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="setting-description">
-                                            Column name case format:
-                                        </td>
-                                        <td class="setting-value">
-                                            <SelectInput
-                                                    :items="caseFormatOptions"
-                                                    v-model="selectedSqlServerColumnNameCaseFormatOption"
-                                                    text-field="text"
-                                                    id-field="text"
-                                                    block
-                                            ></SelectInput>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2">
-                                            <h2>Java</h2>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="setting-description">
-                                            Generated classes package:
-                                        </td>
-                                        <td class="setting-value">
-                                            <input
-                                                    type="text"
-                                                    class="input"
-                                                    v-model="internalConfig.java.generatedClassesPackage"
-                                                    placeholder="com.example"
-                                            >
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="setting-description">
-                                            Use Spring @Nullable and @NotNull annotations:
-                                        </td>
-                                        <td class="setting-value">
-                                            <label class="checkbox">
-                                                <input
-                                                        type="checkbox"
-                                                        v-model="internalConfig.java.useSpringNullabilityAnnotations"
-                                                        class="mr-1"
-                                                >
-                                            </label>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </section>
-                    </template>
-                    <template #tab1>
+                    <Tab title="General">
+                        <GeneralTabContent :config="internalConfig"/>
+                    </Tab>
+                    <Tab title="Type bindings">
                         <section class="section settings-tab-section">
 
                             <article class="message is-warning">
                                 <div class="message-body">
-                                    <strong>Be careful editing those types.</strong>
+                                    <strong>Be careful editing these types.</strong>
                                     Any mistake can make your code uncompilable.
                                 </div>
                             </article>
@@ -271,8 +92,8 @@
                             </table>
 
                         </section>
-                    </template>
-                </TabsSection>
+                    </Tab>
+                </Tabs>
             </div>
 
         </template>
@@ -291,14 +112,16 @@
 
 <script lang="ts">
     import {defineComponent, nextTick, Ref, ref, watch} from 'vue';
-    import Modal from '@/components/Modal.vue';
+    import Modal from '@/components/modal/Modal.vue';
     import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
     import SelectInput from '@/components/SelectInput.vue';
     import {CaseFormat, createJavaType, createTypeScriptType, EntityPropertyType, IdNamingStrategy, StandardCaseFormats, StandardIdNamingStrategies} from '@nestorrente/erdiagram';
     import {showConfirmModal} from '@/store/globalConfirmModalStore';
-    import TabsSection from '@/components/TabsSection.vue';
+    import Tabs from '@/components/tabs/Tabs.vue';
     import erdiagramPlaygroundConfigManager from '@/config/ERDiagramPlaygroundConfigManager';
     import Button from '@/components/Button.vue';
+    import Tab from '@/components/tabs/Tab.vue';
+    import GeneralTabContent from '@/components/modal/config/GeneralTabContent.vue';
 
     interface Props {
         showing: boolean;
@@ -313,8 +136,10 @@
     export default defineComponent({
         name: 'ConfigModal',
         components: {
+            GeneralTabContent,
+            Tab,
             Button,
-            TabsSection,
+            Tabs,
             SelectInput,
             Modal
         },
@@ -513,32 +338,5 @@
     .settings-tab-section {
         padding-top: 1.5em;
         padding-bottom: 1.5em;
-
-        .settings-table {
-
-            th, td {
-                vertical-align: middle;
-            }
-
-            td.setting-value {
-                text-align: center;
-
-                label.checkbox {
-                    width: 100%;
-                }
-
-                input[type="checkbox"] {
-                    $size: 1.2em;
-                    width: $size;
-                    height: $size;
-                }
-            }
-
-            h2 {
-                font-weight: bold;
-                font-size: 1.2em;
-            }
-
-        }
     }
 </style>

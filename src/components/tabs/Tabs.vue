@@ -7,12 +7,12 @@
         <slot name="beforeTabs"></slot>
         <ul>
             <li
-                    v-for="(header, index) in headers"
+                    v-for="(title, index) in tabTitles"
                     :key="index"
                     :class="{'is-active': selectedTabIndex === index}"
                     @click="selectedTabIndex = index"
             >
-                <a>{{ header }}</a>
+                <a>{{ title }}</a>
             </li>
         </ul>
         <slot name="afterTabs"></slot>
@@ -22,26 +22,25 @@
             :style="appendTabsContentStyle"
     >
         <div
-                v-for="(header, index) in headers"
+                v-for="(tabNode, index) in tabNodes"
                 :key="index"
                 v-show="index === selectedTabIndex"
                 class="is-full-height"
         >
-            <slot :name="`tab${index}`"></slot>
+            <VNodes :nodes="tabNode"/>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-    import {defineComponent, ref} from 'vue';
+    import {computed, defineComponent, ref, SetupContext, VNode, VNodeTypes} from 'vue';
+    import Tab from '@/components/tabs/Tab.vue';
+    import VNodes from '@/components/VNodes.vue';
 
     export default defineComponent({
-        name: 'TabsSection',
+        name: 'Tabs',
+        components: {VNodes},
         props: {
-            headers: {
-                type: Array,
-                required: true
-            },
             appendTabsClass: {
                 type: [String, Array, Object],
                 required: false
@@ -59,11 +58,22 @@
                 required: false
             }
         },
-        setup() {
+        setup(props, context: SetupContext) {
+
+            const childNodes = computed(() => context.slots.default?.() ?? []);
+            const tabNodes = computed(() => filterVNodesByType(childNodes.value, Tab));
+
+            const tabTitles = computed(() => tabNodes.value.map(tabNode => tabNode.props!.title));
+
+            function filterVNodesByType(vnodes: VNode[], type: VNodeTypes): VNode[] {
+                return vnodes.filter(vnode => vnode.type === type);
+            }
 
             const selectedTabIndex = ref(0);
 
             return {
+                tabNodes,
+                tabTitles,
                 selectedTabIndex
             };
 

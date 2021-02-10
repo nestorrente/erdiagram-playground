@@ -30,7 +30,7 @@
 
 <script lang="ts">
     import {defineComponent} from 'vue';
-    import Modal from '@/components/Modal.vue';
+    import Modal from '@/components/modal/Modal.vue';
     import globalConfirmModalStore from '@/store/globalConfirmModalStore';
     import Button from '@/components/Button.vue';
 

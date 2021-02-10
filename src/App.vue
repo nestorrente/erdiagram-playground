@@ -58,39 +58,38 @@
                     </div>
                     <div class="column is-half">
                         <div class="vertical-full-container">
-                            <TabsSection
-                                    :headers="['MySQL', 'SQL Server', 'Java POJO', 'TypeScript']"
+                            <Tabs
                                     append-tabs-class="vfc-item"
                                     append-tabs-content-class="vfc-item vfc-grow"
                             >
-                                <template #tab0>
+                                <Tab title="MySQL">
                                     <CodeBlock
                                             lang="sql_more"
                                             :code="generatedMysqlCode"
                                             full-height
                                     />
-                                </template>
-                                <template #tab1>
+                                </Tab>
+                                <Tab title="SQL Server">
                                     <CodeBlock
                                             lang="sql_more"
                                             :code="generatedSqlServerCode"
                                             full-height
                                     />
-                                </template>
-                                <template #tab2>
+                                </Tab>
+                                <Tab title="Java POJO">
                                     <CodeBlock
                                             lang="java"
                                             :code="generatedJavaCode"
                                             full-height
                                     />
-                                </template>
-                                <template #tab3>
+                                </Tab>
+                                <Tab title="TypeScript">
                                     <CodeBlock
                                             lang="typescript"
                                             :code="generatedTypeScriptCode"
                                             full-height
                                     />
-                                </template>
+                                </Tab>
                                 <template #afterTabs>
                                     <ul class="is-justify-content-flex-end is-flex-shrink-1 is-flex-grow-0">
                                         <li class="buttons">
@@ -107,7 +106,7 @@
                                         </li>
                                     </ul>
                                 </template>
-                            </TabsSection>
+                            </Tabs>
                         </div>
                     </div>
                 </div>
@@ -125,7 +124,7 @@
     import {computed, ComputedRef, defineComponent, onMounted, ref, watch} from 'vue';
     import NavBar from '@/components/NavBar.vue';
     import CodeBlock from '@/components/CodeBlock.vue';
-    import TabsSection from '@/components/TabsSection.vue';
+    import Tabs from '@/components/tabs/Tabs.vue';
     import {
         ClassModelGenerator,
         DatabaseModelGenerator,
@@ -139,22 +138,24 @@
         SqlServerDatabaseModelToCodeConverter,
         TypeScriptClassModelToCodeConverter
     } from '@nestorrente/erdiagram';
-    import ConfigModal from '@/components/ConfigModal.vue';
+    import ConfigModal from '@/components/modal/config/ConfigModal.vue';
     import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
-    import GlobalConfirmModal from '@/components/GlobalConfirmModal.vue';
+    import GlobalConfirmModal from '@/components/modal/GlobalConfirmModal.vue';
     import CodeEditor from '@/components/CodeEditor.vue';
     import companySampleCode from '!!raw-loader!@/sample-erd-files/Company.erd';
     import erdiagramPlaygroundConfigManager from '@/config/ERDiagramPlaygroundConfigManager';
     import Button from '@/components/Button.vue';
+    import Tab from '@/components/tabs/Tab.vue';
 
     export default defineComponent({
         name: 'App',
         components: {
+            Tab,
             Button,
             CodeEditor,
             GlobalConfirmModal,
             ConfigModal,
-            TabsSection,
+            Tabs,
             CodeBlock,
             NavBar
         },
