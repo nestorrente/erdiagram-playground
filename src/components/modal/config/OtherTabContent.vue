@@ -85,7 +85,7 @@
                     <td>
                         <input
                                 type="text"
-                                :value="config.java.typeMappings[inputPropertyType].canonicalName"
+                                :value="config.java.typeMappings[inputPropertyType].formatCanonical()"
                                 @change="config.java.typeMappings[inputPropertyType] = parseJavaType($event.currentTarget.value)"
                                 class="input is-small"
                         >
@@ -107,7 +107,7 @@
 
 <script lang="ts">
     import {defineComponent} from 'vue';
-    import {createJavaType, createTypeScriptType, EntityPropertyType} from '@nestorrente/erdiagram';
+    import {EntityPropertyType, parseJavaType, parseTypeScriptType} from '@nestorrente/erdiagram';
 
     export default defineComponent({
         name: 'OtherTabContent',
@@ -120,21 +120,6 @@
         setup() {
 
             const inputPropertyTypes: string[] = Object.values(EntityPropertyType);
-
-            function parseJavaType(text: string) {
-                const lastDotIndex = text.lastIndexOf('.');
-                if (lastDotIndex === -1) {
-                    return createJavaType(text);
-                } else {
-                    const packageName = text.substring(0, lastDotIndex);
-                    const className = text.substring(lastDotIndex + 1);
-                    return createJavaType(className, packageName);
-                }
-            }
-
-            function parseTypeScriptType(text: string) {
-                return createTypeScriptType(text);
-            }
 
             return {
                 inputPropertyTypes,

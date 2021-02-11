@@ -28,7 +28,7 @@
                             type="text"
                             :value="displayFunction(typeBindings[inputPropertyType])"
                             @change="typeBindings[inputPropertyType] = parseFunction($event.currentTarget.value)"
-                            class="input is-small"
+                            class="input type-binding-input"
                     >
                 </td>
             </tr>
@@ -81,3 +81,9 @@
         }
     });
 </script>
+
+<style lang="scss">
+    .type-binding-input {
+        font-size: 0.9em;
+    }
+</style>
