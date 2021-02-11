@@ -48,7 +48,7 @@
         name: 'Tabs',
         components: {VNodes},
         props: {
-            // boxed: Boolean,
+            boxed: Boolean,
             toggle: Boolean,
             appendTabsClass: {
                 type: [String, Array, Object],
