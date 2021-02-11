@@ -53,7 +53,6 @@
     import {defineComponent, nextTick, ref, watch} from 'vue';
     import Modal from '@/components/modal/Modal.vue';
     import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
-    import {createJavaType, createTypeScriptType, EntityPropertyType} from '@nestorrente/erdiagram';
     import {showConfirmModal} from '@/store/globalConfirmModalStore';
     import Tabs from '@/components/tabs/Tabs.vue';
     import erdiagramPlaygroundConfigManager from '@/config/ERDiagramPlaygroundConfigManager';
@@ -145,32 +144,12 @@
                 });
             }
 
-            const inputPropertyTypes: string[] = Object.values(EntityPropertyType);
-
-            function parseJavaType(text: string) {
-                const lastDotIndex = text.lastIndexOf('.');
-                if (lastDotIndex === -1) {
-                    return createJavaType(text);
-                } else {
-                    const packageName = text.substring(0, lastDotIndex);
-                    const className = text.substring(lastDotIndex + 1);
-                    return createJavaType(className, packageName);
-                }
-            }
-
-            function parseTypeScriptType(text: string) {
-                return createTypeScriptType(text);
-            }
-
             return {
                 internalConfig,
+                configChanged,
                 onModalShowingChange,
                 saveChanges,
-                close,
-                configChanged,
-                inputPropertyTypes,
-                parseJavaType,
-                parseTypeScriptType
+                close
             };
 
         }

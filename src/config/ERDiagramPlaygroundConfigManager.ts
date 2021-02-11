@@ -4,6 +4,7 @@ import {
 	entityRelationshipModelParserConfigManager,
 	javaClassModelToCodeConverterConfigManager,
 	mysqlDatabaseModelToCodeConverterConfigManager,
+	oracleDatabaseModelToCodeConverterConfigManager,
 	sqlServerDatabaseModelToCodeConverterConfigManager,
 	typescriptClassModelToCodeConverterConfigManager
 } from '@nestorrente/erdiagram';
@@ -18,6 +19,8 @@ export class ERDiagramPlaygroundConfigManager extends AbstractComponentConfigMan
 			mysql: mysqlDatabaseModelToCodeConverterConfigManager.getDefaultConfig(),
 			sqlServerDatabaseModel: databaseModelGeneratorConfigManager.getDefaultConfig(),
 			sqlserver: sqlServerDatabaseModelToCodeConverterConfigManager.getDefaultConfig(),
+			oracleDatabaseModel: databaseModelGeneratorConfigManager.getDefaultConfig(),
+			oracle: oracleDatabaseModelToCodeConverterConfigManager.getDefaultConfig(),
 			java: javaClassModelToCodeConverterConfigManager.getDefaultConfig(),
 			typescript: typescriptClassModelToCodeConverterConfigManager.getDefaultConfig()
 		};
@@ -30,6 +33,8 @@ export class ERDiagramPlaygroundConfigManager extends AbstractComponentConfigMan
 			mysql: mysqlDatabaseModelToCodeConverterConfigManager.mergeConfigs(fullConfig.mysql, partialConfig?.mysql),
 			sqlServerDatabaseModel: databaseModelGeneratorConfigManager.mergeConfigs(fullConfig.sqlServerDatabaseModel, partialConfig?.sqlServerDatabaseModel),
 			sqlserver: sqlServerDatabaseModelToCodeConverterConfigManager.mergeConfigs(fullConfig.sqlserver, partialConfig?.sqlserver),
+			oracleDatabaseModel: databaseModelGeneratorConfigManager.mergeConfigs(fullConfig.oracleDatabaseModel, partialConfig?.oracleDatabaseModel),
+			oracle: oracleDatabaseModelToCodeConverterConfigManager.mergeConfigs(fullConfig.oracle, partialConfig?.oracle),
 			java: javaClassModelToCodeConverterConfigManager.mergeConfigs(fullConfig.java, partialConfig?.java),
 			typescript: typescriptClassModelToCodeConverterConfigManager.mergeConfigs(fullConfig.typescript, partialConfig?.typescript)
 		};

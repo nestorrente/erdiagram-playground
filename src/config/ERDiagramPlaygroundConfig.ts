@@ -3,6 +3,7 @@ import {
 	EntityRelationshipModelParserConfig,
 	JavaClassModelToCodeConverterConfig,
 	MySqlDatabaseModelToCodeConverterConfig,
+	OracleDatabaseModelToCodeConverterConfig,
 	SqlServerDatabaseModelToCodeConverterConfig,
 	TypeScriptClassModelToCodeConverterConfig
 } from '@nestorrente/erdiagram';
@@ -13,6 +14,8 @@ export default interface ERDiagramPlaygroundConfig {
 	mysql: MySqlDatabaseModelToCodeConverterConfig;
 	sqlServerDatabaseModel: DatabaseModelGeneratorConfig;
 	sqlserver: SqlServerDatabaseModelToCodeConverterConfig;
+	oracleDatabaseModel: DatabaseModelGeneratorConfig;
+	oracle: OracleDatabaseModelToCodeConverterConfig;
 	java: JavaClassModelToCodeConverterConfig;
 	typescript: TypeScriptClassModelToCodeConverterConfig;
 }
