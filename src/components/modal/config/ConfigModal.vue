@@ -26,10 +26,19 @@
                         append-tabs-content-class="vfc-item vfc-grow"
                         append-tabs-content-style="overflow-y: auto"
                 >
-                    <Tab title="General">
+                    <Tab title="MySQL">
+                        <MysqlTabContent :config="internalConfig"/>
+                    </Tab>
+                    <Tab title="Oracle DB">
+                        <OracleTabContent :config="internalConfig"/>
+                    </Tab>
+                    <Tab title="SQL Server">
+                        <SqlServerTabContent :config="internalConfig"/>
+                    </Tab>
+                    <Tab title="Other">
                         <GeneralTabContent :config="internalConfig"/>
                     </Tab>
-                    <Tab title="Type bindings">
+                    <Tab title="Other type bindings">
                         <TypeBindingsTabContent :config="internalConfig"/>
                     </Tab>
                 </Tabs>
@@ -60,6 +69,9 @@
     import Tab from '@/components/tabs/Tab.vue';
     import GeneralTabContent from '@/components/modal/config/GeneralTabContent.vue';
     import TypeBindingsTabContent from '@/components/modal/config/TypeBindingsTabContent.vue';
+    import MysqlTabContent from '@/components/modal/config/database/MysqlTabContent.vue';
+    import OracleTabContent from '@/components/modal/config/database/OracleTabContent.vue';
+    import SqlServerTabContent from '@/components/modal/config/database/SqlServerTabContent.vue';
 
     interface Props {
         showing: boolean;
@@ -74,6 +86,9 @@
     export default defineComponent({
         name: 'ConfigModal',
         components: {
+            SqlServerTabContent,
+            OracleTabContent,
+            MysqlTabContent,
             TypeBindingsTabContent,
             GeneralTabContent,
             Tab,

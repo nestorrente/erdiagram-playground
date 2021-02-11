@@ -12,9 +12,6 @@
             <thead>
                 <tr>
                     <th>ERDiagram</th>
-                    <th>MySQL</th>
-                    <th>Oracle DB</th>
-                    <th>SQL Server</th>
                     <th>Java</th>
                     <th>TypeScript</th>
                 </tr>
@@ -26,27 +23,6 @@
                 >
                     <td>
                         {{ inputPropertyType }}
-                    </td>
-                    <td>
-                        <input
-                                type="text"
-                                v-model="config.mysql.typeMappings[inputPropertyType]"
-                                class="input is-small"
-                        >
-                    </td>
-                    <td>
-                        <input
-                                type="text"
-                                v-model="config.oracle.typeMappings[inputPropertyType]"
-                                class="input is-small"
-                        >
-                    </td>
-                    <td>
-                        <input
-                                type="text"
-                                v-model="config.sqlserver.typeMappings[inputPropertyType]"
-                                class="input is-small"
-                        >
                     </td>
                     <td>
                         <input

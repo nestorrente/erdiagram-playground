@@ -7,3 +7,6 @@
 - Copiar y exportar el código generado.
     - [HECHO] Copiar
     - Exportar
+
+- Add a "are you sure you want to exit?" message if code is unsaved.
+    - Save input code in localStorage (every time its compiled)
