@@ -1,5 +1,6 @@
 <template>
     <section class="section settings-tab-section">
+
         <table class="table is-fullwidth is-striped is-hoverable settings-table">
             <tbody>
                 <tr>
@@ -55,19 +56,92 @@
                 </tr>
             </tbody>
         </table>
+
+        <h2 class="is-size-4 mt-6 mb-5">Java & TypeScript type bindings</h2>
+
+        <article class="message is-warning">
+            <div class="message-body">
+                <strong>Be careful editing these types.</strong>
+                Any mistake can make your code uncompilable.
+            </div>
+        </article>
+
+        <table class="table is-fullwidth is-striped is-hoverable is-narrow">
+            <thead>
+                <tr>
+                    <th>ERDiagram</th>
+                    <th>Java</th>
+                    <th>TypeScript</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr
+                        v-for="inputPropertyType in inputPropertyTypes"
+                        :key="inputPropertyType"
+                >
+                    <td>
+                        {{ inputPropertyType }}
+                    </td>
+                    <td>
+                        <input
+                                type="text"
+                                :value="config.java.typeMappings[inputPropertyType].canonicalName"
+                                @change="config.java.typeMappings[inputPropertyType] = parseJavaType($event.currentTarget.value)"
+                                class="input is-small"
+                        >
+                    </td>
+                    <td>
+                        <input
+                                type="text"
+                                :value="config.typescript.typeMappings[inputPropertyType].name"
+                                @change="config.typescript.typeMappings[inputPropertyType] = parseTypeScriptType($event.currentTarget.value)"
+                                class="input is-small"
+                        >
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
     </section>
 </template>
 
 <script lang="ts">
     import {defineComponent} from 'vue';
+    import {createJavaType, createTypeScriptType, EntityPropertyType} from '@nestorrente/erdiagram';
 
     export default defineComponent({
-        name: 'GeneralTabContent',
+        name: 'OtherTabContent',
         props: {
             config: {
                 type: Object,
                 required: true
             }
+        },
+        setup() {
+
+            const inputPropertyTypes: string[] = Object.values(EntityPropertyType);
+
+            function parseJavaType(text: string) {
+                const lastDotIndex = text.lastIndexOf('.');
+                if (lastDotIndex === -1) {
+                    return createJavaType(text);
+                } else {
+                    const packageName = text.substring(0, lastDotIndex);
+                    const className = text.substring(lastDotIndex + 1);
+                    return createJavaType(className, packageName);
+                }
+            }
+
+            function parseTypeScriptType(text: string) {
+                return createTypeScriptType(text);
+            }
+
+            return {
+                inputPropertyTypes,
+                parseJavaType,
+                parseTypeScriptType
+            };
+
         }
     });
 </script>

@@ -36,10 +36,7 @@
                         <SqlServerTabContent :config="internalConfig"/>
                     </Tab>
                     <Tab title="Other">
-                        <GeneralTabContent :config="internalConfig"/>
-                    </Tab>
-                    <Tab title="Other type bindings">
-                        <TypeBindingsTabContent :config="internalConfig"/>
+                        <OtherTabContent :config="internalConfig"/>
                     </Tab>
                 </Tabs>
             </div>
@@ -67,8 +64,7 @@
     import erdiagramPlaygroundConfigManager from '@/config/ERDiagramPlaygroundConfigManager';
     import Button from '@/components/Button.vue';
     import Tab from '@/components/tabs/Tab.vue';
-    import GeneralTabContent from '@/components/modal/config/GeneralTabContent.vue';
-    import TypeBindingsTabContent from '@/components/modal/config/TypeBindingsTabContent.vue';
+    import OtherTabContent from '@/components/modal/config/OtherTabContent.vue';
     import MysqlTabContent from '@/components/modal/config/database/MysqlTabContent.vue';
     import OracleTabContent from '@/components/modal/config/database/OracleTabContent.vue';
     import SqlServerTabContent from '@/components/modal/config/database/SqlServerTabContent.vue';
@@ -89,8 +85,7 @@
             SqlServerTabContent,
             OracleTabContent,
             MysqlTabContent,
-            TypeBindingsTabContent,
-            GeneralTabContent,
+            OtherTabContent,
             Tab,
             Button,
             Tabs,
