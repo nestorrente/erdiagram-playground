@@ -79,14 +79,18 @@ ace.define('ace/mode/erdiagram_highlight_rules', ['require', 'exports'], functio
 		}
 
 		private getRules(): Record<string, SyntaxHighlightRule[]> {
-			const DEFAULT_INVALID_RULE = {
-				token: 'invalid.illegal',
-				regex: /.*$/,
-				next: 'start'
+			const EMPTY_LINE_RULE = {
+				token: 'text',
+				regex: /^\s+$/,
 			};
 			const COMMENT_RULE = {
 				token: ['text', 'comment.line.number-sign'],
 				regex: /^(\s*)(#.*)$/,
+				next: 'start'
+			};
+			const DEFAULT_INVALID_RULE = {
+				token: 'invalid.illegal',
+				regex: /.*$/,
 				next: 'start'
 			};
 			return {
@@ -103,6 +107,7 @@ ace.define('ace/mode/erdiagram_highlight_rules', ['require', 'exports'], functio
 						next: 'afterEntityName'
 					},
 					COMMENT_RULE,
+					EMPTY_LINE_RULE,
 					{
 						token: 'text',
 						regex: /^\s+/,
@@ -124,8 +129,13 @@ ace.define('ace/mode/erdiagram_highlight_rules', ['require', 'exports'], functio
 				],
 				waitingRelationshipRightEntity: [
 					{
-						token: ['text', 'storage.type', 'variable.other'],
-						regex: /(\s*)([A-Za-z_][A-Za-z_0-9]*)(\s+[A-Za-z_][A-Za-z_0-9]*)?/,
+						token: ['text', 'storage.type', 'variable.other', 'text'],
+						regex: /(\s*)([A-Za-z_][A-Za-z_0-9]*)(\s+[A-Za-z_][A-Za-z_0-9]*)?(\s*)$/,
+						next: 'start'
+					},
+					{
+						token: ['text', 'storage.type', 'variable.other', 'text'],
+						regex: /(\s*)([A-Za-z_][A-Za-z_0-9]*)(\s+[A-Za-z_][A-Za-z_0-9]*)?(\s*)/,
 						next: 'waitingRelationshipName'
 					},
 					DEFAULT_INVALID_RULE,
@@ -133,12 +143,7 @@ ace.define('ace/mode/erdiagram_highlight_rules', ['require', 'exports'], functio
 				waitingRelationshipName: [
 					{
 						token: ['text', 'variable.other', 'text'],
-						regex: /(\s+\()([A-Za-z_][A-Za-z_0-9]*)(\)\s*)$/,
-						next: 'start'
-					},
-					{
-						token: 'text',
-						regex: /\s*$/,
+						regex: /(\()([A-Za-z_][A-Za-z_0-9]*)(\)\s*)$/,
 						next: 'start'
 					},
 					DEFAULT_INVALID_RULE,
