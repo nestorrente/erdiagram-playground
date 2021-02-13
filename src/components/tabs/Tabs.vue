@@ -16,7 +16,7 @@
             <li
                     v-for="(title, index) in tabTitles"
                     :key="index"
-                    :class="{'is-active': selectedTabIndex === index}"
+                    :class="{'is-active': internalSelectedTabIndex === index}"
                     @click="selectTab($event, index)"
             >
                 <a>{{ title }}</a>
@@ -31,7 +31,7 @@
         <div
                 v-for="(tabNode, index) in tabNodes"
                 :key="index"
-                v-show="index === selectedTabIndex"
+                v-show="index === internalSelectedTabIndex"
                 class="is-full-height"
         >
             <VNodes :nodes="tabNode"/>
@@ -40,12 +40,26 @@
 </template>
 
 <script lang="ts">
-    import {computed, defineComponent, ref, SetupContext, VNode, VNodeTypes} from 'vue';
+    import {computed, defineComponent, ref, SetupContext, VNode, VNodeTypes, watch} from 'vue';
     import Tab from '@/components/tabs/Tab.vue';
     import VNodes from '@/components/VNodes.vue';
 
+    type CssClass = string | Record<string, boolean> | CssClass[];
+    type CssStyle = string | Partial<CSSStyleDeclaration> | CssStyle[];
+
+    interface Props {
+        boxed: boolean;
+        toggle: boolean;
+        appendTabsClass?: CssClass;
+        appendTabsStyle?: CssStyle;
+        appendTabsContentClass?: CssClass;
+        appendTabsContentStyle?: CssStyle;
+        selectedTabIndex?: number;
+    }
+
     export default defineComponent({
         name: 'Tabs',
+        emits: ['update:selectedTabIndex'],
         components: {VNodes},
         props: {
             boxed: Boolean,
@@ -65,9 +79,16 @@
             appendTabsContentStyle: {
                 type: [String, Array, Object],
                 required: false
+            },
+            selectedTabIndex: {
+                type: Number,
+                required: false
             }
         },
-        setup(props, context: SetupContext) {
+        setup(uncastedProps, context: SetupContext) {
+
+            // Workaround for an issue with TS types
+            const props = uncastedProps as Props;
 
             const childNodes = computed(() => context.slots.default?.() ?? []);
             const tabNodes = computed(() => filterVNodesByType(childNodes.value, Tab));
@@ -78,14 +99,20 @@
                 return vnodes.filter(vnode => vnode.type === type);
             }
 
-            const selectedTabIndex = ref(0);
+            const internalSelectedTabIndex = ref(0);
+            watch(() => props.selectedTabIndex, newValue => {
+                if (newValue != null) {
+                    internalSelectedTabIndex.value = newValue;
+                }
+            }, {immediate: true});
 
             function selectTab(event: Event, index: number) {
 
                 const target = event.currentTarget as HTMLElement;
                 target.scrollIntoView(false);
 
-                selectedTabIndex.value = index;
+                internalSelectedTabIndex.value = index;
+                context.emit('update:selectedTabIndex', index);
 
             }
 
@@ -100,7 +127,7 @@
             return {
                 tabNodes,
                 tabTitles,
-                selectedTabIndex,
+                internalSelectedTabIndex,
                 selectTab,
                 scrollHorizontally
             };

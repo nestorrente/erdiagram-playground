@@ -28,7 +28,7 @@
         <span v-if="icon" class="icon">
             <i :class="icon"></i>
         </span>
-        <span class="button-text">
+        <span v-if="$slots.default" class="button-text">
             <slot></slot>
         </span>
     </button>

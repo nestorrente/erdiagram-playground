@@ -12,7 +12,7 @@
     import 'ace-builds/webpack-resolver';
     import 'ace-builds/src-noconflict/mode-json';
     import 'ace-builds/src-noconflict/ext-language_tools';
-    import '@/ace/ERDiagramMode';
+    import '@/ace/mode/ERDiagramMode';
 
     export default defineComponent({
         name: 'CodeEditor',

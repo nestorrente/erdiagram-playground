@@ -30,9 +30,9 @@
 
 <script lang="ts">
     import {defineComponent} from 'vue';
-    import Modal from '@/components/modal/Modal.vue';
+    import Modal from '@/components/generic/modal/Modal.vue';
     import globalConfirmModalStore from '@/store/globalConfirmModalStore';
-    import Button from '@/components/Button.vue';
+    import Button from '@/components/generic/form/Button.vue';
 
     export default defineComponent({
         name: 'GlobalConfirmModal',

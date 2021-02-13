@@ -15,6 +15,15 @@
                         >
                     </label>
                 </td>
+                <td style="width: 58px">
+                    <Button
+                            title="Restore default value"
+                            rounded
+                            small
+                            icon="fas fa-undo"
+                            @click="databaseModelConfig.usePluralTableNames = defaultDatabaseModelConfig.usePluralTableNames"
+                    ></Button>
+                </td>
             </tr>
             <tr>
                 <td class="setting-description">
@@ -28,6 +37,15 @@
                             id-field="value"
                             block
                     ></SelectInput>
+                </td>
+                <td style="width: 58px">
+                    <Button
+                            title="Restore default value"
+                            rounded
+                            small
+                            icon="fas fa-undo"
+                            @click="databaseModelConfig.idNamingStrategy = defaultDatabaseModelConfig.idNamingStrategy"
+                    ></Button>
                 </td>
             </tr>
             <tr>
@@ -43,6 +61,15 @@
                             block
                     ></SelectInput>
                 </td>
+                <td style="width: 58px">
+                    <Button
+                            title="Restore default value"
+                            rounded
+                            small
+                            icon="fas fa-undo"
+                            @click="codeConverterConfig.tableNameCaseFormat = defaultCodeConverterConfig.tableNameCaseFormat"
+                    ></Button>
+                </td>
             </tr>
             <tr>
                 <td class="setting-description">
@@ -57,6 +84,15 @@
                             block
                     ></SelectInput>
                 </td>
+                <td style="width: 58px">
+                    <Button
+                            title="Restore default value"
+                            rounded
+                            small
+                            icon="fas fa-undo"
+                            @click="codeConverterConfig.columnNameCaseFormat = defaultCodeConverterConfig.columnNameCaseFormat"
+                    ></Button>
+                </td>
             </tr>
             <slot name="rows-after"></slot>
         </tbody>
@@ -65,25 +101,29 @@
 
 <script lang="ts">
     import {defineComponent} from 'vue';
-    import SelectInput from '@/components/SelectInput.vue';
+    import SelectInput from '@/components/generic/form/SelectInput.vue';
     import {
         CaseFormat,
         DatabaseModelGeneratorConfig,
+        databaseModelGeneratorConfigManager,
         DatabaseModelToCodeConverterConfig,
         IdNamingStrategy,
         StandardCaseFormats,
         StandardIdNamingStrategies
     } from '@nestorrente/erdiagram';
     import useSelectInputOptions, {SelectInputOption} from '@/components/useSelectInputOptions';
+    import Button from '@/components/generic/form/Button.vue';
 
     interface Props {
         databaseModelConfig: DatabaseModelGeneratorConfig;
         codeConverterConfig: DatabaseModelToCodeConverterConfig;
+        defaultCodeConverterConfig: DatabaseModelToCodeConverterConfig;
     }
 
     export default defineComponent({
         name: 'CommonDatabaseSettingsTable',
         components: {
+            Button,
             SelectInput
         },
         props: {
@@ -92,6 +132,10 @@
                 required: true
             },
             codeConverterConfig: {
+                type: Object,
+                required: true
+            },
+            defaultCodeConverterConfig: {
                 type: Object,
                 required: true
             }
@@ -153,12 +197,15 @@
                     newValue => props.databaseModelConfig.idNamingStrategy = newValue
             );
 
+            const defaultDatabaseModelConfig = databaseModelGeneratorConfigManager.getDefaultConfig();
+
             return {
                 caseFormatOptions,
                 selectedTableNameCaseFormatOption,
                 selectedColumnNameCaseFormatOption,
                 idNamingStrategyOptions,
-                selectedIdNamingStrategyOption
+                selectedIdNamingStrategyOption,
+                defaultDatabaseModelConfig
             };
 
         }
@@ -168,9 +215,7 @@
 <style lang="scss">
     .settings-table {
 
-        th, td {
-            vertical-align: middle;
-        }
+        font-size: 0.9em;
 
         td.setting-value {
             text-align: center;
@@ -179,7 +224,11 @@
                 width: 100%;
             }
 
-            input[type="checkbox"] {
+            .input {
+                font-size: 1em;
+            }
+
+            .input[type="checkbox"] {
                 $size: 1.2em;
                 width: $size;
                 height: $size;

@@ -2,7 +2,7 @@
     <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
             <div class="navbar-item">
-                <img src="../assets/img/logo.svg" class="mr-3">
+                <img src="../../assets/img/logo.svg" class="mr-3">
                 <strong>ERDiagram</strong>
             </div>
 

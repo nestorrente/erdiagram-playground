@@ -9,42 +9,11 @@
                     <div class="column is-half">
                         <div class="vertical-full-container">
                             <div class="vfc-item">
-                                <button
-                                        class="button is-fullwidth mb-5 background-transition"
-                                        :class="{
-                                            'is-warning': modelOutdated,
-                                            'is-danger is-light': !modelOutdated && hasErrors,
-                                            'is-success is-light': !modelOutdated && !hasErrors
-                                        }"
+                                <UpdateOutputCodeButton
+                                        :model-outdated="modelOutdated"
+                                        :has-errors="hasErrors"
                                         @click="runERDiagram"
-                                >
-                                    <span v-show="modelOutdated">
-                                        <span class="icon">
-                                            <i class="fas fa-sync"></i>
-                                        </span>
-                                        <span>
-                                            Update output code
-                                            (<span class="is-family-code">Ctrl + S</span>
-                                            or <span class="is-family-code">Ctrl + &#9166;</span>)
-                                        </span>
-                                    </span>
-                                    <span v-show="!modelOutdated && hasErrors">
-                                        <span class="icon">
-                                            <i class="fas fa-times"></i>
-                                        </span>
-                                        <span>
-                                            There's an error in your code (see console for more details)
-                                        </span>
-                                    </span>
-                                    <span v-show="!modelOutdated && !hasErrors">
-                                        <span class="icon">
-                                            <i class="fas fa-check"></i>
-                                        </span>
-                                        <span>
-                                            Output code is up-to-date :)
-                                        </span>
-                                    </span>
-                                </button>
+                                />
                             </div>
                             <div class="vfc-item vfc-grow">
                                 <CodeEditor
@@ -59,6 +28,7 @@
                     <div class="column is-half">
                         <div class="vertical-full-container">
                             <Tabs
+                                    v-model:selected-tab-index="outputCodeSelectedTabIndex"
                                     toggle
                                     append-tabs-class="vfc-item"
                                     append-tabs-content-class="vfc-item vfc-grow"
@@ -113,7 +83,7 @@
                                                     rounded
                                                     class="is-button-text-hidden-mobile"
                                                     icon="fas fa-cog"
-                                                    @click="showingConfigModal = true"
+                                                    @click="showConfirmModal"
                                             >
                                                 Settings
                                             </Button>
@@ -130,14 +100,15 @@
     <ConfigModal
             v-model:showing="showingConfigModal"
             v-model:config="configFromModal"
+            v-model:selected-tab-index="configModalSelectedTabIndex"
     />
     <GlobalConfirmModal/>
 </template>
 
 <script lang="ts">
     import {computed, ComputedRef, defineComponent, onMounted, ref, watch} from 'vue';
-    import NavBar from '@/components/NavBar.vue';
-    import CodeBlock from '@/components/CodeBlock.vue';
+    import NavBar from '@/components/layout/NavBar.vue';
+    import CodeBlock from '@/components/generic/code/CodeBlock.vue';
     import Tabs from '@/components/tabs/Tabs.vue';
     import {
         ClassModelGenerator,
@@ -153,18 +124,21 @@
         SqlServerDatabaseModelToCodeConverter,
         TypeScriptClassModelToCodeConverter
     } from '@nestorrente/erdiagram';
-    import ConfigModal from '@/components/modal/config/ConfigModal.vue';
+    import ConfigModal from '@/components/config-modal/ConfigModal.vue';
     import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
-    import GlobalConfirmModal from '@/components/modal/GlobalConfirmModal.vue';
-    import CodeEditor from '@/components/CodeEditor.vue';
+    import GlobalConfirmModal from '@/components/generic/modal/GlobalConfirmModal.vue';
+    import CodeEditor from '@/components/generic/code/CodeEditor.vue';
     import companySampleCode from '!!raw-loader!@/sample-erd-files/Company.erd';
     import erdiagramPlaygroundConfigManager from '@/config/ERDiagramPlaygroundConfigManager';
-    import Button from '@/components/Button.vue';
+    import Button from '@/components/generic/form/Button.vue';
     import Tab from '@/components/tabs/Tab.vue';
+    import UpdateOutputCodeButton from '@/UpdateOutputCodeButton.vue';
+    import erdiagramPlaygroundConfigSerializer from '@/config/ERDiagramPlaygroundConfigSerializer';
 
     export default defineComponent({
         name: 'App',
         components: {
+            UpdateOutputCodeButton,
             Tab,
             Button,
             CodeEditor,
@@ -176,7 +150,19 @@
         },
         setup() {
 
-            const configFromModal = ref<ERDiagramPlaygroundConfig>(erdiagramPlaygroundConfigManager.getDefaultConfig());
+            function getInitialConfig(): ERDiagramPlaygroundConfig {
+
+                const serializedConfig = localStorage.getItem('erdiagramConfig');
+
+                if (serializedConfig) {
+                    return erdiagramPlaygroundConfigSerializer.deserialize(serializedConfig);
+                }
+
+                return erdiagramPlaygroundConfigManager.getDefaultConfig();
+
+            }
+
+            const configFromModal = ref<ERDiagramPlaygroundConfig>(getInitialConfig());
             const config = ref<ERDiagramPlaygroundConfig>(configFromModal.value);
 
             const inputCode = ref(appendPoweredByText(companySampleCode));
@@ -184,7 +170,10 @@
 
             const modelOutdated = ref(true);
             watch(inputCode, () => modelOutdated.value = true);
-            watch(configFromModal, () => modelOutdated.value = true);
+            watch(configFromModal, newValue => {
+                localStorage.setItem('erdiagramConfig', erdiagramPlaygroundConfigSerializer.serialize(newValue));
+                return modelOutdated.value = true;
+            });
 
             const hasErrors = ref(false);
             const entityRelationshipModel = ref<EntityRelationshipModel>();
@@ -293,7 +282,15 @@
                 });
             }
 
+            const outputCodeSelectedTabIndex = ref(0);
+            const configModalSelectedTabIndex = ref(0);
+
             const showingConfigModal = ref(false);
+
+            function showConfirmModal() {
+                configModalSelectedTabIndex.value = outputCodeSelectedTabIndex.value;
+                showingConfigModal.value = true;
+            }
 
             return {
                 inputCode,
@@ -306,8 +303,11 @@
                 onCodeEditorKeydown,
                 runERDiagram,
                 hasErrors,
+                showConfirmModal,
                 showingConfigModal,
-                configFromModal
+                configFromModal,
+                outputCodeSelectedTabIndex,
+                configModalSelectedTabIndex
             };
 
         }

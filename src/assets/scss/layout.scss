@@ -57,3 +57,7 @@ body,
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
+
+.table td, .table th {
+    vertical-align: middle;
+}

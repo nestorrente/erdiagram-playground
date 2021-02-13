@@ -1,5 +1,5 @@
 <template>
-    <h2 class="is-size-4 mb-5">Type bindings</h2>
+    <h3 class="is-size-5 mb-5 has-text-weight-bold">Type bindings</h3>
 
     <article class="message is-warning">
         <div class="message-body">
@@ -8,11 +8,12 @@
         </div>
     </article>
 
-    <table class="table is-fullwidth is-striped is-hoverable is-narrow">
+    <table class="table is-fullwidth is-striped is-hoverable is-narrow type-bindings-table">
         <thead>
             <tr>
                 <th>ERDiagram</th>
                 <th>{{ targetLang }}</th>
+                <th style="width: 52px"></th>
             </tr>
         </thead>
         <tbody>
@@ -31,6 +32,15 @@
                             class="input type-binding-input"
                     >
                 </td>
+                <td>
+                    <Button
+                            title="Restore default value"
+                            rounded
+                            small
+                            icon="fas fa-undo"
+                            @click="typeBindings[inputPropertyType] = defaultTypeBindings[inputPropertyType]"
+                    ></Button>
+                </td>
             </tr>
         </tbody>
     </table>
@@ -38,13 +48,8 @@
 
 <script lang="ts">
     import {defineComponent} from 'vue';
-    import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
     import {EntityPropertyType} from '@nestorrente/erdiagram';
-
-    interface Props {
-        showing: boolean;
-        config: ERDiagramPlaygroundConfig;
-    }
+    import Button from '@/components/generic/form/Button.vue';
 
     function getIdentityFunction<T>() {
         return (value: T) => value;
@@ -52,12 +57,17 @@
 
     export default defineComponent({
         name: 'TypeBindingsTable',
+        components: {Button},
         props: {
             targetLang: {
                 type: String,
                 required: true
             },
             typeBindings: {
+                type: Object,
+                required: true
+            },
+            defaultTypeBindings: {
                 type: Object,
                 required: true
             },
@@ -83,7 +93,11 @@
 </script>
 
 <style lang="scss">
-    .type-binding-input {
+    .type-bindings-table {
         font-size: 0.9em;
+
+        .input {
+            font-size: 1em;
+        }
     }
 </style>

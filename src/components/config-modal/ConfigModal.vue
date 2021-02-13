@@ -22,6 +22,8 @@
 
             <div class="vertical-full-container">
                 <Tabs
+                        :selected-tab-index="selectedTabIndex"
+                        @update:selected-tab-index="$emit('update:selectedTabIndex', $event)"
                         append-tabs-class="vfc-item mb-0"
                         append-tabs-content-class="vfc-item vfc-grow"
                         append-tabs-content-style="overflow-y: auto"
@@ -35,6 +37,12 @@
                     <Tab title="SQL Server">
                         <SqlServerTabContent :config="internalConfig"/>
                     </Tab>
+                    <Tab title="Java">
+                        <JavaTabContent :config="internalConfig"/>
+                    </Tab>
+                    <Tab title="TypeScript">
+                        <TypeScriptTabContent :config="internalConfig"/>
+                    </Tab>
                     <Tab title="Other">
                         <OtherTabContent :config="internalConfig"/>
                     </Tab>
@@ -47,6 +55,9 @@
                 <Button color="success" @click="saveChanges">
                     Save changes
                 </Button>
+                <Button @click="restoreDefaultConfig">
+                    Restore default values
+                </Button>
                 <Button @click="close">
                     Cancel
                 </Button>
@@ -57,17 +68,19 @@
 
 <script lang="ts">
     import {defineComponent, nextTick, ref, watch} from 'vue';
-    import Modal from '@/components/modal/Modal.vue';
+    import Modal from '@/components/generic/modal/Modal.vue';
     import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
     import {showConfirmModal} from '@/store/globalConfirmModalStore';
     import Tabs from '@/components/tabs/Tabs.vue';
     import erdiagramPlaygroundConfigManager from '@/config/ERDiagramPlaygroundConfigManager';
-    import Button from '@/components/Button.vue';
+    import Button from '@/components/generic/form/Button.vue';
     import Tab from '@/components/tabs/Tab.vue';
-    import OtherTabContent from '@/components/modal/config/OtherTabContent.vue';
-    import MysqlTabContent from '@/components/modal/config/database/MysqlTabContent.vue';
-    import OracleTabContent from '@/components/modal/config/database/OracleTabContent.vue';
-    import SqlServerTabContent from '@/components/modal/config/database/SqlServerTabContent.vue';
+    import OtherTabContent from '@/components/config-modal/OtherTabContent.vue';
+    import MysqlTabContent from '@/components/config-modal/database/MysqlTabContent.vue';
+    import OracleTabContent from '@/components/config-modal/database/OracleTabContent.vue';
+    import SqlServerTabContent from '@/components/config-modal/database/SqlServerTabContent.vue';
+    import JavaTabContent from '@/components/config-modal/JavaTabContent.vue';
+    import TypeScriptTabContent from '@/components/config-modal/TypeScriptTabContent.vue';
 
     interface Props {
         showing: boolean;
@@ -81,7 +94,14 @@
 
     export default defineComponent({
         name: 'ConfigModal',
+        emits: [
+            'update:showing',
+            'update:config',
+            'update:selectedTabIndex'
+        ],
         components: {
+            TypeScriptTabContent,
+            JavaTabContent,
             SqlServerTabContent,
             OracleTabContent,
             MysqlTabContent,
@@ -91,7 +111,6 @@
             Tabs,
             Modal
         },
-        emits: ['update:showing', 'update:config'],
         props: {
             showing: {
                 type: Boolean,
@@ -100,6 +119,10 @@
             config: {
                 type: Object,
                 required: true
+            },
+            selectedTabIndex: {
+                type: Number,
+                required: false
             }
         },
         setup(uncastedProps, context) {
@@ -107,7 +130,7 @@
             // Workaround for an issue with TS types
             const props = uncastedProps as Props;
 
-            const internalConfig = ref(erdiagramPlaygroundConfigManager.getDefaultConfig());
+            const internalConfig = ref(props.config);
 
             const configChanged = ref(false);
             watch(internalConfig, () => configChanged.value = true, {deep: true});
@@ -154,21 +177,29 @@
                 });
             }
 
+            async function restoreDefaultConfig() {
+                if (await confirmRestoreDefaultConfig()) {
+                    internalConfig.value = erdiagramPlaygroundConfigManager.getDefaultConfig();
+                }
+            }
+
+            function confirmRestoreDefaultConfig() {
+                return showConfirmModal({
+                    title: 'Do you really want restore the default values?',
+                    acceptButtonText: 'Yes, go ahead',
+                    cancelButtonText: 'No, take me back'
+                });
+            }
+
             return {
                 internalConfig,
                 configChanged,
                 onModalShowingChange,
                 saveChanges,
+                restoreDefaultConfig,
                 close
             };
 
         }
     });
 </script>
-
-<style lang="scss">
-    .settings-tab-section {
-        padding-top: 1.5em;
-        padding-bottom: 1.5em;
-    }
-</style>
