@@ -39,6 +39,10 @@ $body-overflow-y: auto;
     width: 100%;
 }
 
+.dropdown-content {
+    border: 1px solid #dbdbdb;
+}
+
 @media (max-width: 768px) {
     button.is-button-text-hidden-mobile {
 
