@@ -53,8 +53,10 @@
         <template #footer>
             <ConfigModalFooter
                     @save-changes="saveChanges"
-                    @restore-default-config="restoreDefaultConfig"
                     @cancel="close"
+                    @import-config="importConfig"
+                    @export-config="exportConfig"
+                    @restore-default-config="restoreDefaultConfig"
             />
         </template>
     </Modal>
@@ -175,13 +177,53 @@
                 internalConfig.value = erdiagramPlaygroundConfigManager.getDefaultConfig();
             }
 
+            function exportConfig() {
+
+                const serializedConfig = erdiagramPlaygroundConfigManager.convertToSerializableObject(internalConfig.value);
+                const jsonConfig = JSON.stringify(serializedConfig, undefined, 2);
+
+                const data = new Blob([jsonConfig], {type: 'text/plain'});
+                const url = URL.createObjectURL(data);
+
+                downloadUrl(url, 'erdiagram-config.json');
+
+                URL.revokeObjectURL(url);
+                // setTimeout(() => URL.revokeObjectURL(url), 10);
+
+            }
+
+            function downloadUrl(url: string, filename: string) {
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = filename;
+                link.style.display = 'none';
+                document.body.append(link);
+                link.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true, view: window}));
+                link.remove();
+            }
+
+            function importConfig(promise: Promise<string>) {
+                promise.then(text => {
+                    try {
+                        const importedConfig = erdiagramPlaygroundConfigManager.convertFromSerializableObject(JSON.parse(text));
+                        internalConfig.value = erdiagramPlaygroundConfigManager.mergeConfigs(internalConfig.value, importedConfig);
+                    } catch (error) {
+                        console.error('Cannot parse config file:', error);
+                    }
+                }).catch(error => {
+                    console.error('Cannot read config file:', error);
+                });
+            }
+
             return {
                 internalConfig,
                 configChanged,
                 onModalShowingChange,
                 saveChanges,
+                close,
                 restoreDefaultConfig,
-                close
+                exportConfig,
+                importConfig
             };
 
         }

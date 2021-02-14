@@ -20,7 +20,7 @@
                                 title="Restore default value"
                                 rounded
                                 small
-                                icon="fas fa-undo"
+                                icon="fas fa-undo-alt"
                                 @click="config.java.generatedClassesPackage = defaultCodeConverterConfig.generatedClassesPackage"
                         ></Button>
                     </td>
@@ -43,7 +43,7 @@
                                 title="Restore default value"
                                 rounded
                                 small
-                                icon="fas fa-undo"
+                                icon="fas fa-undo-alt"
                                 @click="config.java.useSpringNullabilityAnnotations = defaultCodeConverterConfig.useSpringNullabilityAnnotations"
                         ></Button>
                     </td>

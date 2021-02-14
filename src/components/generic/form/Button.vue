@@ -25,9 +25,10 @@
             ]"
             :disabled="disabled"
     >
-        <span v-if="icon" class="icon">
-            <i :class="icon"></i>
-        </span>
+        <Icon
+                v-if="icon"
+                :icon="icon"
+        />
         <span v-if="$slots.default" class="button-text">
             <slot></slot>
         </span>
@@ -36,9 +37,11 @@
 
 <script lang="ts">
     import {defineComponent} from 'vue';
+    import Icon from '@/components/generic/form/Icon.vue';
 
     export default defineComponent({
         name: 'Button',
+        components: {Icon},
         props: {
             color: String,
             text: Boolean,

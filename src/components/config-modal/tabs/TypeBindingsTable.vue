@@ -37,7 +37,7 @@
                             title="Restore default value"
                             rounded
                             small
-                            icon="fas fa-undo"
+                            icon="fas fa-undo-alt"
                             @click="typeBindings[inputPropertyType] = defaultTypeBindings[inputPropertyType]"
                     ></Button>
                 </td>

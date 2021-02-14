@@ -20,7 +20,7 @@
                             title="Restore default value"
                             rounded
                             small
-                            icon="fas fa-undo"
+                            icon="fas fa-undo-alt"
                             @click="databaseModelConfig.usePluralTableNames = defaultDatabaseModelConfig.usePluralTableNames"
                     ></Button>
                 </td>
@@ -43,7 +43,7 @@
                             title="Restore default value"
                             rounded
                             small
-                            icon="fas fa-undo"
+                            icon="fas fa-undo-alt"
                             @click="databaseModelConfig.idNamingStrategy = defaultDatabaseModelConfig.idNamingStrategy"
                     ></Button>
                 </td>
@@ -66,7 +66,7 @@
                             title="Restore default value"
                             rounded
                             small
-                            icon="fas fa-undo"
+                            icon="fas fa-undo-alt"
                             @click="codeConverterConfig.tableNameCaseFormat = defaultCodeConverterConfig.tableNameCaseFormat"
                     ></Button>
                 </td>
@@ -89,7 +89,7 @@
                             title="Restore default value"
                             rounded
                             small
-                            icon="fas fa-undo"
+                            icon="fas fa-undo-alt"
                             @click="codeConverterConfig.columnNameCaseFormat = defaultCodeConverterConfig.columnNameCaseFormat"
                     ></Button>
                 </td>
