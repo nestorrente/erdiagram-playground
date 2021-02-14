@@ -10,3 +10,9 @@
 
 - Add a "are you sure you want to exit?" message if code is unsaved.
     - Save input code in localStorage (every time its compiled)
+
+- Add a dropdown to the config modal footer, in order to have "more actions":
+    - Restore default values (move inside the dropdown)
+    - Export config
+    - Import config
+    - Add this dropdown at the left side of the footer?

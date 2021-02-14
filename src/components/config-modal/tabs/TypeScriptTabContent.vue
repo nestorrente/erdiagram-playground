@@ -17,8 +17,8 @@
         typescriptClassModelToCodeConverterConfigManager,
         TypeScriptType
     } from '@nestorrente/erdiagram';
-    import TypeBindingsTable from '@/components/config-modal/TypeBindingsTable.vue';
-    import SettingsTabSection from '@/components/config-modal/SettingsTabSection.vue';
+    import TypeBindingsTable from '@/components/config-modal/tabs/TypeBindingsTable.vue';
+    import SettingsTabSection from '@/components/config-modal/tabs/SettingsTabSection.vue';
 
     export default defineComponent({
         name: 'TypeScriptTabContent',

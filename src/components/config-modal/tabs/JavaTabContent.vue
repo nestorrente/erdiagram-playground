@@ -65,8 +65,8 @@
 <script lang="ts">
     import {defineComponent} from 'vue';
     import {javaClassModelToCodeConverterConfigManager, JavaType, parseJavaType} from '@nestorrente/erdiagram';
-    import TypeBindingsTable from '@/components/config-modal/TypeBindingsTable.vue';
-    import SettingsTabSection from '@/components/config-modal/SettingsTabSection.vue';
+    import TypeBindingsTable from '@/components/config-modal/tabs/TypeBindingsTable.vue';
+    import SettingsTabSection from '@/components/config-modal/tabs/SettingsTabSection.vue';
     import Button from '@/components/generic/form/Button.vue';
 
     export default defineComponent({

@@ -51,17 +51,11 @@
 
         </template>
         <template #footer>
-            <div class="has-text-right">
-                <Button color="success" @click="saveChanges">
-                    Save changes
-                </Button>
-                <Button @click="restoreDefaultConfig">
-                    Restore default values
-                </Button>
-                <Button @click="close">
-                    Cancel
-                </Button>
-            </div>
+            <ConfigModalFooter
+                    @save-changes="saveChanges"
+                    @restore-default-config="restoreDefaultConfig"
+                    @cancel="close"
+            />
         </template>
     </Modal>
 </template>
@@ -73,14 +67,14 @@
     import {showConfirmModal} from '@/store/globalConfirmModalStore';
     import Tabs from '@/components/tabs/Tabs.vue';
     import erdiagramPlaygroundConfigManager from '@/config/ERDiagramPlaygroundConfigManager';
-    import Button from '@/components/generic/form/Button.vue';
     import Tab from '@/components/tabs/Tab.vue';
-    import OtherTabContent from '@/components/config-modal/OtherTabContent.vue';
-    import MysqlTabContent from '@/components/config-modal/database/MysqlTabContent.vue';
-    import OracleTabContent from '@/components/config-modal/database/OracleTabContent.vue';
-    import SqlServerTabContent from '@/components/config-modal/database/SqlServerTabContent.vue';
-    import JavaTabContent from '@/components/config-modal/JavaTabContent.vue';
-    import TypeScriptTabContent from '@/components/config-modal/TypeScriptTabContent.vue';
+    import OtherTabContent from '@/components/config-modal/tabs/OtherTabContent.vue';
+    import MysqlTabContent from '@/components/config-modal/tabs/database/MysqlTabContent.vue';
+    import OracleTabContent from '@/components/config-modal/tabs/database/OracleTabContent.vue';
+    import SqlServerTabContent from '@/components/config-modal/tabs/database/SqlServerTabContent.vue';
+    import JavaTabContent from '@/components/config-modal/tabs/JavaTabContent.vue';
+    import TypeScriptTabContent from '@/components/config-modal/tabs/TypeScriptTabContent.vue';
+    import ConfigModalFooter from '@/components/config-modal/ConfigModalFooter.vue';
 
     interface Props {
         showing: boolean;
@@ -100,6 +94,7 @@
             'update:selectedTabIndex'
         ],
         components: {
+            ConfigModalFooter,
             TypeScriptTabContent,
             JavaTabContent,
             SqlServerTabContent,
@@ -107,7 +102,6 @@
             MysqlTabContent,
             OtherTabContent,
             Tab,
-            Button,
             Tabs,
             Modal
         },
@@ -131,8 +125,8 @@
             const props = uncastedProps as Props;
 
             const internalConfig = ref(props.config);
-
             const configChanged = ref(false);
+
             watch(internalConfig, () => configChanged.value = true, {deep: true});
 
             watch(() => props.showing, showing => {
@@ -178,17 +172,7 @@
             }
 
             async function restoreDefaultConfig() {
-                if (await confirmRestoreDefaultConfig()) {
-                    internalConfig.value = erdiagramPlaygroundConfigManager.getDefaultConfig();
-                }
-            }
-
-            function confirmRestoreDefaultConfig() {
-                return showConfirmModal({
-                    title: 'Do you really want restore the default values?',
-                    acceptButtonText: 'Yes, go ahead',
-                    cancelButtonText: 'No, take me back'
-                });
+                internalConfig.value = erdiagramPlaygroundConfigManager.getDefaultConfig();
             }
 
             return {

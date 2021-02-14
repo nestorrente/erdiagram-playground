@@ -133,7 +133,6 @@
     import Button from '@/components/generic/form/Button.vue';
     import Tab from '@/components/tabs/Tab.vue';
     import UpdateOutputCodeButton from '@/UpdateOutputCodeButton.vue';
-    import erdiagramPlaygroundConfigSerializer from '@/config/ERDiagramPlaygroundConfigSerializer';
 
     export default defineComponent({
         name: 'App',
@@ -155,7 +154,7 @@
                 const serializedConfig = localStorage.getItem('erdiagramConfig');
 
                 if (serializedConfig) {
-                    return erdiagramPlaygroundConfigSerializer.deserialize(serializedConfig);
+                    return erdiagramPlaygroundConfigManager.convertFromSerializableObject(JSON.parse(serializedConfig));
                 }
 
                 return erdiagramPlaygroundConfigManager.getDefaultConfig();
@@ -171,7 +170,7 @@
             const modelOutdated = ref(true);
             watch(inputCode, () => modelOutdated.value = true);
             watch(configFromModal, newValue => {
-                localStorage.setItem('erdiagramConfig', erdiagramPlaygroundConfigSerializer.serialize(newValue));
+                localStorage.setItem('erdiagramConfig', JSON.stringify(erdiagramPlaygroundConfigManager.convertToSerializableObject(newValue)));
                 return modelOutdated.value = true;
             });
 

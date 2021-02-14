@@ -1,6 +1,7 @@
 Company
     name text(30)
     foundationDate date
+    logoImage blob
     active bool
 
 Employee

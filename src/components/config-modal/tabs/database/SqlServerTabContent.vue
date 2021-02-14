@@ -16,9 +16,9 @@
 
 <script lang="ts">
     import {defineComponent} from 'vue';
-    import TypeBindingsTable from '@/components/config-modal/TypeBindingsTable.vue';
-    import CommonDatabaseSettingsTable from '@/components/config-modal/database/CommonDatabaseSettingsTable.vue';
-    import SettingsTabSection from '@/components/config-modal/SettingsTabSection.vue';
+    import TypeBindingsTable from '@/components/config-modal/tabs/TypeBindingsTable.vue';
+    import CommonDatabaseSettingsTable from '@/components/config-modal/tabs/database/CommonDatabaseSettingsTable.vue';
+    import SettingsTabSection from '@/components/config-modal/tabs/SettingsTabSection.vue';
     import {sqlServerDatabaseModelToCodeConverterConfigManager} from '@nestorrente/erdiagram';
 
     export default defineComponent({
