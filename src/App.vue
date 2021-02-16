@@ -83,7 +83,7 @@
                                                     rounded
                                                     class="is-button-text-hidden-mobile"
                                                     icon="fas fa-cog"
-                                                    @click="showConfirmModal"
+                                                    @click="showSettingsModal"
                                             >
                                                 Settings
                                             </Button>
@@ -100,7 +100,7 @@
     <SettingsModal
             v-model:showing="showingSettingsModal"
             v-model:config="configFromModal"
-            v-model:selected-tab-name="configModalSelectedTabName"
+            v-model:selected-tab-name="settingsModalSelectedTabName"
     />
     <GlobalConfirmModal/>
 </template>
@@ -313,12 +313,12 @@
             }
 
             const outputCodeSelectedTabName = ref('mysql');
-            const configModalSelectedTabName = ref('mysql');
+            const settingsModalSelectedTabName = ref('mysql');
 
             const showingSettingsModal = ref(false);
 
-            function showConfirmModal() {
-                configModalSelectedTabName.value = outputCodeSelectedTabName.value;
+            function showSettingsModal() {
+                settingsModalSelectedTabName.value = outputCodeSelectedTabName.value;
                 showingSettingsModal.value = true;
             }
 
@@ -333,11 +333,11 @@
                 onCodeEditorKeydown,
                 runERDiagram,
                 hasErrors,
-                showConfirmModal,
+                showSettingsModal,
                 showingSettingsModal,
                 configFromModal,
                 outputCodeSelectedTabName,
-                configModalSelectedTabName
+                settingsModalSelectedTabName
             };
 
         }

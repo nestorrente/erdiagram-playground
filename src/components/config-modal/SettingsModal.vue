@@ -66,7 +66,7 @@
     import {defineComponent, nextTick, ref, watch} from 'vue';
     import Modal from '@/components/generic/modal/Modal.vue';
     import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
-    import {showConfirmModal} from '@/store/globalConfirmModalStore';
+    import {showAlertModal, showConfirmModal} from '@/store/globalConfirmModalStore';
     import Tabs from '@/components/tabs/Tabs.vue';
     import erdiagramPlaygroundConfigManager, {LAST_CONFIG_VERSION} from '@/config/ERDiagramPlaygroundConfigManager';
     import Tab from '@/components/tabs/Tab.vue';
@@ -167,7 +167,7 @@
 
             function confirmChangesDiscard() {
                 return showConfirmModal({
-                    title: 'Do you really want to exit without saving changes?',
+                    message: 'Do you really want to exit without saving changes?',
                     acceptButtonText: 'Yes, discard them',
                     cancelButtonText: 'No, take me back'
                 });
@@ -210,13 +210,16 @@
                         if (importedConfig._version === LAST_CONFIG_VERSION) {
                             internalConfig.value = erdiagramPlaygroundConfigManager.mergeConfigs(internalConfig.value, importedConfig);
                         } else {
-                            console.warn('Detected old version of settings');
+                            console.warn('Detected an invalid version of settings');
+                            showAlertModal({title: 'Error', message: 'Detected an invalid version of settings'});
                         }
                     } catch (error) {
                         console.error('Cannot parse config file:', error);
+                        showAlertModal({title: 'Error', message: 'Cannot parse config file'});
                     }
                 }).catch(error => {
                     console.error('Cannot read config file:', error);
+                    showAlertModal({title: 'Error', message: 'Cannot read config file'});
                 });
             }
 

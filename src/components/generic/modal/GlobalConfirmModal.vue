@@ -1,24 +1,25 @@
 <template>
     <Modal
-            title="Confirm"
+            :title="globalConfirmModalStore.title"
             :showing="globalConfirmModalStore.showing"
             @update:showing="onModalShowingChange"
             max-width="420px"
     >
         <template #default>
-            {{ globalConfirmModalStore.title }}
+            {{ globalConfirmModalStore.message }}
         </template>
         <template #footer>
             <div class="buttons is-justify-content-flex-end">
                 <Button
                         v-if="globalConfirmModalStore.acceptButton"
-                        color="danger"
+                        :color="globalConfirmModalStore.acceptButtonColor"
                         @click="globalConfirmModalStore.accept()"
                 >
                     {{ globalConfirmModalStore.acceptButtonText }}
                 </Button>
                 <Button
                         v-if="globalConfirmModalStore.cancelButton"
+                        :color="globalConfirmModalStore.cancelButtonColor"
                         @click="globalConfirmModalStore.cancel()"
                 >
                     {{ globalConfirmModalStore.cancelButtonText }}

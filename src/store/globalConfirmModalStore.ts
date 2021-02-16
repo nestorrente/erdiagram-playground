@@ -3,10 +3,13 @@ import {ref} from 'vue';
 
 export interface ShowOptions {
 	title: string;
+	message: string;
 	acceptButton: boolean;
-	acceptButtonText: string;
+	acceptButtonText?: string;
+	acceptButtonColor?: string;
 	cancelButton: boolean;
-	cancelButtonText: string;
+	cancelButtonText?: string;
+	cancelButtonColor?: string;
 }
 
 type AnswerCallback = (answer: boolean) => void;
@@ -14,8 +17,7 @@ const noopAnswerCallback: AnswerCallback = () => undefined;
 
 const globalConfirmModalStore = createStore(() => {
 
-	const defaultShowOptions: ShowOptions = {
-		title: 'Confirm',
+	const defaultShowOptions: Partial<ShowOptions> = {
 		acceptButton: true,
 		acceptButtonText: 'Accept',
 		cancelButton: true,
@@ -25,14 +27,17 @@ const globalConfirmModalStore = createStore(() => {
 	const showing = ref(false);
 
 	const title = ref(defaultShowOptions.title);
+	const message = ref(defaultShowOptions.message);
 	const acceptButton = ref(defaultShowOptions.acceptButton);
 	const acceptButtonText = ref(defaultShowOptions.acceptButtonText);
+	const acceptButtonColor = ref(defaultShowOptions.acceptButtonColor);
 	const cancelButton = ref(defaultShowOptions.cancelButton);
 	const cancelButtonText = ref(defaultShowOptions.cancelButtonText);
+	const cancelButtonColor = ref(defaultShowOptions.cancelButtonColor);
 
 	const answerCallback = ref(noopAnswerCallback);
 
-	function show(options?: Partial<ShowOptions>) {
+	function show(options: ShowOptions) {
 
 		const fullOptions: ShowOptions = {
 			...defaultShowOptions,
@@ -40,6 +45,8 @@ const globalConfirmModalStore = createStore(() => {
 		};
 
 		title.value = fullOptions.title;
+		message.value = fullOptions.message;
+		console.log('Options:', fullOptions);
 		acceptButton.value = fullOptions.acceptButton;
 		acceptButtonText.value = fullOptions.acceptButtonText;
 		cancelButton.value = fullOptions.cancelButton;
@@ -78,10 +85,13 @@ const globalConfirmModalStore = createStore(() => {
 	return {
 		showing,
 		title,
+		message,
 		acceptButton,
 		acceptButtonText,
+		acceptButtonColor,
 		cancelButton,
 		cancelButtonText,
+		cancelButtonColor,
 		show,
 		accept,
 		cancel
@@ -92,5 +102,29 @@ const globalConfirmModalStore = createStore(() => {
 export default globalConfirmModalStore;
 
 export function showConfirmModal(options?: Partial<ShowOptions>) {
-	return globalConfirmModalStore.show(options);
+	return globalConfirmModalStore.show({
+		title: 'Confirm',
+		message: 'Are you sure you want to continue?',
+		acceptButton: true,
+		acceptButtonText: 'Accept',
+		acceptButtonColor: 'danger',
+		cancelButton: true,
+		cancelButtonText: 'Cancel',
+		...options
+	});
+}
+
+export interface AlertModalOptions extends Partial<ShowOptions> {
+	message: string;
+}
+
+export function showAlertModal(options: AlertModalOptions) {
+	return globalConfirmModalStore.show({
+		title: 'Information',
+		acceptButton: true,
+		acceptButtonText: 'Accept',
+		acceptButtonColor: 'primary',
+		cancelButton: false,
+		...options
+	});
 }

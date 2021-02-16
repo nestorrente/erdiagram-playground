@@ -77,7 +77,7 @@
 
             function confirmRestoreDefaultConfig() {
                 return showConfirmModal({
-                    title: 'Do you really want restore the default values?',
+                    message: 'Do you really want restore the default values?',
                     acceptButtonText: 'Yes, go ahead',
                     cancelButtonText: 'No, take me back'
                 });
