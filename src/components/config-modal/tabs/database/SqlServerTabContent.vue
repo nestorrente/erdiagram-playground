@@ -1,15 +1,15 @@
 <template>
     <SettingsTabSection title="SQL Server settings">
         <CommonDatabaseSettingsTable
-                :database-model-config="config.sqlServerDatabaseModel"
-                :code-converter-config="config.sqlserver"
-                :default-code-converter-config="defaultCodeConverterConfig"
+                :database-model-generator-config="config.sqlserver.databaseModelGeneratorConfig"
+                :database-model-to-code-converter-config="config.sqlserver.databaseModelToCodeConverterConfig"
+                :default-database-model-to-code-converter-config="defaultDatabaseModelToCodeConverterConfig"
         />
 
         <TypeBindingsTable
                 target-lang="SQL Server"
-                :type-bindings="config.sqlserver.typeMappings"
-                :default-type-bindings="defaultCodeConverterConfig.typeMappings"
+                :type-bindings="config.sqlserver.databaseModelToCodeConverterConfig.typeBindings"
+                :default-type-bindings="defaultDatabaseModelToCodeConverterConfig.typeBindings"
         />
     </SettingsTabSection>
 </template>
@@ -36,7 +36,7 @@
         },
         setup() {
             return {
-                defaultCodeConverterConfig: sqlServerDatabaseModelToCodeConverterConfigManager.getDefaultConfig()
+                defaultDatabaseModelToCodeConverterConfig: sqlServerDatabaseModelToCodeConverterConfigManager.getDefaultConfig()
             };
         }
     });

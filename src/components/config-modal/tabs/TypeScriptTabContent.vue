@@ -2,8 +2,8 @@
     <SettingsTabSection title="TypeScript settings">
         <TypeBindingsTable
                 target-lang="TypeScript"
-                :type-bindings="config.typescript.typeMappings"
-                :default-type-bindings="defaultCodeConverterConfig.typeMappings"
+                :type-bindings="config.typescript.classModelToCodeConverterConfig.typeBindings"
+                :default-type-bindings="defaultClassModelToCodeConverterConfig.typeBindings"
                 :display-function="formatTypeScriptType"
                 :parse-function="parseTypeScriptType"
         />
@@ -33,12 +33,12 @@
 
             const formatTypeScriptType = (typeScriptType: TypeScriptType) => typeScriptType.format();
 
-            const defaultCodeConverterConfig = typescriptClassModelToCodeConverterConfigManager.getDefaultConfig();
+            const defaultClassModelToCodeConverterConfig = typescriptClassModelToCodeConverterConfigManager.getDefaultConfig();
 
             return {
                 parseTypeScriptType,
                 formatTypeScriptType,
-                defaultCodeConverterConfig
+                defaultClassModelToCodeConverterConfig
             };
 
         }

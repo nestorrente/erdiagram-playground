@@ -1,15 +1,15 @@
 <template>
     <SettingsTabSection title="MySQL settings">
         <CommonDatabaseSettingsTable
-                :database-model-config="config.mysqlDatabaseModel"
-                :code-converter-config="config.mysql"
-                :default-code-converter-config="defaultCodeConverterConfig"
+                :database-model-generator-config="config.mysql.databaseModelGeneratorConfig"
+                :database-model-to-code-converter-config="config.mysql.databaseModelToCodeConverterConfig"
+                :default-database-model-to-code-converter-config="defaultDatabaseModelToCodeConverterConfig"
         />
 
         <TypeBindingsTable
                 target-lang="MySQL"
-                :type-bindings="config.mysql.typeMappings"
-                :default-type-bindings="defaultCodeConverterConfig.typeMappings"
+                :type-bindings="config.mysql.databaseModelToCodeConverterConfig.typeBindings"
+                :default-type-bindings="defaultDatabaseModelToCodeConverterConfig.typeBindings"
         />
     </SettingsTabSection>
 </template>
@@ -36,7 +36,7 @@
         },
         setup() {
             return {
-                defaultCodeConverterConfig: mysqlDatabaseModelToCodeConverterConfigManager.getDefaultConfig()
+                defaultDatabaseModelToCodeConverterConfig: mysqlDatabaseModelToCodeConverterConfigManager.getDefaultConfig()
             };
         }
     });

@@ -22,28 +22,28 @@
 
             <div class="vertical-full-container">
                 <Tabs
-                        :selected-tab-index="selectedTabIndex"
-                        @update:selected-tab-index="$emit('update:selectedTabIndex', $event)"
+                        :selected-tab-name="selectedTabName"
+                        @update:selected-tab-name="$emit('update:selectedTabName', $event)"
                         append-tabs-class="vfc-item mb-0"
                         append-tabs-content-class="vfc-item vfc-grow"
                         append-tabs-content-style="overflow-y: auto"
                 >
-                    <Tab title="MySQL">
+                    <Tab name="mysql" title="MySQL">
                         <MysqlTabContent :config="internalConfig"/>
                     </Tab>
-                    <Tab title="Oracle DB">
+                    <Tab name="oracle" title="Oracle DB">
                         <OracleTabContent :config="internalConfig"/>
                     </Tab>
-                    <Tab title="SQL Server">
+                    <Tab name="sqlserver" title="SQL Server">
                         <SqlServerTabContent :config="internalConfig"/>
                     </Tab>
-                    <Tab title="Java">
+                    <Tab name="java" title="Java">
                         <JavaTabContent :config="internalConfig"/>
                     </Tab>
-                    <Tab title="TypeScript">
+                    <Tab name="typescript" title="TypeScript">
                         <TypeScriptTabContent :config="internalConfig"/>
                     </Tab>
-                    <Tab title="Other">
+                    <Tab name="other" title="Other">
                         <OtherTabContent :config="internalConfig"/>
                     </Tab>
                 </Tabs>
@@ -51,7 +51,7 @@
 
         </template>
         <template #footer>
-            <ConfigModalFooter
+            <SettingsModalFooter
                     @save-changes="saveChanges"
                     @cancel="close"
                     @import-config="importConfig"
@@ -68,7 +68,7 @@
     import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
     import {showConfirmModal} from '@/store/globalConfirmModalStore';
     import Tabs from '@/components/tabs/Tabs.vue';
-    import erdiagramPlaygroundConfigManager from '@/config/ERDiagramPlaygroundConfigManager';
+    import erdiagramPlaygroundConfigManager, {LAST_CONFIG_VERSION} from '@/config/ERDiagramPlaygroundConfigManager';
     import Tab from '@/components/tabs/Tab.vue';
     import OtherTabContent from '@/components/config-modal/tabs/OtherTabContent.vue';
     import MysqlTabContent from '@/components/config-modal/tabs/database/MysqlTabContent.vue';
@@ -76,7 +76,7 @@
     import SqlServerTabContent from '@/components/config-modal/tabs/database/SqlServerTabContent.vue';
     import JavaTabContent from '@/components/config-modal/tabs/JavaTabContent.vue';
     import TypeScriptTabContent from '@/components/config-modal/tabs/TypeScriptTabContent.vue';
-    import ConfigModalFooter from '@/components/config-modal/ConfigModalFooter.vue';
+    import SettingsModalFooter from '@/components/config-modal/SettingsModalFooter.vue';
 
     interface Props {
         showing: boolean;
@@ -89,14 +89,14 @@
     }
 
     export default defineComponent({
-        name: 'ConfigModal',
+        name: 'SettingsModal',
         emits: [
             'update:showing',
             'update:config',
-            'update:selectedTabIndex'
+            'update:selectedTabName'
         ],
         components: {
-            ConfigModalFooter,
+            SettingsModalFooter,
             TypeScriptTabContent,
             JavaTabContent,
             SqlServerTabContent,
@@ -116,8 +116,8 @@
                 type: Object,
                 required: true
             },
-            selectedTabIndex: {
-                type: Number,
+            selectedTabName: {
+                type: String,
                 required: false
             }
         },
@@ -206,7 +206,12 @@
                 promise.then(text => {
                     try {
                         const importedConfig = erdiagramPlaygroundConfigManager.convertFromSerializableObject(JSON.parse(text));
-                        internalConfig.value = erdiagramPlaygroundConfigManager.mergeConfigs(internalConfig.value, importedConfig);
+
+                        if (importedConfig._version === LAST_CONFIG_VERSION) {
+                            internalConfig.value = erdiagramPlaygroundConfigManager.mergeConfigs(internalConfig.value, importedConfig);
+                        } else {
+                            console.warn('Detected old version of settings');
+                        }
                     } catch (error) {
                         console.error('Cannot parse config file:', error);
                     }

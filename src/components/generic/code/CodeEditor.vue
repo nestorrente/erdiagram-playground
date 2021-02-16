@@ -44,7 +44,9 @@
                 const aceEditor = ace.edit(editorContainer.value!, {
                     fontSize: 16
                 });
-                // aceEditor.session.setMode(JsonHighlightRules as unknown as Ace.SyntaxMode);
+
+                // Release Ctrl+L shortcut
+                aceEditor.commands.removeCommand('gotoline');
 
                 aceEditor.setTheme('ace/theme/clouds');
                 updateAceEditorMode(aceEditor);
@@ -53,7 +55,6 @@
                 aceEditor.session.selection.clearSelection();
 
                 aceEditor.on('input', () => onCodeChanged(aceEditor.getValue()));
-
                 aceEditor.focus();
 
                 aceEditorRef.value = aceEditor;

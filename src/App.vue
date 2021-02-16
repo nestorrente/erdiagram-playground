@@ -28,46 +28,46 @@
                     <div class="column is-half">
                         <div class="vertical-full-container">
                             <Tabs
-                                    v-model:selected-tab-index="outputCodeSelectedTabIndex"
+                                    v-model:selected-tab-name="outputCodeSelectedTabName"
                                     toggle
                                     append-tabs-class="vfc-item"
                                     append-tabs-content-class="vfc-item vfc-grow"
                             >
-                                <Tab title="MySQL">
+                                <Tab name="mysql" title="MySQL">
                                     <CodeBlock
                                             lang="sql_more"
                                             :code="generatedMysqlCode"
                                             full-height
                                     />
                                 </Tab>
-                                <!--<Tab title="PostgreSQL">-->
+                                <!--<Tab name="postgresql" title="PostgreSQL">-->
                                 <!--    Not supported yet.-->
                                 <!--</Tab>-->
-                                <!--<Tab title="SQLite">-->
+                                <!--<Tab name="sqlite" title="SQLite">-->
                                 <!--    Not supported yet.-->
                                 <!--</Tab>-->
-                                <Tab title="Oracle DB">
+                                <Tab name="oracle" title="Oracle DB">
                                     <CodeBlock
                                             lang="sql_more"
                                             :code="generatedOracleCode"
                                             full-height
                                     />
                                 </Tab>
-                                <Tab title="SQL Server">
+                                <Tab name="sqlserver" title="SQL Server">
                                     <CodeBlock
                                             lang="sql_more"
                                             :code="generatedSqlServerCode"
                                             full-height
                                     />
                                 </Tab>
-                                <Tab title="Java POJO">
+                                <Tab name="java" title="Java POJO">
                                     <CodeBlock
                                             lang="java"
                                             :code="generatedJavaCode"
                                             full-height
                                     />
                                 </Tab>
-                                <Tab title="TypeScript">
+                                <Tab name="typescript" title="TypeScript">
                                     <CodeBlock
                                             lang="typescript"
                                             :code="generatedTypeScriptCode"
@@ -97,16 +97,16 @@
             </div>
         </section>
     </div>
-    <ConfigModal
-            v-model:showing="showingConfigModal"
+    <SettingsModal
+            v-model:showing="showingSettingsModal"
             v-model:config="configFromModal"
-            v-model:selected-tab-index="configModalSelectedTabIndex"
+            v-model:selected-tab-name="configModalSelectedTabName"
     />
     <GlobalConfirmModal/>
 </template>
 
 <script lang="ts">
-    import {computed, ComputedRef, defineComponent, onMounted, ref, watch} from 'vue';
+    import {computed, ComputedRef, defineComponent, onBeforeUnmount, onMounted, ref, watch} from 'vue';
     import NavBar from '@/components/layout/NavBar.vue';
     import CodeBlock from '@/components/generic/code/CodeBlock.vue';
     import Tabs from '@/components/tabs/Tabs.vue';
@@ -124,12 +124,12 @@
         SqlServerDatabaseModelToCodeConverter,
         TypeScriptClassModelToCodeConverter
     } from '@nestorrente/erdiagram';
-    import ConfigModal from '@/components/config-modal/ConfigModal.vue';
+    import SettingsModal from '@/components/config-modal/SettingsModal.vue';
     import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
     import GlobalConfirmModal from '@/components/generic/modal/GlobalConfirmModal.vue';
     import CodeEditor from '@/components/generic/code/CodeEditor.vue';
-    import companySampleCode from '!!raw-loader!@/sample-erd-files/Company.erd';
-    import erdiagramPlaygroundConfigManager from '@/config/ERDiagramPlaygroundConfigManager';
+    import pokemonSampleCode from '!!raw-loader!@/sample-erd-files/Pokemon.erd';
+    import erdiagramPlaygroundConfigManager, {LAST_CONFIG_VERSION} from '@/config/ERDiagramPlaygroundConfigManager';
     import Button from '@/components/generic/form/Button.vue';
     import Tab from '@/components/tabs/Tab.vue';
     import UpdateOutputCodeButton from '@/UpdateOutputCodeButton.vue';
@@ -142,7 +142,7 @@
             Button,
             CodeEditor,
             GlobalConfirmModal,
-            ConfigModal,
+            SettingsModal,
             Tabs,
             CodeBlock,
             NavBar
@@ -154,7 +154,14 @@
                 const serializedConfig = localStorage.getItem('erdiagramConfig');
 
                 if (serializedConfig) {
-                    return erdiagramPlaygroundConfigManager.convertFromSerializableObject(JSON.parse(serializedConfig));
+                    const config = erdiagramPlaygroundConfigManager.convertFromSerializableObject(JSON.parse(serializedConfig));
+
+                    // Check you are using the last version of the config
+                    if (config._version === LAST_CONFIG_VERSION) {
+                        return config;
+                    } else {
+                        console.warn('Detected old version of settings: using default settings.');
+                    }
                 }
 
                 return erdiagramPlaygroundConfigManager.getDefaultConfig();
@@ -164,7 +171,7 @@
             const configFromModal = ref<ERDiagramPlaygroundConfig>(getInitialConfig());
             const config = ref<ERDiagramPlaygroundConfig>(configFromModal.value);
 
-            const inputCode = ref(appendPoweredByText(companySampleCode));
+            const inputCode = ref(appendPoweredByText(pokemonSampleCode));
             onMounted(runERDiagram);
 
             const modelOutdated = ref(true);
@@ -177,8 +184,30 @@
             const hasErrors = ref(false);
             const entityRelationshipModel = ref<EntityRelationshipModel>();
 
+            useBeforeUnload(() => modelOutdated.value);
+
+            function useBeforeUnload(hasChanged: () => boolean) {
+
+                const beforeUnloadHandler = () => {
+                    return hasChanged() ? 'Are you sure you want to exit? Changes you made will not be saved' : undefined;
+                };
+
+                let previousBeforeUnloadHandler: any = null;
+
+                onMounted(() => {
+                    previousBeforeUnloadHandler = window.onbeforeunload;
+                    window.onbeforeunload = beforeUnloadHandler;
+                });
+
+                onBeforeUnmount(() => {
+                    window.onbeforeunload = previousBeforeUnloadHandler;
+                    previousBeforeUnloadHandler = null;
+                });
+
+            }
+
             const entityRelationshipModelParser = computed(() => {
-                return new EntityRelationshipModelParser(config.value.erModel);
+                return new EntityRelationshipModelParser(config.value.erModelParser);
             });
 
             function appendPoweredByText(code: string) {
@@ -215,35 +244,35 @@
             }
 
             const mysqlDatabaseModelGenerator = computed(() => {
-                return new DatabaseModelGenerator(config.value.mysqlDatabaseModel);
+                return new DatabaseModelGenerator(config.value.mysql.databaseModelGeneratorConfig);
             });
 
             const mysqlConverter = computed(() => {
                 return new EntityRelationshipModelToDatabaseCodeConverter(
                         mysqlDatabaseModelGenerator.value,
-                        new MySqlDatabaseModelToCodeConverter(config.value.mysql)
+                        new MySqlDatabaseModelToCodeConverter(config.value.mysql.databaseModelToCodeConverterConfig)
                 );
             });
 
             const sqlServerDatabaseModelGenerator = computed(() => {
-                return new DatabaseModelGenerator(config.value.sqlServerDatabaseModel);
+                return new DatabaseModelGenerator(config.value.sqlserver.databaseModelGeneratorConfig);
             });
 
             const sqlServerConverter = computed(() => {
                 return new EntityRelationshipModelToDatabaseCodeConverter(
                         sqlServerDatabaseModelGenerator.value,
-                        new SqlServerDatabaseModelToCodeConverter(config.value.sqlserver)
+                        new SqlServerDatabaseModelToCodeConverter(config.value.sqlserver.databaseModelToCodeConverterConfig)
                 );
             });
 
             const oracleDatabaseModelGenerator = computed(() => {
-                return new DatabaseModelGenerator(config.value.oracleDatabaseModel);
+                return new DatabaseModelGenerator(config.value.oracle.databaseModelGeneratorConfig);
             });
 
             const oracleConverter = computed(() => {
                 return new EntityRelationshipModelToDatabaseCodeConverter(
                         oracleDatabaseModelGenerator.value,
-                        new OracleDatabaseModelToCodeConverter(config.value.oracle)
+                        new OracleDatabaseModelToCodeConverter(config.value.oracle.databaseModelToCodeConverterConfig)
                 );
             });
 
@@ -252,14 +281,14 @@
             const javaConverter = computed(() => {
                 return new EntityRelationshipModelToClassCodeConverter(
                         classModelGenerator.value,
-                        new JavaClassModelToCodeConverter(config.value.java)
+                        new JavaClassModelToCodeConverter(config.value.java.classModelToCodeConverterConfig)
                 );
             });
 
             const typeScriptConverter = computed(() => {
                 return new EntityRelationshipModelToClassCodeConverter(
                         classModelGenerator.value,
-                        new TypeScriptClassModelToCodeConverter(config.value.typescript)
+                        new TypeScriptClassModelToCodeConverter(config.value.typescript.classModelToCodeConverterConfig)
                 );
             });
 
@@ -281,14 +310,14 @@
                 });
             }
 
-            const outputCodeSelectedTabIndex = ref(0);
-            const configModalSelectedTabIndex = ref(0);
+            const outputCodeSelectedTabName = ref('mysql');
+            const configModalSelectedTabName = ref('mysql');
 
-            const showingConfigModal = ref(false);
+            const showingSettingsModal = ref(false);
 
             function showConfirmModal() {
-                configModalSelectedTabIndex.value = outputCodeSelectedTabIndex.value;
-                showingConfigModal.value = true;
+                configModalSelectedTabName.value = outputCodeSelectedTabName.value;
+                showingSettingsModal.value = true;
             }
 
             return {
@@ -303,10 +332,10 @@
                 runERDiagram,
                 hasErrors,
                 showConfirmModal,
-                showingConfigModal,
+                showingSettingsModal,
                 configFromModal,
-                outputCodeSelectedTabIndex,
-                configModalSelectedTabIndex
+                outputCodeSelectedTabName,
+                configModalSelectedTabName
             };
 
         }

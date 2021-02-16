@@ -14,12 +14,12 @@
                 @wheel="scrollHorizontally"
         >
             <li
-                    v-for="(title, index) in tabTitles"
-                    :key="index"
-                    :class="{'is-active': internalSelectedTabIndex === index}"
-                    @click="selectTab($event, index)"
+                    v-for="tabData in tabsData"
+                    :key="tabData.name"
+                    :class="{'is-active': tabData.name === internalSelectedTabName}"
+                    @click="selectTab($event, tabData.name)"
             >
-                <a>{{ title }}</a>
+                <a>{{ tabData.title }}</a>
             </li>
         </ul>
         <slot name="afterTabs"></slot>
@@ -29,12 +29,12 @@
             :style="appendTabsContentStyle"
     >
         <div
-                v-for="(tabNode, index) in tabNodes"
-                :key="index"
-                v-show="index === internalSelectedTabIndex"
+                v-for="tabData in tabsData"
+                :key="tabData.name"
+                v-show="tabData.name === internalSelectedTabName"
                 class="is-full-height"
         >
-            <VNodes :nodes="tabNode"/>
+            <VNodes :nodes="tabData.node"/>
         </div>
     </div>
 </template>
@@ -54,12 +54,18 @@
         appendTabsStyle?: CssStyle;
         appendTabsContentClass?: CssClass;
         appendTabsContentStyle?: CssStyle;
-        selectedTabIndex?: number;
+        selectedTabName?: string;
+    }
+
+    interface TabData {
+        name: string;
+        title: string;
+        node: VNode;
     }
 
     export default defineComponent({
         name: 'Tabs',
-        emits: ['update:selectedTabIndex'],
+        emits: ['update:selectedTabName'],
         components: {VNodes},
         props: {
             boxed: Boolean,
@@ -80,8 +86,8 @@
                 type: [String, Array, Object],
                 required: false
             },
-            selectedTabIndex: {
-                type: Number,
+            selectedTabName: {
+                type: String,
                 required: false
             }
         },
@@ -92,27 +98,34 @@
 
             const childNodes = computed(() => context.slots.default?.() ?? []);
             const tabNodes = computed(() => filterVNodesByType(childNodes.value, Tab));
+            const tabsData = computed(() => tabNodes.value.map(getTabData));
 
-            const tabTitles = computed(() => tabNodes.value.map(tabNode => tabNode.props!.title));
+            function getTabData(tabNode: VNode): TabData {
+                return {
+                    name: tabNode.props!.name as string,
+                    title: tabNode.props!.title as string,
+                    node: tabNode
+                };
+            }
 
             function filterVNodesByType(vnodes: VNode[], type: VNodeTypes): VNode[] {
                 return vnodes.filter(vnode => vnode.type === type);
             }
 
-            const internalSelectedTabIndex = ref(0);
-            watch(() => props.selectedTabIndex, newValue => {
+            const internalSelectedTabName = ref(tabsData.value[0]?.name);
+            watch(() => props.selectedTabName, newValue => {
                 if (newValue != null) {
-                    internalSelectedTabIndex.value = newValue;
+                    internalSelectedTabName.value = newValue;
                 }
             }, {immediate: true});
 
-            function selectTab(event: Event, index: number) {
+            function selectTab(event: Event, tabName: string) {
 
                 const target = event.currentTarget as HTMLElement;
                 target.scrollIntoView(false);
 
-                internalSelectedTabIndex.value = index;
-                context.emit('update:selectedTabIndex', index);
+                internalSelectedTabName.value = tabName;
+                context.emit('update:selectedTabName', tabName);
 
             }
 
@@ -125,9 +138,8 @@
             }
 
             return {
-                tabNodes,
-                tabTitles,
-                internalSelectedTabIndex,
+                tabsData,
+                internalSelectedTabName,
                 selectTab,
                 scrollHorizontally
             };

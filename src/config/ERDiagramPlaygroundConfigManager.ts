@@ -10,63 +10,137 @@ import {
 } from '@nestorrente/erdiagram';
 import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
 import ERDiagramPlaygroundSerializedConfig from '@/config/ERDiagramPlaygroundSerializedConfig';
+import PartialERDiagramPlaygroundConfig from '@/config/PartialERDiagramPlaygroundConfig';
+
+export const LAST_CONFIG_VERSION = '0.1.0';
 
 export class ERDiagramPlaygroundConfigManager
-		extends AbstractComponentConfigManager<ERDiagramPlaygroundConfig, Partial<ERDiagramPlaygroundConfig>, ERDiagramPlaygroundSerializedConfig> {
+		extends AbstractComponentConfigManager<ERDiagramPlaygroundConfig, PartialERDiagramPlaygroundConfig, ERDiagramPlaygroundSerializedConfig> {
 
 	getDefaultConfig(): ERDiagramPlaygroundConfig {
 		return {
-			erModel: entityRelationshipModelParserConfigManager.getDefaultConfig(),
-			mysqlDatabaseModel: databaseModelGeneratorConfigManager.getDefaultConfig(),
-			mysql: mysqlDatabaseModelToCodeConverterConfigManager.getDefaultConfig(),
-			sqlServerDatabaseModel: databaseModelGeneratorConfigManager.getDefaultConfig(),
-			sqlserver: sqlServerDatabaseModelToCodeConverterConfigManager.getDefaultConfig(),
-			oracleDatabaseModel: databaseModelGeneratorConfigManager.getDefaultConfig(),
-			oracle: oracleDatabaseModelToCodeConverterConfigManager.getDefaultConfig(),
-			java: javaClassModelToCodeConverterConfigManager.getDefaultConfig(),
-			typescript: typescriptClassModelToCodeConverterConfigManager.getDefaultConfig()
+			_version: LAST_CONFIG_VERSION,
+			erModelParser: entityRelationshipModelParserConfigManager.getDefaultConfig(),
+			mysql: {
+				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.getDefaultConfig(),
+				databaseModelToCodeConverterConfig: mysqlDatabaseModelToCodeConverterConfigManager.getDefaultConfig()
+			},
+			sqlserver: {
+				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.getDefaultConfig(),
+				databaseModelToCodeConverterConfig: sqlServerDatabaseModelToCodeConverterConfigManager.getDefaultConfig()
+			},
+			oracle: {
+				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.getDefaultConfig(),
+				databaseModelToCodeConverterConfig: oracleDatabaseModelToCodeConverterConfigManager.getDefaultConfig()
+			},
+			java: {
+				classModelToCodeConverterConfig: javaClassModelToCodeConverterConfigManager.getDefaultConfig()
+			},
+			typescript: {
+				classModelToCodeConverterConfig: typescriptClassModelToCodeConverterConfigManager.getDefaultConfig()
+			}
 		};
 	}
 
-	mergeConfigs(fullConfig: ERDiagramPlaygroundConfig, partialConfig?: Partial<ERDiagramPlaygroundConfig>): ERDiagramPlaygroundConfig {
+	mergeConfigs(fullConfig: ERDiagramPlaygroundConfig, partialConfig?: PartialERDiagramPlaygroundConfig): ERDiagramPlaygroundConfig {
 		return {
-			erModel: entityRelationshipModelParserConfigManager.mergeConfigs(fullConfig.erModel, partialConfig?.erModel),
-			mysqlDatabaseModel: databaseModelGeneratorConfigManager.mergeConfigs(fullConfig.mysqlDatabaseModel, partialConfig?.mysqlDatabaseModel),
-			mysql: mysqlDatabaseModelToCodeConverterConfigManager.mergeConfigs(fullConfig.mysql, partialConfig?.mysql),
-			sqlServerDatabaseModel: databaseModelGeneratorConfigManager.mergeConfigs(fullConfig.sqlServerDatabaseModel, partialConfig?.sqlServerDatabaseModel),
-			sqlserver: sqlServerDatabaseModelToCodeConverterConfigManager.mergeConfigs(fullConfig.sqlserver, partialConfig?.sqlserver),
-			oracleDatabaseModel: databaseModelGeneratorConfigManager.mergeConfigs(fullConfig.oracleDatabaseModel, partialConfig?.oracleDatabaseModel),
-			oracle: oracleDatabaseModelToCodeConverterConfigManager.mergeConfigs(fullConfig.oracle, partialConfig?.oracle),
-			java: javaClassModelToCodeConverterConfigManager.mergeConfigs(fullConfig.java, partialConfig?.java),
-			typescript: typescriptClassModelToCodeConverterConfigManager.mergeConfigs(fullConfig.typescript, partialConfig?.typescript)
+			_version: fullConfig._version,
+			erModelParser: entityRelationshipModelParserConfigManager.mergeConfigs(
+					fullConfig.erModelParser,
+					partialConfig?.erModelParser
+			),
+			mysql: {
+				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.mergeConfigs(
+						fullConfig.mysql.databaseModelGeneratorConfig,
+						partialConfig?.mysql?.databaseModelGeneratorConfig
+				),
+				databaseModelToCodeConverterConfig: mysqlDatabaseModelToCodeConverterConfigManager.mergeConfigs(
+						fullConfig.mysql.databaseModelToCodeConverterConfig,
+						partialConfig?.mysql?.databaseModelToCodeConverterConfig
+				)
+			},
+			sqlserver: {
+				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.mergeConfigs(
+						fullConfig.sqlserver.databaseModelGeneratorConfig,
+						partialConfig?.sqlserver?.databaseModelGeneratorConfig
+				),
+				databaseModelToCodeConverterConfig: sqlServerDatabaseModelToCodeConverterConfigManager.mergeConfigs(
+						fullConfig.sqlserver.databaseModelToCodeConverterConfig,
+						partialConfig?.sqlserver?.databaseModelToCodeConverterConfig
+				),
+			},
+			oracle: {
+				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.mergeConfigs(
+						fullConfig.oracle.databaseModelGeneratorConfig,
+						partialConfig?.oracle?.databaseModelGeneratorConfig
+				),
+				databaseModelToCodeConverterConfig: oracleDatabaseModelToCodeConverterConfigManager.mergeConfigs(
+						fullConfig.oracle.databaseModelToCodeConverterConfig,
+						partialConfig?.oracle?.databaseModelToCodeConverterConfig
+				),
+			},
+			java: {
+				classModelToCodeConverterConfig: javaClassModelToCodeConverterConfigManager.mergeConfigs(
+						fullConfig.java.classModelToCodeConverterConfig,
+						partialConfig?.java?.classModelToCodeConverterConfig
+				)
+			},
+			typescript: {
+				classModelToCodeConverterConfig: typescriptClassModelToCodeConverterConfigManager.mergeConfigs(
+						fullConfig.typescript.classModelToCodeConverterConfig,
+						partialConfig?.typescript?.classModelToCodeConverterConfig
+				)
+			}
 		};
 	}
 
 	convertToSerializableObject(fullConfig: ERDiagramPlaygroundConfig): ERDiagramPlaygroundSerializedConfig {
 		return {
-			erModel: entityRelationshipModelParserConfigManager.convertToSerializableObject(fullConfig.erModel),
-			mysqlDatabaseModel: databaseModelGeneratorConfigManager.convertToSerializableObject(fullConfig.mysqlDatabaseModel),
-			mysql: mysqlDatabaseModelToCodeConverterConfigManager.convertToSerializableObject(fullConfig.mysql),
-			sqlServerDatabaseModel: databaseModelGeneratorConfigManager.convertToSerializableObject(fullConfig.sqlServerDatabaseModel),
-			sqlserver: sqlServerDatabaseModelToCodeConverterConfigManager.convertToSerializableObject(fullConfig.sqlserver),
-			oracleDatabaseModel: databaseModelGeneratorConfigManager.convertToSerializableObject(fullConfig.oracleDatabaseModel),
-			oracle: oracleDatabaseModelToCodeConverterConfigManager.convertToSerializableObject(fullConfig.oracle),
-			java: javaClassModelToCodeConverterConfigManager.convertToSerializableObject(fullConfig.java),
-			typescript: typescriptClassModelToCodeConverterConfigManager.convertToSerializableObject(fullConfig.typescript)
+			_version: fullConfig._version,
+			erModelParser: entityRelationshipModelParserConfigManager.convertToSerializableObject(fullConfig.erModelParser),
+			mysql: {
+				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.convertToSerializableObject(fullConfig.mysql.databaseModelGeneratorConfig),
+				databaseModelToCodeConverterConfig: mysqlDatabaseModelToCodeConverterConfigManager.convertToSerializableObject(fullConfig.mysql.databaseModelToCodeConverterConfig)
+			},
+			sqlserver: {
+				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.convertToSerializableObject(fullConfig.sqlserver.databaseModelGeneratorConfig),
+				databaseModelToCodeConverterConfig: sqlServerDatabaseModelToCodeConverterConfigManager.convertToSerializableObject(fullConfig.sqlserver.databaseModelToCodeConverterConfig),
+			},
+			oracle: {
+				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.convertToSerializableObject(fullConfig.oracle.databaseModelGeneratorConfig),
+				databaseModelToCodeConverterConfig: oracleDatabaseModelToCodeConverterConfigManager.convertToSerializableObject(fullConfig.oracle.databaseModelToCodeConverterConfig),
+			},
+			java: {
+				classModelToCodeConverterConfig: javaClassModelToCodeConverterConfigManager.convertToSerializableObject(fullConfig.java.classModelToCodeConverterConfig)
+			},
+			typescript: {
+				classModelToCodeConverterConfig: typescriptClassModelToCodeConverterConfigManager.convertToSerializableObject(fullConfig.typescript.classModelToCodeConverterConfig)
+			}
 		};
 	}
 
 	convertFromSerializableObject(serializedConfig: ERDiagramPlaygroundSerializedConfig): ERDiagramPlaygroundConfig {
 		return {
-			erModel: entityRelationshipModelParserConfigManager.convertFromSerializableObject(serializedConfig.erModel),
-			mysqlDatabaseModel: databaseModelGeneratorConfigManager.convertFromSerializableObject(serializedConfig.mysqlDatabaseModel),
-			mysql: mysqlDatabaseModelToCodeConverterConfigManager.convertFromSerializableObject(serializedConfig.mysql),
-			sqlServerDatabaseModel: databaseModelGeneratorConfigManager.convertFromSerializableObject(serializedConfig.sqlServerDatabaseModel),
-			sqlserver: sqlServerDatabaseModelToCodeConverterConfigManager.convertFromSerializableObject(serializedConfig.sqlserver),
-			oracleDatabaseModel: databaseModelGeneratorConfigManager.convertFromSerializableObject(serializedConfig.oracleDatabaseModel),
-			oracle: oracleDatabaseModelToCodeConverterConfigManager.convertFromSerializableObject(serializedConfig.oracle),
-			java: javaClassModelToCodeConverterConfigManager.convertFromSerializableObject(serializedConfig.java),
-			typescript: typescriptClassModelToCodeConverterConfigManager.convertFromSerializableObject(serializedConfig.typescript)
+			_version: serializedConfig._version,
+			erModelParser: entityRelationshipModelParserConfigManager.convertFromSerializableObject(serializedConfig.erModelParser),
+			mysql: {
+				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.convertFromSerializableObject(serializedConfig.mysql.databaseModelGeneratorConfig),
+				databaseModelToCodeConverterConfig: mysqlDatabaseModelToCodeConverterConfigManager.convertFromSerializableObject(serializedConfig.mysql.databaseModelToCodeConverterConfig)
+			},
+			sqlserver: {
+				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.convertFromSerializableObject(serializedConfig.sqlserver.databaseModelGeneratorConfig),
+				databaseModelToCodeConverterConfig: sqlServerDatabaseModelToCodeConverterConfigManager.convertFromSerializableObject(serializedConfig.sqlserver.databaseModelToCodeConverterConfig),
+			},
+			oracle: {
+				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.convertFromSerializableObject(serializedConfig.oracle.databaseModelGeneratorConfig),
+				databaseModelToCodeConverterConfig: oracleDatabaseModelToCodeConverterConfigManager.convertFromSerializableObject(serializedConfig.oracle.databaseModelToCodeConverterConfig),
+			},
+			java: {
+				classModelToCodeConverterConfig: javaClassModelToCodeConverterConfigManager.convertFromSerializableObject(serializedConfig.java.classModelToCodeConverterConfig)
+			},
+			typescript: {
+				classModelToCodeConverterConfig: typescriptClassModelToCodeConverterConfigManager.convertFromSerializableObject(serializedConfig.typescript.classModelToCodeConverterConfig)
+			}
 		};
 	}
 

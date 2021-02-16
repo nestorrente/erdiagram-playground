@@ -8,6 +8,10 @@
     export default defineComponent({
         name: 'Tab',
         props: {
+            name: {
+                type: String,
+                required: true
+            },
             title: {
                 type: String,
                 required: true

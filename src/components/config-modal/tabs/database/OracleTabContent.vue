@@ -1,15 +1,15 @@
 <template>
     <SettingsTabSection title="Oracle settings">
         <CommonDatabaseSettingsTable
-                :database-model-config="config.oracleDatabaseModel"
-                :code-converter-config="config.oracle"
-                :default-code-converter-config="defaultCodeConverterConfig"
+                :database-model-generator-config="config.oracle.databaseModelGeneratorConfig"
+                :database-model-to-code-converter-config="config.oracle.databaseModelToCodeConverterConfig"
+                :default-database-model-to-code-converter-config="defaultDatabaseModelToCodeConverterConfig"
         />
 
         <TypeBindingsTable
                 target-lang="Oracle"
-                :type-bindings="config.oracle.typeMappings"
-                :default-type-bindings="defaultCodeConverterConfig.typeMappings"
+                :type-bindings="config.oracle.databaseModelToCodeConverterConfig.typeBindings"
+                :default-type-bindings="defaultDatabaseModelToCodeConverterConfig.typeBindings"
         />
     </SettingsTabSection>
 </template>
@@ -36,7 +36,7 @@
         },
         setup() {
             return {
-                defaultCodeConverterConfig: oracleDatabaseModelToCodeConverterConfigManager.getDefaultConfig()
+                defaultDatabaseModelToCodeConverterConfig: oracleDatabaseModelToCodeConverterConfigManager.getDefaultConfig()
             };
         }
     });

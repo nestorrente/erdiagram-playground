@@ -1,5 +1,7 @@
 import {
+	ClassModelToCodeConverterSerializedConfig,
 	DatabaseModelGeneratorSerializedConfig,
+	DatabaseModelToCodeConverterSerializedConfig,
 	EntityRelationshipModelParserSerializedConfig,
 	JavaClassModelToCodeConverterSerializedConfig,
 	MySqlDatabaseModelToCodeConverterSerializedConfig,
@@ -9,13 +11,20 @@ import {
 } from '@nestorrente/erdiagram';
 
 export default interface ERDiagramPlaygroundSerializedConfig {
-	erModel: EntityRelationshipModelParserSerializedConfig;
-	mysqlDatabaseModel: DatabaseModelGeneratorSerializedConfig;
-	mysql: MySqlDatabaseModelToCodeConverterSerializedConfig;
-	sqlServerDatabaseModel: DatabaseModelGeneratorSerializedConfig;
-	sqlserver: SqlServerDatabaseModelToCodeConverterSerializedConfig;
-	oracleDatabaseModel: DatabaseModelGeneratorSerializedConfig;
-	oracle: OracleDatabaseModelToCodeConverterSerializedConfig;
-	java: JavaClassModelToCodeConverterSerializedConfig;
-	typescript: TypeScriptClassModelToCodeConverterSerializedConfig;
+	_version: string;
+	erModelParser: EntityRelationshipModelParserSerializedConfig;
+	mysql: DatabaseDialectSerializedConfig<MySqlDatabaseModelToCodeConverterSerializedConfig>;
+	sqlserver: DatabaseDialectSerializedConfig<SqlServerDatabaseModelToCodeConverterSerializedConfig>;
+	oracle: DatabaseDialectSerializedConfig<OracleDatabaseModelToCodeConverterSerializedConfig>;
+	java: ClassLanguageSerializedConfig<JavaClassModelToCodeConverterSerializedConfig>;
+	typescript: ClassLanguageSerializedConfig<TypeScriptClassModelToCodeConverterSerializedConfig>;
+}
+
+export interface DatabaseDialectSerializedConfig<T extends DatabaseModelToCodeConverterSerializedConfig> {
+	databaseModelGeneratorConfig: DatabaseModelGeneratorSerializedConfig;
+	databaseModelToCodeConverterConfig: T;
+}
+
+export interface ClassLanguageSerializedConfig<T extends ClassModelToCodeConverterSerializedConfig> {
+	classModelToCodeConverterConfig: T;
 }

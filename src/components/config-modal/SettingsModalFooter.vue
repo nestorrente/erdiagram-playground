@@ -3,7 +3,7 @@
         <div class="column is-half">
             <Dropdown up hoverable>
                 <template #trigger>
-                    <Button icon="fas fa-bars">
+                    <Button icon="fas fa-angle-up">
                         More actions
                     </Button>
                 </template>
@@ -52,7 +52,7 @@
     import Icon from '@/components/generic/form/Icon.vue';
 
     export default defineComponent({
-        name: 'ConfigModalFooter',
+        name: 'SettingsModalFooter',
         emits: [
             'importConfig',
             'exportConfig',

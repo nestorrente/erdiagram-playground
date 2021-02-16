@@ -11,7 +11,7 @@
                         <input
                                 type="text"
                                 class="input"
-                                v-model="config.java.generatedClassesPackage"
+                                v-model="config.java.classModelToCodeConverterConfig.generatedClassesPackage"
                                 placeholder="com.example"
                         >
                     </td>
@@ -21,7 +21,7 @@
                                 rounded
                                 small
                                 icon="fas fa-undo-alt"
-                                @click="config.java.generatedClassesPackage = defaultCodeConverterConfig.generatedClassesPackage"
+                                @click="config.java.classModelToCodeConverterConfig.generatedClassesPackage = defaultClassModelToCodeConverterConfig.generatedClassesPackage"
                         ></Button>
                     </td>
                 </tr>
@@ -33,7 +33,7 @@
                         <label class="checkbox">
                             <input
                                     type="checkbox"
-                                    v-model="config.java.useSpringNullabilityAnnotations"
+                                    v-model="config.java.classModelToCodeConverterConfig.useSpringNullabilityAnnotations"
                                     class="mr-1"
                             >
                         </label>
@@ -44,7 +44,7 @@
                                 rounded
                                 small
                                 icon="fas fa-undo-alt"
-                                @click="config.java.useSpringNullabilityAnnotations = defaultCodeConverterConfig.useSpringNullabilityAnnotations"
+                                @click="config.java.classModelToCodeConverterConfig.useSpringNullabilityAnnotations = defaultClassModelToCodeConverterConfig.useSpringNullabilityAnnotations"
                         ></Button>
                     </td>
                 </tr>
@@ -53,8 +53,8 @@
 
         <TypeBindingsTable
                 target-lang="Java"
-                :type-bindings="config.java.typeMappings"
-                :default-type-bindings="defaultCodeConverterConfig.typeMappings"
+                :type-bindings="config.java.classModelToCodeConverterConfig.typeBindings"
+                :default-type-bindings="defaultClassModelToCodeConverterConfig.typeBindings"
                 :display-function="formatJavaType"
                 :parse-function="parseJavaType"
         />
@@ -82,12 +82,12 @@
 
             const formatJavaType = (javaType: JavaType) => javaType.formatCanonical();
 
-            const defaultCodeConverterConfig = javaClassModelToCodeConverterConfigManager.getDefaultConfig();
+            const defaultClassModelToCodeConverterConfig = javaClassModelToCodeConverterConfigManager.getDefaultConfig();
 
             return {
                 parseJavaType,
                 formatJavaType,
-                defaultCodeConverterConfig
+                defaultClassModelToCodeConverterConfig
             };
 
         }

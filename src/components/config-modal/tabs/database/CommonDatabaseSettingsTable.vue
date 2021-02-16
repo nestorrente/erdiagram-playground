@@ -10,7 +10,7 @@
                     <label class="checkbox">
                         <input
                                 type="checkbox"
-                                v-model="databaseModelConfig.usePluralTableNames"
+                                v-model="databaseModelGeneratorConfig.usePluralTableNames"
                                 class="mr-1"
                         >
                     </label>
@@ -21,7 +21,7 @@
                             rounded
                             small
                             icon="fas fa-undo-alt"
-                            @click="databaseModelConfig.usePluralTableNames = defaultDatabaseModelConfig.usePluralTableNames"
+                            @click="databaseModelGeneratorConfig.usePluralTableNames = defaultDatabaseModelConfig.usePluralTableNames"
                     ></Button>
                 </td>
             </tr>
@@ -44,7 +44,7 @@
                             rounded
                             small
                             icon="fas fa-undo-alt"
-                            @click="databaseModelConfig.idNamingStrategy = defaultDatabaseModelConfig.idNamingStrategy"
+                            @click="databaseModelGeneratorConfig.idNamingStrategy = defaultDatabaseModelConfig.idNamingStrategy"
                     ></Button>
                 </td>
             </tr>
@@ -67,7 +67,7 @@
                             rounded
                             small
                             icon="fas fa-undo-alt"
-                            @click="codeConverterConfig.tableNameCaseFormat = defaultCodeConverterConfig.tableNameCaseFormat"
+                            @click="databaseModelToCodeConverterConfig.tableNameCaseFormat = defaultDatabaseModelToCodeConverterConfig.tableNameCaseFormat"
                     ></Button>
                 </td>
             </tr>
@@ -90,7 +90,7 @@
                             rounded
                             small
                             icon="fas fa-undo-alt"
-                            @click="codeConverterConfig.columnNameCaseFormat = defaultCodeConverterConfig.columnNameCaseFormat"
+                            @click="databaseModelToCodeConverterConfig.columnNameCaseFormat = defaultDatabaseModelToCodeConverterConfig.columnNameCaseFormat"
                     ></Button>
                 </td>
             </tr>
@@ -115,9 +115,9 @@
     import Button from '@/components/generic/form/Button.vue';
 
     interface Props {
-        databaseModelConfig: DatabaseModelGeneratorConfig;
-        codeConverterConfig: DatabaseModelToCodeConverterConfig;
-        defaultCodeConverterConfig: DatabaseModelToCodeConverterConfig;
+        databaseModelGeneratorConfig: DatabaseModelGeneratorConfig;
+        databaseModelToCodeConverterConfig: DatabaseModelToCodeConverterConfig;
+        defaultDatabaseModelToCodeConverterConfig: DatabaseModelToCodeConverterConfig;
     }
 
     export default defineComponent({
@@ -127,15 +127,15 @@
             SelectInput
         },
         props: {
-            databaseModelConfig: {
+            databaseModelGeneratorConfig: {
                 type: Object,
                 required: true
             },
-            codeConverterConfig: {
+            databaseModelToCodeConverterConfig: {
                 type: Object,
                 required: true
             },
-            defaultCodeConverterConfig: {
+            defaultDatabaseModelToCodeConverterConfig: {
                 type: Object,
                 required: true
             }
@@ -170,14 +170,14 @@
 
             const selectedTableNameCaseFormatOption = useSelectInputOptions(
                     caseFormatOptions,
-                    () => props.codeConverterConfig.tableNameCaseFormat,
-                    newValue => props.codeConverterConfig.tableNameCaseFormat = newValue
+                    () => props.databaseModelToCodeConverterConfig.tableNameCaseFormat,
+                    newValue => props.databaseModelToCodeConverterConfig.tableNameCaseFormat = newValue
             );
 
             const selectedColumnNameCaseFormatOption = useSelectInputOptions(
                     caseFormatOptions,
-                    () => props.codeConverterConfig.columnNameCaseFormat,
-                    newValue => props.codeConverterConfig.columnNameCaseFormat = newValue
+                    () => props.databaseModelToCodeConverterConfig.columnNameCaseFormat,
+                    newValue => props.databaseModelToCodeConverterConfig.columnNameCaseFormat = newValue
             );
 
             const idNamingStrategyOptions: SelectInputOption<IdNamingStrategy>[] = [
@@ -193,8 +193,8 @@
 
             const selectedIdNamingStrategyOption = useSelectInputOptions(
                     idNamingStrategyOptions,
-                    () => props.databaseModelConfig.idNamingStrategy,
-                    newValue => props.databaseModelConfig.idNamingStrategy = newValue
+                    () => props.databaseModelGeneratorConfig.idNamingStrategy,
+                    newValue => props.databaseModelGeneratorConfig.idNamingStrategy = newValue
             );
 
             const defaultDatabaseModelConfig = databaseModelGeneratorConfigManager.getDefaultConfig();

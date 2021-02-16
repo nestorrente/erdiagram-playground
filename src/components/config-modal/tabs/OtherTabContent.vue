@@ -12,7 +12,7 @@
                         <label class="checkbox">
                             <input
                                     type="checkbox"
-                                    v-model="config.erModel.allowUnknownEntities"
+                                    v-model="config.erModelParser.allowUnknownEntities"
                                     class="mr-1"
                             >
                         </label>
