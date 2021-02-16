@@ -97,8 +97,8 @@ ace.define('ace/mode/erdiagram_highlight_rules', ['require', 'exports'], functio
 				'start': [
 					{
 						// Entity name (only)
-						token: ['storage.type', 'text'], // String, Array, or Function: the CSS token to apply
-						regex: /^([A-Za-z_][A-Za-z_0-9]*)(\s*)$/
+						token: ['storage.type', 'text', 'comment.line.number-sign'], // String, Array, or Function: the CSS token to apply
+						regex: /^([A-Za-z_][A-Za-z_0-9]*)(\s*)(#.*)?$/
 					},
 					{
 						// Entity name (and something more)
@@ -121,16 +121,12 @@ ace.define('ace/mode/erdiagram_highlight_rules', ['require', 'exports'], functio
 						regex: /([A-Za-z_][A-Za-z_0-9]*\s+)?([?!]*[*1]?(?:->|<->?)[*1]?[?!]*)/,
 						next: 'waitingRelationshipRightEntity'
 					},
-					{
-						token: 'invalid.other',
-						regex: /.*$/,
-						next: 'start'
-					},
+					DEFAULT_INVALID_RULE,
 				],
 				waitingRelationshipRightEntity: [
 					{
-						token: ['text', 'storage.type', 'variable.other', 'text'],
-						regex: /(\s*)([A-Za-z_][A-Za-z_0-9]*)(\s+[A-Za-z_][A-Za-z_0-9]*)?(\s*)$/,
+						token: ['text', 'storage.type', 'variable.other', 'text', 'comment.line.number-sign'],
+						regex: /(\s*)([A-Za-z_][A-Za-z_0-9]*)(\s+[A-Za-z_][A-Za-z_0-9]*)?(\s*)(#.*)?$/,
 						next: 'start'
 					},
 					{
@@ -142,8 +138,8 @@ ace.define('ace/mode/erdiagram_highlight_rules', ['require', 'exports'], functio
 				],
 				waitingRelationshipName: [
 					{
-						token: ['text', 'variable.other', 'text'],
-						regex: /(\()([A-Za-z_][A-Za-z_0-9]*)(\)\s*)$/,
+						token: ['text', 'variable.other', 'text', 'comment.line.number-sign'],
+						regex: /(\()([A-Za-z_][A-Za-z_0-9]*)(\)\s*)(#.*)?$/,
 						next: 'start'
 					},
 					DEFAULT_INVALID_RULE,
@@ -159,14 +155,14 @@ ace.define('ace/mode/erdiagram_highlight_rules', ['require', 'exports'], functio
 				entityPropertyType: [
 					{
 						// Type without length
-						token: ['text', 'keyword.other'],
-						regex: /(\s+)\b(bool|short|int|long|decimal|text|date|time|datetime|blob)\b$/,
+						token: ['text', 'keyword.other', 'text', 'comment.line.number-sign'],
+						regex: /(\s+)\b(bool|short|int|long|decimal|text|date|time|datetime|blob)\b(\s*)(#.*)?$/,
 						next: 'start'
 					},
 					{
 						// Uknown type without length
-						token: ['text', 'invalid.other'],
-						regex: /(\s+)\b([A-Za-z_][A-Za-z_0-9]*)\b$/,
+						token: ['text', 'invalid.other', 'text', 'comment.line.number-sign'],
+						regex: /(\s+)\b([A-Za-z_][A-Za-z_0-9]*)\b(\s*)(#.*)?$/,
 						next: 'start'
 					},
 					{
@@ -180,14 +176,6 @@ ace.define('ace/mode/erdiagram_highlight_rules', ['require', 'exports'], functio
 						token: ['text', 'invalid.other'],
 						regex: /(\s+)\b([A-Za-z_][A-Za-z_0-9]*)\b/,
 						next: 'entityPropertyTypeLengthStart'
-					},
-					DEFAULT_INVALID_RULE,
-				],
-				entityPropertyTypeLengthOLD: [
-					{
-						token: 'constant.numeric',
-						regex: /(?:\(\d+(?:\s*,\s*\d+)*\))$/,
-						next: 'start'
 					},
 					DEFAULT_INVALID_RULE,
 				],
@@ -218,8 +206,8 @@ ace.define('ace/mode/erdiagram_highlight_rules', ['require', 'exports'], functio
 						regex: /(\s*,\s*)(\d+)/
 					},
 					{
-						token: 'text',
-						regex: /\s*\)\s*$/,
+						token: ['text', 'comment.line.number-sign'],
+						regex: /(\s*\)\s*)(#.*)?$/,
 						next: 'start'
 					},
 					{

@@ -133,6 +133,8 @@
     import Button from '@/components/generic/form/Button.vue';
     import Tab from '@/components/tabs/Tab.vue';
     import UpdateOutputCodeButton from '@/UpdateOutputCodeButton.vue';
+    import {localJsonStorage} from '@/storage/JsonStorage';
+    import ERDiagramPlaygroundSerializedConfig from '@/config/ERDiagramPlaygroundSerializedConfig';
 
     export default defineComponent({
         name: 'App',
@@ -151,10 +153,10 @@
 
             function getInitialConfig(): ERDiagramPlaygroundConfig {
 
-                const serializedConfig = localStorage.getItem('erdiagramConfig');
+                const serializedConfig = localJsonStorage.getItem<ERDiagramPlaygroundSerializedConfig>('erdiagramConfig');
 
                 if (serializedConfig) {
-                    const config = erdiagramPlaygroundConfigManager.convertFromSerializableObject(JSON.parse(serializedConfig));
+                    const config = erdiagramPlaygroundConfigManager.convertFromSerializableObject(serializedConfig);
 
                     // Check you are using the last version of the config
                     if (config._version === LAST_CONFIG_VERSION) {
@@ -177,7 +179,7 @@
             const modelOutdated = ref(true);
             watch(inputCode, () => modelOutdated.value = true);
             watch(configFromModal, newValue => {
-                localStorage.setItem('erdiagramConfig', JSON.stringify(erdiagramPlaygroundConfigManager.convertToSerializableObject(newValue)));
+                localJsonStorage.setItem('erdiagramConfig', erdiagramPlaygroundConfigManager.convertToSerializableObject(newValue));
                 return modelOutdated.value = true;
             });
 

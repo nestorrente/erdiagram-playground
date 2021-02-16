@@ -1,7 +1,17 @@
+Trainer
+    name text(30)
+    birthdate? date
+
+Trainer <->* Pokemon
+
 Pokemon
     name text(20)
     pokedexNumber int
     legendary bool
+
+Pokemon *->* Move
+
+Pokemon *-> Region origin
 
 Move
     name text(30)
@@ -12,7 +22,3 @@ Move
 
 Region
     name text(30)
-
-Pokemon *->* Move
-
-Pokemon native *<-> Region origin
