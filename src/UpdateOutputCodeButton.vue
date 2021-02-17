@@ -1,6 +1,6 @@
 <template>
     <button
-            class="button is-fullwidth mb-5 background-transition"
+            class="button is-fullwidth background-transition"
             :class="{
                 'is-warning': modelOutdated,
                 'is-danger is-light': !modelOutdated && hasErrors,

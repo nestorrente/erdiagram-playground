@@ -8,7 +8,7 @@
                 <div class="columns is-full-height">
                     <div class="column is-half">
                         <div class="vertical-full-container">
-                            <div class="vfc-item">
+                            <div class="vfc-item pb-5">
                                 <UpdateOutputCodeButton
                                         :model-outdated="modelOutdated"
                                         :has-errors="hasErrors"
@@ -27,70 +27,40 @@
                     </div>
                     <div class="column is-half">
                         <div class="vertical-full-container">
-                            <Tabs
-                                    v-model:selected-tab-name="outputCodeSelectedTabName"
-                                    toggle
-                                    append-tabs-class="vfc-item"
-                                    append-tabs-content-class="vfc-item vfc-grow"
-                            >
-                                <Tab name="mysql" title="MySQL">
-                                    <CodeBlock
-                                            lang="sql_more"
-                                            :code="generatedMysqlCode"
-                                            full-height
-                                    />
-                                </Tab>
-                                <!--<Tab name="postgresql" title="PostgreSQL">-->
-                                <!--    Not supported yet.-->
-                                <!--</Tab>-->
-                                <!--<Tab name="sqlite" title="SQLite">-->
-                                <!--    Not supported yet.-->
-                                <!--</Tab>-->
-                                <Tab name="oracle" title="Oracle DB">
-                                    <CodeBlock
-                                            lang="sql_more"
-                                            :code="generatedOracleCode"
-                                            full-height
-                                    />
-                                </Tab>
-                                <Tab name="sqlserver" title="SQL Server">
-                                    <CodeBlock
-                                            lang="sql_more"
-                                            :code="generatedSqlServerCode"
-                                            full-height
-                                    />
-                                </Tab>
-                                <Tab name="java" title="Java POJO">
-                                    <CodeBlock
-                                            lang="java"
-                                            :code="generatedJavaCode"
-                                            full-height
-                                    />
-                                </Tab>
-                                <Tab name="typescript" title="TypeScript">
-                                    <CodeBlock
-                                            lang="typescript"
-                                            :code="generatedTypeScriptCode"
-                                            full-height
-                                    />
-                                </Tab>
-                                <template #afterTabs>
-                                    <ul class="is-justify-content-flex-end is-flex-shrink-1 is-flex-grow-0 pl-4">
+                            <div class="vfc-item pb-5">
+                                <div class="columns is-mobile">
+                                    <div class="column">
+                                        <SelectInput
+                                                :items="outputFormats"
+                                                v-model="selectedOutputFormat"
+                                                id-field="id"
+                                                text-field="name"
+                                                block
+                                        ></SelectInput>
+                                    </div>
+                                    <div class="column is-justify-content-flex-end is-flex-shrink-1 is-flex-grow-0">
                                         <li class="buttons">
                                             <Button
                                                     color="link"
                                                     small
                                                     rounded
-                                                    class="is-button-text-hidden-mobile"
-                                                    icon="fas fa-cog"
+                                                    class="is-button-text-hidden-mobile my-1"
+                                                    icon="fas fa-wrench"
                                                     @click="showSettingsModal"
                                             >
                                                 Settings
                                             </Button>
                                         </li>
-                                    </ul>
-                                </template>
-                            </Tabs>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="vfc-item vfc-grow">
+                                <CodeBlock
+                                        :lang="selectedOutputFormat.codeBlockLang"
+                                        :code="outputCode"
+                                        full-height
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -102,14 +72,13 @@
             v-model:config="configFromModal"
             v-model:selected-tab-name="settingsModalSelectedTabName"
     />
-    <GlobalConfirmModal/>
+    <GlobalModalDialog/>
 </template>
 
 <script lang="ts">
     import {computed, ComputedRef, defineComponent, onBeforeUnmount, onMounted, ref, watch} from 'vue';
     import NavBar from '@/components/layout/NavBar.vue';
     import CodeBlock from '@/components/generic/code/CodeBlock.vue';
-    import Tabs from '@/components/tabs/Tabs.vue';
     import {
         ClassModelGenerator,
         DatabaseModelGenerator,
@@ -126,26 +95,32 @@
     } from '@nestorrente/erdiagram';
     import SettingsModal from '@/components/config-modal/SettingsModal.vue';
     import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
-    import GlobalConfirmModal from '@/components/generic/modal/GlobalConfirmModal.vue';
+    import GlobalModalDialog from '@/components/generic/modal/GlobalModalDialog.vue';
     import CodeEditor from '@/components/generic/code/CodeEditor.vue';
     import pokemonSampleCode from '!!raw-loader!@/sample-erd-files/Pokemon.erd';
     import erdiagramPlaygroundConfigManager, {LAST_CONFIG_VERSION} from '@/config/ERDiagramPlaygroundConfigManager';
     import Button from '@/components/generic/form/Button.vue';
-    import Tab from '@/components/tabs/Tab.vue';
     import UpdateOutputCodeButton from '@/UpdateOutputCodeButton.vue';
     import {localJsonStorage} from '@/storage/JsonStorage';
     import ERDiagramPlaygroundSerializedConfig from '@/config/ERDiagramPlaygroundSerializedConfig';
+    import SelectInput from '@/components/generic/form/SelectInput.vue';
+
+    interface OutputFormat {
+        id: string;
+        name: string;
+        codeBlockLang: string;
+        erModelToCodeConverter: ComputedRef<EntityRelationshipModelToCodeConverter>;
+    }
 
     export default defineComponent({
         name: 'App',
         components: {
+            SelectInput,
             UpdateOutputCodeButton,
-            Tab,
             Button,
             CodeEditor,
-            GlobalConfirmModal,
+            GlobalModalDialog,
             SettingsModal,
-            Tabs,
             CodeBlock,
             NavBar
         },
@@ -260,7 +235,7 @@
                 return new DatabaseModelGenerator(config.value.sqlserver.databaseModelGeneratorConfig);
             });
 
-            const sqlServerConverter = computed(() => {
+            const sqlserverConverter = computed(() => {
                 return new EntityRelationshipModelToDatabaseCodeConverter(
                         sqlServerDatabaseModelGenerator.value,
                         new SqlServerDatabaseModelToCodeConverter(config.value.sqlserver.databaseModelToCodeConverterConfig)
@@ -287,7 +262,7 @@
                 );
             });
 
-            const typeScriptConverter = computed(() => {
+            const typescriptConverter = computed(() => {
                 return new EntityRelationshipModelToClassCodeConverter(
                         classModelGenerator.value,
                         new TypeScriptClassModelToCodeConverter(config.value.typescript.classModelToCodeConverterConfig)
@@ -295,10 +270,10 @@
             });
 
             const generatedMysqlCode = createComputedCompiledCode(mysqlConverter);
-            const generatedSqlServerCode = createComputedCompiledCode(sqlServerConverter);
+            const generatedSqlServerCode = createComputedCompiledCode(sqlserverConverter);
             const generatedOracleCode = createComputedCompiledCode(oracleConverter);
             const generatedJavaCode = createComputedCompiledCode(javaConverter);
-            const generatedTypeScriptCode = createComputedCompiledCode(typeScriptConverter);
+            const generatedTypeScriptCode = createComputedCompiledCode(typescriptConverter);
 
             function createComputedCompiledCode(converter: ComputedRef<EntityRelationshipModelToCodeConverter>) {
                 return computed(() => {
@@ -312,15 +287,65 @@
                 });
             }
 
-            const outputCodeSelectedTabName = ref('mysql');
             const settingsModalSelectedTabName = ref('mysql');
 
             const showingSettingsModal = ref(false);
 
             function showSettingsModal() {
-                settingsModalSelectedTabName.value = outputCodeSelectedTabName.value;
+                settingsModalSelectedTabName.value = selectedOutputFormat.value.name;
                 showingSettingsModal.value = true;
             }
+
+            const outputFormats: Record<string, OutputFormat[]> = {
+                'Database': [
+                    {
+                        id: 'mysql',
+                        name: 'MySQL',
+                        codeBlockLang: 'sql_more',
+                        erModelToCodeConverter: mysqlConverter
+                    },
+                    {
+                        id: 'oracle',
+                        name: 'Oracle DB',
+                        codeBlockLang: 'sql_more',
+                        erModelToCodeConverter: oracleConverter
+                    },
+                    {
+                        id: 'sqlserver',
+                        name: 'SQL Server',
+                        codeBlockLang: 'sql_more',
+                        erModelToCodeConverter: sqlserverConverter
+                    }
+                ],
+                'OOP': [
+                    {
+                        id: 'java',
+                        name: 'Java POJO',
+                        codeBlockLang: 'java',
+                        erModelToCodeConverter: javaConverter
+                    },
+                    {
+                        id: 'typescript',
+                        name: 'TypeScript',
+                        codeBlockLang: 'typescript',
+                        erModelToCodeConverter: typescriptConverter
+                    }
+                ]
+            };
+
+            const selectedOutputFormat = ref(outputFormats['Database'][0]);
+
+            const outputCode = computed((): string => {
+
+                if (!entityRelationshipModel.value) {
+                    return '';
+                }
+
+                const erModelToCodeConverter = selectedOutputFormat.value.erModelToCodeConverter;
+
+                return erModelToCodeConverter.generateCode(entityRelationshipModel.value);
+
+            });
 
             return {
                 inputCode,
@@ -336,8 +361,10 @@
                 showSettingsModal,
                 showingSettingsModal,
                 configFromModal,
-                outputCodeSelectedTabName,
-                settingsModalSelectedTabName
+                settingsModalSelectedTabName,
+                outputFormats,
+                selectedOutputFormat,
+                outputCode
             };
 
         }

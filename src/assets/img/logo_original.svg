@@ -44,22 +44,15 @@
        x="4.2333336"
        y="3.7041667"
        ry="0.24266806" />
-    <g
-       aria-label="-&gt;*"
-       id="text927"
-       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583">
-      <path
-         d="m 2.9975739,10.43554 h 1.7948959 v 0.564996 H 2.9975739 Z"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05556px;font-family:'DejaVu Sans Mono';-inkscape-font-specification:'DejaVu Sans Mono';fill:#000000;fill-opacity:1;stroke-width:0.264583"
-         id="path836" />
-      <path
-         d="M 6.3186482,9.3399989 V 8.7129911 l 3.6414682,1.4400509 v 0.571886 l -3.6414682,1.440051 v -0.630453 l 2.928333,-1.092096 z"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05556px;font-family:'DejaVu Sans Mono';-inkscape-font-specification:'DejaVu Sans Mono';fill:#000000;fill-opacity:1;stroke-width:0.264583"
-         id="path838" />
-      <path
-         d="m 13.935759,8.3547009 -1.233345,0.668349 1.233345,0.671794 -0.19637,0.3376201 -1.157553,-0.6993553 V 10.631911 H 12.18565 V 9.3331087 L 11.028097,10.032464 10.831726,9.6948439 12.065071,9.0230499 10.831726,8.3547009 11.028097,8.0136362 12.18565,8.7129911 V 7.4141892 h 0.396186 v 1.2988019 l 1.157553,-0.6993549 z"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05556px;font-family:'DejaVu Sans Mono';-inkscape-font-specification:'DejaVu Sans Mono';fill:#000000;fill-opacity:1;stroke-width:0.264583"
-         id="path840" />
-    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583;"
+       x="1.7711191"
+       y="12.650738"
+       id="text927"><tspan
+         id="tspan925"
+         x="1.7711191"
+         y="12.650738"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.05556px;font-family:'DejaVu Sans Mono';-inkscape-font-specification:'DejaVu Sans Mono';fill:#000000;fill-opacity:1;stroke-width:0.264583;">-&gt;*</tspan></text>
   </g>
 </svg>

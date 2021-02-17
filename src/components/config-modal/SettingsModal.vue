@@ -66,7 +66,7 @@
     import {defineComponent, nextTick, ref, watch} from 'vue';
     import Modal from '@/components/generic/modal/Modal.vue';
     import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
-    import {showAlertModal, showConfirmModal} from '@/store/globalConfirmModalStore';
+    import {showConfirmModal, showErrorModal} from '@/store/globalModalDialogStore';
     import Tabs from '@/components/tabs/Tabs.vue';
     import erdiagramPlaygroundConfigManager, {LAST_CONFIG_VERSION} from '@/config/ERDiagramPlaygroundConfigManager';
     import Tab from '@/components/tabs/Tab.vue';
@@ -211,15 +211,15 @@
                             internalConfig.value = erdiagramPlaygroundConfigManager.mergeConfigs(internalConfig.value, importedConfig);
                         } else {
                             console.warn('Detected an invalid version of settings');
-                            showAlertModal({title: 'Error', message: 'Detected an invalid version of settings'});
+                            showErrorModal({title: 'Error', message: 'Detected an invalid version of settings'});
                         }
                     } catch (error) {
                         console.error('Cannot parse config file:', error);
-                        showAlertModal({title: 'Error', message: 'Cannot parse config file'});
+                        showErrorModal({title: 'Error', message: 'Cannot parse config file'});
                     }
                 }).catch(error => {
                     console.error('Cannot read config file:', error);
-                    showAlertModal({title: 'Error', message: 'Cannot read config file'});
+                    showErrorModal({title: 'Error', message: 'Cannot read config file'});
                 });
             }
 

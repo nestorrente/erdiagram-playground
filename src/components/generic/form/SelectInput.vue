@@ -1,12 +1,28 @@
 <template>
     <div class="select" :class="{'is-block': block}">
         <select v-model="selectedValue">
-            <option
-                    v-for="item in items"
-                    :key="getItemId(item)"
-                    :value="getItemId(item)"
-                    v-text="getItemText(item)"
-            ></option>
+            <template v-if="hasOptionGroups">
+                <option
+                        v-for="item in items"
+                        :key="getItemId(item)"
+                        :value="getItemId(item)"
+                        v-text="getItemText(item)"
+                ></option>
+            </template>
+            <template v-else>
+                <optgroup
+                        v-for="(groupItems, groupName) in items"
+                        :key="groupName"
+                        :label="groupName"
+                >
+                    <option
+                            v-for="item in groupItems"
+                            :key="getItemId(item)"
+                            :value="getItemId(item)"
+                            v-text="getItemText(item)"
+                    ></option>
+                </optgroup>
+            </template>
         </select>
     </div>
 </template>
@@ -18,7 +34,7 @@
 
     interface Props<T> {
         emptyOption: boolean;
-        items: T[];
+        items: T[] | Record<string, T[]>;
         idField: string | MapperCallback<T, any>;
         textField: string | MapperCallback<T, any>;
         modelValue: any;
@@ -38,7 +54,7 @@
                 default: false
             },
             items: {
-                type: Array,
+                type: [Array, Object],
                 default: () => []
             },
             idField: {
@@ -92,6 +108,16 @@
                 return String(value(item));
             }
 
+            const hasOptionGroups = computed(() => Array.isArray(props.items));
+
+            const itemsAsArray = computed((): any[] => {
+                if (Array.isArray(props.items)) {
+                    return props.items;
+                } else {
+                    return Object.values(props.items).flat();
+                }
+            });
+
             const selectedValue = ref<string>();
 
             watch(
@@ -103,7 +129,7 @@
             watch(
                     selectedValue,
                     value => {
-                        const selectedItem = props.items.find(item => getItemId(item) === value);
+                        const selectedItem = itemsAsArray.value.find(item => getItemId(item) === value);
                         context.emit('update:modelValue', selectedItem);
                     }
             );
@@ -111,6 +137,7 @@
             return {
                 getItemId,
                 getItemText,
+                hasOptionGroups,
                 selectedValue
             };
 

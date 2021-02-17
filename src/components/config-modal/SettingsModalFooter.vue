@@ -1,5 +1,5 @@
 <template>
-    <div class="columns">
+    <div class="columns is-mobile">
         <div class="column is-half">
             <Dropdown up hoverable>
                 <template #trigger>
@@ -44,7 +44,7 @@
 
 <script lang="ts">
     import {defineComponent, ref} from 'vue';
-    import {showConfirmModal} from '@/store/globalConfirmModalStore';
+    import {showConfirmModal} from '@/store/globalModalDialogStore';
     import Button from '@/components/generic/form/Button.vue';
     import Dropdown from '@/components/generic/form/Dropdown.vue';
     import DropdownItem from '@/components/generic/form/DropdownItem.vue';

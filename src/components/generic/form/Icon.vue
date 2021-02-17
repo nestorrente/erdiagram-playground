@@ -1,5 +1,5 @@
 <template>
-    <span class="icon">
+    <span class="icon" :class="color ? 'has-text-' + color : ''">
         <i :class="icon"></i>
     </span>
 </template>
@@ -10,7 +10,8 @@
     export default defineComponent({
         name: 'Icon',
         props: {
-            icon: String
+            icon: String,
+            color: String
         }
     });
 </script>

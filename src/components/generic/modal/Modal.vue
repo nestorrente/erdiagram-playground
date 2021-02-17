@@ -7,8 +7,16 @@
                 @click="onBackgroundClick"
         ></div>
         <div class="modal-card" v-bind="$attrs" :style="{maxWidth}">
-            <header class="modal-card-head">
-                <p class="modal-card-title">
+            <header
+                    class="modal-card-head"
+                    :class="appendHeaderClass"
+                    :style="appendHeaderStyle"
+            >
+                <p
+                        class="modal-card-title"
+                        :class="appendTitleClass"
+                        :style="appendTitleStyle"
+                >
                     <slot
                             v-if="$slots.title"
                             name="title"
@@ -30,7 +38,12 @@
             >
                 <slot></slot>
             </section>
-            <footer v-if="$slots.footer" class="modal-card-foot">
+            <footer
+                    v-if="$slots.footer"
+                    class="modal-card-foot"
+                    :class="appendFooterClass"
+                    :style="appendFooterStyle"
+            >
                 <div style="width: 100%">
                     <slot name="footer"></slot>
                 </div>
@@ -77,11 +90,35 @@
                 type: String,
                 required: false
             },
+            appendHeaderClass: {
+                type: [String, Array, Object],
+                required: false
+            },
+            appendHeaderStyle: {
+                type: [String, Array, Object],
+                required: false
+            },
+            appendTitleClass: {
+                type: [String, Array, Object],
+                required: false
+            },
+            appendTitleStyle: {
+                type: [String, Array, Object],
+                required: false
+            },
             appendBodyClass: {
                 type: [String, Array, Object],
                 required: false
             },
             appendBodyStyle: {
+                type: [String, Array, Object],
+                required: false
+            },
+            appendFooterClass: {
+                type: [String, Array, Object],
+                required: false
+            },
+            appendFooterStyle: {
                 type: [String, Array, Object],
                 required: false
             }
