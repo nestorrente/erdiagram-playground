@@ -5,15 +5,22 @@
         </div>
         <section class="section pb-3 vfc-item vfc-grow">
             <div class="container vertical-full-container">
-                <div class="columns is-full-height">
-                    <div class="column is-half">
+                <div class="columns is-desktop is-full-height">
+                    <div class="column is-half-desktop">
                         <div class="vertical-full-container">
                             <div class="vfc-item pb-5">
-                                <UpdateOutputCodeButton
-                                        :model-outdated="modelOutdated"
-                                        :has-errors="parseError != null"
-                                        @click="runERDiagram"
-                                />
+                                <div class="columns is-mobile">
+                                    <div class="column">
+                                        <UpdateOutputCodeButton
+                                                :model-outdated="modelOutdated"
+                                                :has-errors="parseError != null"
+                                                @click="runERDiagramParser"
+                                        />
+                                    </div>
+                                    <div class="column is-narrow">
+                                        <ExamplesDropdown @load-example="loadExampleCode"/>
+                                    </div>
+                                </div>
                             </div>
                             <div class="vfc-item vfc-grow">
                                 <CodeEditor
@@ -25,7 +32,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="column is-half">
+                    <div class="column is-half-desktop">
                         <div class="vertical-full-container">
                             <div class="vfc-item pb-5">
                                 <div class="columns is-mobile">
@@ -76,17 +83,13 @@
 </template>
 
 <script lang="ts">
-    import {computed, ComputedRef, defineComponent, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+    import {computed, ComputedRef, defineComponent, nextTick, onMounted, ref, watch} from 'vue';
     import NavBar from '@/components/layout/NavBar.vue';
     import CodeBlock from '@/components/generic/code/CodeBlock.vue';
     import {
-        ClassModelGenerator,
-        DatabaseModelGenerator,
         EntityRelationshipModel,
         EntityRelationshipModelParser,
-        EntityRelationshipModelToClassCodeConverter,
         EntityRelationshipModelToCodeConverter,
-        EntityRelationshipModelToDatabaseCodeConverter,
         ERDiagramParseError,
         JavaClassModelToCodeConverter,
         MySqlDatabaseModelToCodeConverter,
@@ -105,6 +108,13 @@
     import {localJsonStorage} from '@/storage/JsonStorage';
     import ERDiagramPlaygroundSerializedConfig from '@/config/ERDiagramPlaygroundSerializedConfig';
     import SelectInput from '@/components/generic/form/SelectInput.vue';
+    import ExamplesDropdown from '@/components/ExamplesDropdown.vue';
+    import useBeforeUnload from '@/composition/useBeforeUnload';
+    import useEntityRelationshipModelToClassCodeConverter
+        from '@/composition/useEntityRelationshipModelToClassCodeConverter';
+    import useEntityRelationshipModelToDatabaseCodeConverter
+        from '@/composition/useEntityRelationshipModelToDatabaseCodeConverter';
+    import {showConfirmModal} from '@/store/globalModalDialogStore';
 
     interface OutputFormat {
         id: string;
@@ -116,6 +126,7 @@
     export default defineComponent({
         name: 'App',
         components: {
+            ExamplesDropdown,
             SelectInput,
             UpdateOutputCodeButton,
             Button,
@@ -150,7 +161,7 @@
             const config = ref<ERDiagramPlaygroundConfig>(configFromModal.value);
 
             const inputCode = ref(appendPoweredByText(pokemonSampleCode));
-            onMounted(runERDiagram);
+            onMounted(runERDiagramParser);
 
             const modelOutdated = ref(true);
             watch(inputCode, () => modelOutdated.value = true);
@@ -164,26 +175,6 @@
 
             useBeforeUnload(() => modelOutdated.value);
 
-            function useBeforeUnload(hasChanged: () => boolean) {
-
-                const beforeUnloadHandler = () => {
-                    return hasChanged() ? 'Are you sure you want to exit? Changes you made will not be saved' : undefined;
-                };
-
-                let previousBeforeUnloadHandler: any = null;
-
-                onMounted(() => {
-                    previousBeforeUnloadHandler = window.onbeforeunload;
-                    window.onbeforeunload = beforeUnloadHandler;
-                });
-
-                onBeforeUnmount(() => {
-                    window.onbeforeunload = previousBeforeUnloadHandler;
-                    previousBeforeUnloadHandler = null;
-                });
-
-            }
-
             const entityRelationshipModelParser = computed(() => {
                 return new EntityRelationshipModelParser(config.value.erModelParser);
             });
@@ -195,11 +186,11 @@
             function onCodeEditorKeydown(event: KeyboardEvent) {
                 if (event.ctrlKey && event.key === 'Enter') {
                     event.preventDefault();
-                    runERDiagram();
+                    runERDiagramParser();
                 }
             }
 
-            function runERDiagram() {
+            function runERDiagramParser() {
 
                 if (!modelOutdated.value) {
                     return;
@@ -208,93 +199,51 @@
                 modelOutdated.value = false;
                 parseError.value = undefined;
 
+                config.value = configFromModal.value;
+
                 try {
                     entityRelationshipModel.value = entityRelationshipModelParser.value.parseModel(inputCode.value);
                     config.value = configFromModal.value;
                 } catch (e) {
                     console.log('ERDiagramParseError:', ERDiagramParseError);
                     if (e instanceof Error) {
-                        parseError.value = e;
                         entityRelationshipModel.value = undefined;
+                        parseError.value = e;
 
                         console.error(`Parse error: ${e.message}`);
                     }
                 }
             }
 
-            const mysqlDatabaseModelGenerator = computed(() => {
-                return new DatabaseModelGenerator(config.value.mysql.databaseModelGeneratorConfig);
+            const mysqlConverter = useEntityRelationshipModelToDatabaseCodeConverter(
+                    () => config.value.mysql.databaseModelGeneratorConfig,
+                    () => new MySqlDatabaseModelToCodeConverter(config.value.mysql.databaseModelToCodeConverterConfig)
+            );
+
+            const sqlserverConverter = useEntityRelationshipModelToDatabaseCodeConverter(
+                    () => config.value.sqlserver.databaseModelGeneratorConfig,
+                    () => new SqlServerDatabaseModelToCodeConverter(config.value.sqlserver.databaseModelToCodeConverterConfig)
+            );
+
+            const oracleConverter = useEntityRelationshipModelToDatabaseCodeConverter(
+                    () => config.value.oracle.databaseModelGeneratorConfig,
+                    () => new OracleDatabaseModelToCodeConverter(config.value.oracle.databaseModelToCodeConverterConfig)
+            );
+
+            const javaConverter = useEntityRelationshipModelToClassCodeConverter(() => {
+                return new JavaClassModelToCodeConverter(config.value.java.classModelToCodeConverterConfig);
             });
 
-            const mysqlConverter = computed(() => {
-                return new EntityRelationshipModelToDatabaseCodeConverter(
-                        mysqlDatabaseModelGenerator.value,
-                        new MySqlDatabaseModelToCodeConverter(config.value.mysql.databaseModelToCodeConverterConfig)
-                );
+            const typescriptConverter = useEntityRelationshipModelToClassCodeConverter(() => {
+                return new TypeScriptClassModelToCodeConverter(config.value.typescript.classModelToCodeConverterConfig);
             });
-
-            const sqlServerDatabaseModelGenerator = computed(() => {
-                return new DatabaseModelGenerator(config.value.sqlserver.databaseModelGeneratorConfig);
-            });
-
-            const sqlserverConverter = computed(() => {
-                return new EntityRelationshipModelToDatabaseCodeConverter(
-                        sqlServerDatabaseModelGenerator.value,
-                        new SqlServerDatabaseModelToCodeConverter(config.value.sqlserver.databaseModelToCodeConverterConfig)
-                );
-            });
-
-            const oracleDatabaseModelGenerator = computed(() => {
-                return new DatabaseModelGenerator(config.value.oracle.databaseModelGeneratorConfig);
-            });
-
-            const oracleConverter = computed(() => {
-                return new EntityRelationshipModelToDatabaseCodeConverter(
-                        oracleDatabaseModelGenerator.value,
-                        new OracleDatabaseModelToCodeConverter(config.value.oracle.databaseModelToCodeConverterConfig)
-                );
-            });
-
-            const classModelGenerator = computed(() => new ClassModelGenerator());
-
-            const javaConverter = computed(() => {
-                return new EntityRelationshipModelToClassCodeConverter(
-                        classModelGenerator.value,
-                        new JavaClassModelToCodeConverter(config.value.java.classModelToCodeConverterConfig)
-                );
-            });
-
-            const typescriptConverter = computed(() => {
-                return new EntityRelationshipModelToClassCodeConverter(
-                        classModelGenerator.value,
-                        new TypeScriptClassModelToCodeConverter(config.value.typescript.classModelToCodeConverterConfig)
-                );
-            });
-
-            const generatedMysqlCode = createComputedCompiledCode(mysqlConverter);
-            const generatedSqlServerCode = createComputedCompiledCode(sqlserverConverter);
-            const generatedOracleCode = createComputedCompiledCode(oracleConverter);
-            const generatedJavaCode = createComputedCompiledCode(javaConverter);
-            const generatedTypeScriptCode = createComputedCompiledCode(typescriptConverter);
-
-            function createComputedCompiledCode(converter: ComputedRef<EntityRelationshipModelToCodeConverter>) {
-                return computed(() => {
-
-                    if (!entityRelationshipModel.value) {
-                        return '';
-                    }
-
-                    return converter.value.generateCode(entityRelationshipModel.value);
-
-                });
-            }
 
             const settingsModalSelectedTabName = ref('mysql');
 
             const showingSettingsModal = ref(false);
 
             function showSettingsModal() {
-                settingsModalSelectedTabName.value = selectedOutputFormat.value.name;
+                settingsModalSelectedTabName.value = selectedOutputFormat.value.id;
                 showingSettingsModal.value = true;
             }
 
@@ -349,16 +298,28 @@
 
             });
 
+            async function loadExampleCode(exampleCode: string) {
+
+                if (modelOutdated.value && !await confirmExampleLoading()) {
+                    return;
+                }
+
+                inputCode.value = appendPoweredByText(exampleCode);
+                nextTick(runERDiagramParser);
+
+            }
+
+            function confirmExampleLoading() {
+                return showConfirmModal({
+                    message: 'Any unsaved changes will be lost. Do you want to continue?'
+                });
+            }
+
             return {
                 inputCode,
                 modelOutdated,
-                generatedMysqlCode,
-                generatedSqlServerCode,
-                generatedOracleCode,
-                generatedJavaCode,
-                generatedTypeScriptCode,
                 onCodeEditorKeydown,
-                runERDiagram,
+                runERDiagramParser,
                 parseError,
                 showSettingsModal,
                 showingSettingsModal,
@@ -366,7 +327,8 @@
                 settingsModalSelectedTabName,
                 outputFormats,
                 selectedOutputFormat,
-                outputCode
+                outputCode,
+                loadExampleCode
             };
 
         }

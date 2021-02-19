@@ -111,7 +111,7 @@
         StandardCaseFormats,
         StandardIdNamingStrategies
     } from '@nestorrente/erdiagram';
-    import useSelectInputOptions, {SelectInputOption} from '@/components/useSelectInputOptions';
+    import useSelectInputOptions, {SelectInputOption} from '@/composition/useSelectInputOptions';
     import Button from '@/components/generic/form/Button.vue';
 
     interface Props {

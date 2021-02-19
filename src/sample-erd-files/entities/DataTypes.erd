@@ -1,0 +1,9 @@
+User
+    username text(50)
+    password text(128)
+    email text(100)
+    active bool
+
+Task
+    description text(200)
+    done bool

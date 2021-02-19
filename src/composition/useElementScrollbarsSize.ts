@@ -1,4 +1,4 @@
-import useHtmlElementSize from '@/components/useHtmlElementSize';
+import useHtmlElementSize from '@/composition/useHtmlElementSize';
 import {computed, ComputedRef, Ref} from 'vue';
 
 interface ScrollbarsSize {

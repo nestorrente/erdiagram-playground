@@ -61,6 +61,15 @@
 
             }
 
+            watch(() => props.modelValue, newValue => {
+                const aceEditor = aceEditorRef.value;
+                if (aceEditor && aceEditor.getValue() !== newValue) {
+                    aceEditor.setValue(newValue);
+                    aceEditor.session.selection.clearSelection();
+                    aceEditor.focus();
+                }
+            });
+
             watch(() => props.lang, () => {
                 const aceEditor = aceEditorRef.value;
                 if (aceEditor) {

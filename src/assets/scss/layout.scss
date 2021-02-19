@@ -27,7 +27,8 @@ body,
             flex-grow: 1;
         }
 
-        @media(min-width: 769px) {
+        //@media(min-width: 769px) {
+        @media(min-width: 1024px) {
             &.vfc-grow {
                 height: 0;
             }
@@ -38,13 +39,15 @@ body,
 }
 
 .code-editor-container.is-full-height {
-    @media(max-width: 768px) {
+    //@media(max-width: 768px) {
+    @media(max-width: 1023px) {
         height: 400px;
     }
 }
 
 .code-container.is-full-height {
-    @media(max-width: 768px) {
+    //@media(max-width: 768px) {
+    @media(max-width: 1023px) {
         height: 600px;
     }
 }

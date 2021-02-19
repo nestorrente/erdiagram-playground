@@ -1,7 +1,7 @@
 <template>
     <div class="columns is-mobile">
         <div class="column is-half">
-            <Dropdown up hoverable>
+            <Dropdown up>
                 <template #trigger>
                     <Button icon="fas fa-angle-up">
                         More actions

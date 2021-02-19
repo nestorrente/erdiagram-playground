@@ -22,7 +22,7 @@
                 <i class="fas fa-times"></i>
             </span>
             <span>
-                There's an error in your code (see console for more details)
+                There's an error in your code
             </span>
         </span>
         <span v-show="!modelOutdated && !hasErrors">
