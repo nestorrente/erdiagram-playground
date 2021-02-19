@@ -14,8 +14,7 @@
             </span>
             <span>
                 Update output code
-                (<span class="is-family-code">Ctrl + S</span>
-                or <span class="is-family-code">Ctrl + &#9166;</span>)
+                (<span class="is-family-code">Ctrl + &#9166;</span>)
             </span>
         </span>
         <span v-show="!modelOutdated && hasErrors">

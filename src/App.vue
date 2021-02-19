@@ -11,7 +11,7 @@
                             <div class="vfc-item pb-5">
                                 <UpdateOutputCodeButton
                                         :model-outdated="modelOutdated"
-                                        :has-errors="hasErrors"
+                                        :has-errors="parseError != null"
                                         @click="runERDiagram"
                                 />
                             </div>
@@ -87,6 +87,7 @@
         EntityRelationshipModelToClassCodeConverter,
         EntityRelationshipModelToCodeConverter,
         EntityRelationshipModelToDatabaseCodeConverter,
+        ERDiagramParseError,
         JavaClassModelToCodeConverter,
         MySqlDatabaseModelToCodeConverter,
         OracleDatabaseModelToCodeConverter,
@@ -158,7 +159,7 @@
                 return modelOutdated.value = true;
             });
 
-            const hasErrors = ref(false);
+            const parseError = ref<ERDiagramParseError>();
             const entityRelationshipModel = ref<EntityRelationshipModel>();
 
             useBeforeUnload(() => modelOutdated.value);
@@ -192,7 +193,7 @@
             }
 
             function onCodeEditorKeydown(event: KeyboardEvent) {
-                if (event.ctrlKey && (event.key === 's' || event.key === 'Enter')) {
+                if (event.ctrlKey && event.key === 'Enter') {
                     event.preventDefault();
                     runERDiagram();
                 }
@@ -205,16 +206,17 @@
                 }
 
                 modelOutdated.value = false;
-                hasErrors.value = false;
+                parseError.value = undefined;
 
                 try {
                     entityRelationshipModel.value = entityRelationshipModelParser.value.parseModel(inputCode.value);
                     config.value = configFromModal.value;
                 } catch (e) {
-                    hasErrors.value = true;
-                    entityRelationshipModel.value = undefined;
-
+                    console.log('ERDiagramParseError:', ERDiagramParseError);
                     if (e instanceof Error) {
+                        parseError.value = e;
+                        entityRelationshipModel.value = undefined;
+
                         console.error(`Parse error: ${e.message}`);
                     }
                 }
@@ -357,7 +359,7 @@
                 generatedTypeScriptCode,
                 onCodeEditorKeydown,
                 runERDiagram,
-                hasErrors,
+                parseError,
                 showSettingsModal,
                 showingSettingsModal,
                 configFromModal,
