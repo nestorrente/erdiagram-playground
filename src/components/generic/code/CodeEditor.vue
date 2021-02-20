@@ -13,6 +13,7 @@
     import 'ace-builds/src-noconflict/mode-json';
     import 'ace-builds/src-noconflict/ext-language_tools';
     import '@/ace/mode/ERDiagramMode';
+    import {isDesktopDevice} from '@/device/device-type-detection';
 
     export default defineComponent({
         name: 'CodeEditor',
@@ -55,7 +56,7 @@
                 aceEditor.session.selection.clearSelection();
 
                 aceEditor.on('input', () => onCodeChanged(aceEditor.getValue()));
-                aceEditor.focus();
+                focusEditorOnDesktopDevice();
 
                 aceEditorRef.value = aceEditor;
 
@@ -66,9 +67,15 @@
                 if (aceEditor && aceEditor.getValue() !== newValue) {
                     aceEditor.setValue(newValue);
                     aceEditor.session.selection.clearSelection();
-                    aceEditor.focus();
+                    focusEditorOnDesktopDevice();
                 }
             });
+
+            function focusEditorOnDesktopDevice() {
+                if (isDesktopDevice()) {
+                    aceEditorRef.value?.focus();
+                }
+            }
 
             watch(() => props.lang, () => {
                 const aceEditor = aceEditorRef.value;

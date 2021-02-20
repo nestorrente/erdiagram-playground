@@ -1,9 +1,12 @@
 <template>
     <div class="columns is-mobile">
-        <div class="column is-half">
+        <div class="column is-narrow">
             <Dropdown up>
                 <template #trigger>
-                    <Button icon="fas fa-angle-up">
+                    <Button
+                            icon="fas fa-angle-up"
+                            class="is-button-text-hidden-mobile"
+                    >
                         More actions
                     </Button>
                 </template>
@@ -31,11 +34,18 @@
                 </template>
             </Dropdown>
         </div>
-        <div class="column is-half has-text-right">
-            <Button color="success" icon="fas fa-save" @click="$emit('saveChanges')">
-                Save changes
+        <div class="column has-text-right">
+            <Button
+                    color="success"
+                    icon="fas fa-save"
+                    @click="$emit('saveChanges')"
+            >
+                Save
             </Button>
-            <Button @click="$emit('cancel')">
+            <Button
+                    icon="fas fa-times"
+                    @click="$emit('cancel')"
+            >
                 Cancel
             </Button>
         </div>
