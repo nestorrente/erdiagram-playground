@@ -53,11 +53,13 @@
 </template>
 
 <script lang="ts">
-    import {defineComponent} from 'vue';
+    import {computed, defineComponent, getCurrentInstance, watch} from 'vue';
+    import openModalsStore from '@/store/openModalsStore';
+    import useDocumentEventListener from '@/composition/useDocumentEventListener';
 
     interface Props {
         disableCloseOnBackgroundClick: boolean;
-        // disableCloseOnEscPress: boolean;
+        disableCloseOnEscKey: boolean;
         title: string;
         showing: boolean;
         maxWidth: string;
@@ -68,16 +70,16 @@
     export default defineComponent({
         name: 'Modal',
         inheritAttrs: false,
-        emits: ['update:showing'],
+        emits: ['update:showing', 'globalKeydown'],
         props: {
             disableCloseOnBackgroundClick: {
                 type: Boolean,
                 default: false
             },
-            // disableCloseOnEscPress: {
-            //     type: Boolean,
-            //     default: false
-            // },
+            disableCloseOnEscKey: {
+                type: Boolean,
+                default: false
+            },
             title: {
                 type: String,
                 required: false
@@ -136,18 +138,34 @@
                 }
             }
 
-            // FIXME there is one problem in doing this:
-            //  as we can have multiple modals open at the same time (i.e., the settings and the confirm modals),
-            //  it's not possible to know which modal has to be closed.
-            //
-            // onMounted(() => document.addEventListener('keydown', onDocumentKeydown));
-            // onBeforeUnmount(() => document.removeEventListener('keydown', onDocumentKeydown));
-            //
-            // function onDocumentKeydown(event: KeyboardEvent) {
-            //     if (!props.disableCloseOnEscPress && event.key === 'Escape') {
-            //         close();
-            //     }
-            // }
+            const currentInstanceUID = getCurrentInstance()!.uid;
+
+            watch(() => props.showing, showing => {
+                if (showing) {
+                    openModalsStore.registerModalOpen(currentInstanceUID);
+                } else {
+                    openModalsStore.registerModalClose(currentInstanceUID);
+                }
+            });
+
+            const isFrontModal = computed(() => {
+                return openModalsStore.frontModalUid === currentInstanceUID;
+            });
+
+            useDocumentEventListener('keydown', (event: KeyboardEvent) => {
+
+                if (!isFrontModal.value) {
+                    return;
+                }
+
+                if (!props.disableCloseOnEscKey && event.key === 'Escape') {
+                    event.stopImmediatePropagation();
+                    close();
+                } else {
+                    context.emit('globalKeydown', event);
+                }
+
+            });
 
             function close() {
                 context.emit('update:showing', false);

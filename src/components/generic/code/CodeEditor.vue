@@ -67,6 +67,7 @@
                 if (aceEditor && aceEditor.getValue() !== newValue) {
                     aceEditor.setValue(newValue);
                     aceEditor.session.selection.clearSelection();
+                    aceEditor.session.setScrollTop(0);
                     focusEditorOnDesktopDevice(aceEditor);
                 }
             });

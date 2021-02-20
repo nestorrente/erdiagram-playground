@@ -6,7 +6,7 @@
                 'is-hoverable': hoverable,
                 'is-right': right,
                 'is-up': up,
-                'is-active': !hoverable && opened
+                'is-active': !hoverable && isOpen
             }"
     >
         <div
@@ -42,11 +42,11 @@
 
             const dropdown = ref<HTMLElement>();
             const dropdownContent = ref<HTMLElement>();
-            const opened = ref(false);
+            const isOpen = ref(false);
 
             function toggleIfNotHoverable() {
                 if (!props.hoverable) {
-                    opened.value = !opened.value;
+                    isOpen.value = !isOpen.value;
                 }
             }
 
@@ -55,14 +55,14 @@
 
             function closeIfNotHoverable() {
                 if (!props.hoverable) {
-                    opened.value = false;
+                    isOpen.value = false;
                 }
             }
 
             return {
                 dropdown,
                 dropdownContent,
-                opened,
+                isOpen,
                 toggleIfNotHoverable
             };
 

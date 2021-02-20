@@ -11,23 +11,40 @@
                     </Button>
                 </template>
                 <template #items>
-                    <DropdownItem @click="onImportConfigButtonClick">
-                        <Icon icon="fas fa-file-import"/>
-                        Import config
-                        <input
-                                ref="fileInput"
-                                type="file"
-                                class="is-hidden"
-                                accept=".json"
-                                @change="onFileChange"
+                    <FileReadWrapper
+                            accept=".json"
+                            :listen-keyboard-open-shortcut="listenKeyboardShortcuts"
+                            @success="$emit('importConfigSuccess', $event)"
+                            @error="$emit('importConfigError', $event)"
+                            #default="{openFile}"
+                    >
+                        <DropdownItem
+                                @click="openFile"
+                                :title="listenKeyboardShortcuts ? 'Ctrl + O' : ''"
                         >
-                    </DropdownItem>
-                    <DropdownItem @click="$emit('exportConfig')">
-                        <Icon icon="fas fa-file-export"/>
-                        Export config
-                    </DropdownItem>
+                            <Icon icon="fas fa-file-import"/>
+                            Import config
+                        </DropdownItem>
+                    </FileReadWrapper>
+                    <FileDownloadWrapper
+                            file-name="erdiagram_config.json"
+                            :file-contents="configFileContentsSupplier"
+                            :listen-keyboard-save-shortcut="listenKeyboardShortcuts"
+                            #default="{downloadFile}"
+                    >
+                        <DropdownItem
+                                @click="downloadFile"
+                                :title="listenKeyboardShortcuts ? 'Ctrl + S' : ''"
+                        >
+                            <Icon icon="fas fa-file-export"/>
+                            Export config
+                        </DropdownItem>
+                    </FileDownloadWrapper>
                     <DropdownDivider/>
-                    <DropdownItem @click="restoreDefaultConfig">
+                    <DropdownItem
+                            @click="restoreDefaultConfig"
+                            :title="listenKeyboardShortcuts ? 'Ctrl + Backspace' : ''"
+                    >
                         <Icon icon="fas fa-undo-alt"/>
                         Restore default values
                     </DropdownItem>
@@ -53,29 +70,45 @@
 </template>
 
 <script lang="ts">
-    import {defineComponent, ref} from 'vue';
+    import {defineComponent} from 'vue';
     import {showConfirmModal} from '@/store/globalModalDialogStore';
     import Button from '@/components/generic/form/Button.vue';
     import Dropdown from '@/components/generic/form/Dropdown.vue';
     import DropdownItem from '@/components/generic/form/DropdownItem.vue';
     import DropdownDivider from '@/components/generic/form/DropdownDivider.vue';
     import Icon from '@/components/generic/form/Icon.vue';
+    import FileReadWrapper from '@/components/generic/file/FileReadWrapper.vue';
+    import FileDownloadWrapper from '@/components/generic/file/FileDownloadWrapper.vue';
+    import useDocumentEventListener from '@/composition/useDocumentEventListener';
 
     export default defineComponent({
         name: 'SettingsModalFooter',
         emits: [
-            'importConfig',
+            'importConfigSuccess',
+            'importConfigError',
             'exportConfig',
             'restoreDefaultConfig',
             'saveChanges',
             'cancel'
         ],
         components: {
+            FileDownloadWrapper,
+            FileReadWrapper,
             Icon,
             DropdownDivider,
             DropdownItem,
             Dropdown,
             Button,
+        },
+        props: {
+            listenKeyboardShortcuts: {
+                type: Boolean,
+                default: false
+            },
+            configFileContentsSupplier: {
+                type: Function,
+                required: true
+            }
         },
         setup(props, context) {
 
@@ -93,54 +126,14 @@
                 });
             }
 
-            const fileInput = ref<HTMLInputElement>();
-
-            function onImportConfigButtonClick(event: MouseEvent) {
-                if (event.target !== fileInput.value) {
-                    fileInput.value!.click();
+            useDocumentEventListener('keydown', (event: KeyboardEvent) => {
+                if (props.listenKeyboardShortcuts && event.ctrlKey && event.key === 'Backspace') {
+                    restoreDefaultConfig();
                 }
-            }
-
-            function onFileChange() {
-
-                const fileInputElement = fileInput.value!;
-
-                const files = fileInputElement.files;
-
-                if (files?.length !== 1) {
-                    return;
-                }
-
-                context.emit('importConfig', readFile(files[0]));
-
-                // Reset input
-                fileInputElement.value = '';
-
-            }
-
-            function readFile(file: File): Promise<string> {
-                return new Promise((resolve, reject) => {
-
-                    const fileReader = new FileReader();
-
-                    fileReader.addEventListener('load', () => {
-                        resolve(fileReader.result as string);
-                    });
-
-                    fileReader.addEventListener('error', () => {
-                        reject(fileReader.error);
-                    });
-
-                    fileReader.readAsText(file);
-
-                });
-            }
+            });
 
             return {
-                restoreDefaultConfig,
-                fileInput,
-                onImportConfigButtonClick,
-                onFileChange
+                restoreDefaultConfig
             };
 
         }

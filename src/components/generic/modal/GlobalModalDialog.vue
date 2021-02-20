@@ -6,6 +6,7 @@
             max-width="420px"
             :append-header-class="globalModalDialogStore.headerClass"
             :append-title-class="globalModalDialogStore.titleClass"
+            @global-keydown="onGlobalKeydown"
     >
         <template #title>
             <Icon v-if="globalModalDialogStore.titleIcon" :icon="globalModalDialogStore.titleIcon"/>
@@ -57,9 +58,17 @@
                 }
             }
 
+            function onGlobalKeydown(event: KeyboardEvent) {
+                if (event.key === 'Enter') {
+                    event.stopImmediatePropagation();
+                    globalModalDialogStore.accept();
+                }
+            }
+
             return {
                 globalModalDialogStore,
-                onModalShowingChange
+                onModalShowingChange,
+                onGlobalKeydown
             };
 
         }

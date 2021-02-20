@@ -2,9 +2,6 @@ $body-overflow-y: auto;
 @import "~bulma/bulma";
 
 .modal {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
     display: flex;
     visibility: hidden;
 

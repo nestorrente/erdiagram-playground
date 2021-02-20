@@ -11,11 +11,41 @@
                             <div class="vfc-item pb-5">
                                 <div class="columns is-mobile">
                                     <div class="column">
-                                        <UpdateOutputCodeButton
-                                                :model-outdated="modelOutdated"
-                                                :has-errors="parseError != null"
-                                                @click="runERDiagramParser"
-                                        />
+                                        <div class="buttons">
+                                            <FileReadWrapper
+                                                    accept=".erd"
+                                                    :max-size="10 * 1024 * 1024"
+                                                    :listen-keyboard-open-shortcut="!showingSettingsModal"
+                                                    @success="onOpenFileSuccess"
+                                                    @error="onOpenFileError"
+                                                    @max-size-error="onOpenFileMaxSizeError"
+                                                    #default="{openFile}"
+                                            >
+                                                <Button
+                                                        icon="far fa-folder-open"
+                                                        class="is-button-text-hidden-mobile"
+                                                        title="Ctrl + O"
+                                                        @click="openFile"
+                                                >
+                                                    Open file
+                                                </Button>
+                                            </FileReadWrapper>
+                                            <FileDownloadWrapper
+                                                    file-name="ER_model.erd"
+                                                    :file-contents="inputCodeLive"
+                                                    :listen-keyboard-save-shortcut="!showingSettingsModal"
+                                                    #default="{downloadFile}"
+                                            >
+                                                <Button
+                                                        icon="far fa-save"
+                                                        class="is-button-text-hidden-mobile"
+                                                        title="Ctrl + S"
+                                                        @click="downloadFile"
+                                                >
+                                                    Save file
+                                                </Button>
+                                            </FileDownloadWrapper>
+                                        </div>
                                     </div>
                                     <div class="column is-narrow">
                                         <ExamplesDropdown @load-example="loadExampleCode"/>
@@ -24,9 +54,8 @@
                             </div>
                             <div class="vfc-item vfc-grow">
                                 <CodeEditor
-                                        v-model="inputCode"
+                                        v-model="inputCodeLive"
                                         lang="erdiagram"
-                                        @keydown="onCodeEditorKeydown"
                                         full-height
                                 />
                             </div>
@@ -45,19 +74,17 @@
                                                 block
                                         ></SelectInput>
                                     </div>
-                                    <div class="column is-justify-content-flex-end is-flex-shrink-1 is-flex-grow-0">
-                                        <li class="buttons">
+                                    <div class="column is-narrow">
+                                        <div class="buttons">
                                             <Button
                                                     color="link"
-                                                    small
-                                                    rounded
-                                                    class="is-button-text-hidden-mobile my-1"
                                                     icon="fas fa-wrench"
+                                                    title="Settings"
                                                     @click="showSettingsModal"
                                             >
                                                 Settings
                                             </Button>
-                                        </li>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -76,21 +103,19 @@
     </div>
     <SettingsModal
             v-model:showing="showingSettingsModal"
-            v-model:config="configFromModal"
+            v-model:config="config"
             v-model:selected-tab-name="settingsModalSelectedTabName"
     />
     <GlobalModalDialog/>
 </template>
 
 <script lang="ts">
-    import {computed, ComputedRef, defineComponent, nextTick, onMounted, ref, watch} from 'vue';
+    import {computed, ComputedRef, defineComponent, ref, watch} from 'vue';
     import NavBar from '@/components/layout/NavBar.vue';
     import CodeBlock from '@/components/generic/code/CodeBlock.vue';
     import {
-        EntityRelationshipModel,
         EntityRelationshipModelParser,
         EntityRelationshipModelToCodeConverter,
-        ERDiagramParseError,
         JavaClassModelToCodeConverter,
         MySqlDatabaseModelToCodeConverter,
         OracleDatabaseModelToCodeConverter,
@@ -104,7 +129,6 @@
     import pokemonSampleCode from '!!raw-loader!@/sample-erd-files/Pokemon.erd';
     import erdiagramPlaygroundConfigManager, {LAST_CONFIG_VERSION} from '@/config/ERDiagramPlaygroundConfigManager';
     import Button from '@/components/generic/form/Button.vue';
-    import UpdateOutputCodeButton from '@/UpdateOutputCodeButton.vue';
     import {localJsonStorage} from '@/storage/JsonStorage';
     import ERDiagramPlaygroundSerializedConfig from '@/config/ERDiagramPlaygroundSerializedConfig';
     import SelectInput from '@/components/generic/form/SelectInput.vue';
@@ -114,7 +138,10 @@
         from '@/composition/useEntityRelationshipModelToClassCodeConverter';
     import useEntityRelationshipModelToDatabaseCodeConverter
         from '@/composition/useEntityRelationshipModelToDatabaseCodeConverter';
-    import {showConfirmModal} from '@/store/globalModalDialogStore';
+    import {showConfirmModal, showErrorModal} from '@/store/globalModalDialogStore';
+    import FileReadWrapper from '@/components/generic/file/FileReadWrapper.vue';
+    import {useThrottledRef} from '@/composition/useThrottledRef';
+    import FileDownloadWrapper from '@/components/generic/file/FileDownloadWrapper.vue';
 
     interface OutputFormat {
         id: string;
@@ -126,9 +153,10 @@
     export default defineComponent({
         name: 'App',
         components: {
+            FileDownloadWrapper,
+            FileReadWrapper,
             ExamplesDropdown,
             SelectInput,
-            UpdateOutputCodeButton,
             Button,
             CodeEditor,
             GlobalModalDialog,
@@ -157,63 +185,65 @@
 
             }
 
-            const configFromModal = ref<ERDiagramPlaygroundConfig>(getInitialConfig());
-            const config = ref<ERDiagramPlaygroundConfig>(configFromModal.value);
+            const config = ref<ERDiagramPlaygroundConfig>(getInitialConfig());
 
-            const inputCode = ref(appendPoweredByText(pokemonSampleCode));
-            onMounted(runERDiagramParser);
-
-            const modelOutdated = ref(true);
-            watch(inputCode, () => modelOutdated.value = true);
-            watch(configFromModal, newValue => {
+            watch(config, newValue => {
                 localJsonStorage.setItem('erdiagramConfig', erdiagramPlaygroundConfigManager.convertToSerializableObject(newValue));
-                return modelOutdated.value = true;
             });
 
-            const parseError = ref<ERDiagramParseError>();
-            const entityRelationshipModel = ref<EntityRelationshipModel>();
+            const {
+                liveRef: inputCodeLive,
+                throttledRef: inputCodeThrottled,
+                synced: inputCodeSynced
+            } = useThrottledRef(localStorage.getItem('inputCode') || pokemonSampleCode, 300);
 
-            useBeforeUnload(() => modelOutdated.value);
+            useBeforeUnload(() => !inputCodeSynced.value);
 
             const entityRelationshipModelParser = computed(() => {
                 return new EntityRelationshipModelParser(config.value.erModelParser);
             });
 
-            function appendPoweredByText(code: string) {
-                return '# Powered by Ace editor (https://ace.c9.io/)\n\n' + code;
+            function onOpenFileSuccess(text: string) {
+                inputCodeThrottled.value = text;
             }
 
-            function onCodeEditorKeydown(event: KeyboardEvent) {
-                if (event.ctrlKey && event.key === 'Enter') {
-                    event.preventDefault();
-                    runERDiagramParser();
-                }
+            function onOpenFileError(error: any) {
+                console.error('Cannot read file:', error);
+                showErrorModal({
+                    message: 'Cannot read file'
+                });
             }
 
-            function runERDiagramParser() {
+            const ONE_MEGABYTE_IN_BYTES = 1024 * 1024;
 
-                if (!modelOutdated.value) {
-                    return;
-                }
+            function onOpenFileMaxSizeError(file: File) {
+                const fileSizeInMegabytes = file.size / ONE_MEGABYTE_IN_BYTES;
+                const formattedFileSize = fileSizeInMegabytes.toFixed(2);
+                showErrorModal({
+                    message: `File exceeds the maximum size allowed (file size: ${formattedFileSize} MB, maximum size allowed: 10 MB)`
+                });
+            }
 
-                modelOutdated.value = false;
-                parseError.value = undefined;
+            const parseResult = computed(() => {
 
-                config.value = configFromModal.value;
+                localStorage.setItem('inputCode', inputCodeThrottled.value);
 
                 try {
-                    entityRelationshipModel.value = entityRelationshipModelParser.value.parseModel(inputCode.value);
-                    config.value = configFromModal.value;
-                } catch (e) {
-                    console.log('ERDiagramParseError:', ERDiagramParseError);
-                    if (e instanceof Error) {
-                        entityRelationshipModel.value = undefined;
-                        parseError.value = e;
-
-                        console.error(`Parse error: ${e.message}`);
-                    }
+                    return {
+                        erModel: entityRelationshipModelParser.value.parseModel(inputCodeThrottled.value),
+                        error: null
+                    };
+                } catch (error) {
+                    console.error(`Parse error: ${error.message}`);
+                    return {
+                        erModel: null,
+                        error
+                    };
                 }
-            }
+            });
+
+            const entityRelationshipModel = computed(() => parseResult.value.erModel);
+            const parseError = computed(() => parseResult.value.error);
 
             const mysqlConverter = useEntityRelationshipModelToDatabaseCodeConverter(
                     () => config.value.mysql.databaseModelGeneratorConfig,
@@ -299,14 +329,9 @@
             });
 
             async function loadExampleCode(exampleCode: string) {
-
-                if (modelOutdated.value && !await confirmExampleLoading()) {
-                    return;
+                if (inputCodeSynced.value || await confirmExampleLoading()) {
+                    inputCodeThrottled.value = exampleCode;
                 }
-
-                inputCode.value = appendPoweredByText(exampleCode);
-                nextTick(runERDiagramParser);
-
             }
 
             function confirmExampleLoading() {
@@ -316,19 +341,20 @@
             }
 
             return {
-                inputCode,
-                modelOutdated,
-                onCodeEditorKeydown,
-                runERDiagramParser,
+                inputCodeLive,
+                inputCodeSynced,
                 parseError,
                 showSettingsModal,
                 showingSettingsModal,
-                configFromModal,
+                config,
                 settingsModalSelectedTabName,
                 outputFormats,
                 selectedOutputFormat,
                 outputCode,
-                loadExampleCode
+                loadExampleCode,
+                onOpenFileSuccess,
+                onOpenFileError,
+                onOpenFileMaxSizeError
             };
 
         }

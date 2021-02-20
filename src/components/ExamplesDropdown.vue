@@ -1,8 +1,8 @@
 <template>
     <Dropdown right>
         <template #trigger>
-            <Button icon="fas fa-angle-down" class="is-button-text-hidden-mobile">
-                Load example
+            <Button icon="fas fa-angle-down" fullwidth>
+                Examples
             </Button>
         </template>
         <template #items>
@@ -14,7 +14,7 @@
                 <Icon icon="fas fa-shapes"/>
                 Supported data types
             </DropdownItem>
-            <DropdownItem>
+            <DropdownItem @click="$emit('loadExample', propertyModifiersExampleCode)">
                 <Icon icon="fas fa-wrench"/>
                 Property modifiers
             </DropdownItem>
@@ -61,6 +61,7 @@
     import DropdownDivider from '@/components/generic/form/DropdownDivider.vue';
     import basicEntitiesExampleCode from '!!raw-loader!@/sample-erd-files/entities/BasicEntities.erd';
     import dataTypesExampleCode from '!!raw-loader!@/sample-erd-files/entities/DataTypes.erd';
+    import propertyModifiersExampleCode from '!!raw-loader!@/sample-erd-files/entities/PropertyModifiers.erd';
     import pokemonExampleCode from '!!raw-loader!@/sample-erd-files/Pokemon.erd';
     import companyExampleCode from '!!raw-loader!@/sample-erd-files/Company.erd';
 
@@ -78,6 +79,7 @@
             return {
                 basicEntitiesExampleCode,
                 dataTypesExampleCode,
+                propertyModifiersExampleCode,
                 pokemonExampleCode,
                 companyExampleCode
             };

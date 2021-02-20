@@ -1,9 +1,18 @@
-User
-    username text(50)
-    password text(128)
-    email text(100)
-    active bool
+# Numeric types
+Number
+    shortValue short
+    intValue int
+    longValue long
+    decimalValue decimal(10, 3)
 
-Task
-    description text(200)
-    done bool
+# Temporal types
+DateTime
+    dateValue date
+    timeValue time
+    datetimeValue datetime
+
+# Other types
+File
+    name text(50)
+    contents blob
+    hidden bool

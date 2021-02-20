@@ -40,6 +40,7 @@
     import Icon from '@/components/generic/form/Icon.vue';
 
     export default defineComponent({
+        inheritAttrs: false,
         name: 'Button',
         components: {Icon},
         props: {
