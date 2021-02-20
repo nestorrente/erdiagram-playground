@@ -56,7 +56,7 @@
                 aceEditor.session.selection.clearSelection();
 
                 aceEditor.on('input', () => onCodeChanged(aceEditor.getValue()));
-                focusEditorOnDesktopDevice();
+                focusEditorOnDesktopDevice(aceEditor);
 
                 aceEditorRef.value = aceEditor;
 
@@ -67,13 +67,13 @@
                 if (aceEditor && aceEditor.getValue() !== newValue) {
                     aceEditor.setValue(newValue);
                     aceEditor.session.selection.clearSelection();
-                    focusEditorOnDesktopDevice();
+                    focusEditorOnDesktopDevice(aceEditor);
                 }
             });
 
-            function focusEditorOnDesktopDevice() {
+            function focusEditorOnDesktopDevice(aceEditor: Ace.Editor) {
                 if (isDesktopDevice()) {
-                    aceEditorRef.value?.focus();
+                    aceEditor.focus();
                 }
             }
 
