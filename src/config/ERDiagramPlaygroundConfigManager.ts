@@ -9,13 +9,13 @@ import {
 	typescriptClassModelToCodeConverterConfigManager
 } from '@nestorrente/erdiagram';
 import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
-import ERDiagramPlaygroundSerializedConfig from '@/config/ERDiagramPlaygroundSerializedConfig';
+import ERDiagramPlaygroundSerializableConfig from '@/config/ERDiagramPlaygroundSerializableConfig';
 import PartialERDiagramPlaygroundConfig from '@/config/PartialERDiagramPlaygroundConfig';
 
 export const LAST_CONFIG_VERSION = '0.1.0';
 
 export class ERDiagramPlaygroundConfigManager
-		extends AbstractComponentConfigManager<ERDiagramPlaygroundConfig, PartialERDiagramPlaygroundConfig, ERDiagramPlaygroundSerializedConfig> {
+		extends AbstractComponentConfigManager<ERDiagramPlaygroundConfig, PartialERDiagramPlaygroundConfig, ERDiagramPlaygroundSerializableConfig> {
 
 	getDefaultConfig(): ERDiagramPlaygroundConfig {
 		return {
@@ -94,7 +94,7 @@ export class ERDiagramPlaygroundConfigManager
 		};
 	}
 
-	convertToSerializableObject(fullConfig: ERDiagramPlaygroundConfig): ERDiagramPlaygroundSerializedConfig {
+	convertToSerializableObject(fullConfig: ERDiagramPlaygroundConfig): ERDiagramPlaygroundSerializableConfig {
 		return {
 			_version: fullConfig._version,
 			erModelParser: entityRelationshipModelParserConfigManager.convertToSerializableObject(fullConfig.erModelParser),
@@ -119,27 +119,27 @@ export class ERDiagramPlaygroundConfigManager
 		};
 	}
 
-	convertFromSerializableObject(serializedConfig: ERDiagramPlaygroundSerializedConfig): ERDiagramPlaygroundConfig {
+	convertFromSerializableObject(serializableConfig: ERDiagramPlaygroundSerializableConfig): ERDiagramPlaygroundConfig {
 		return {
-			_version: serializedConfig._version,
-			erModelParser: entityRelationshipModelParserConfigManager.convertFromSerializableObject(serializedConfig.erModelParser),
+			_version: serializableConfig._version,
+			erModelParser: entityRelationshipModelParserConfigManager.convertFromSerializableObject(serializableConfig.erModelParser),
 			mysql: {
-				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.convertFromSerializableObject(serializedConfig.mysql.databaseModelGeneratorConfig),
-				databaseModelToCodeConverterConfig: mysqlDatabaseModelToCodeConverterConfigManager.convertFromSerializableObject(serializedConfig.mysql.databaseModelToCodeConverterConfig)
+				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.convertFromSerializableObject(serializableConfig.mysql.databaseModelGeneratorConfig),
+				databaseModelToCodeConverterConfig: mysqlDatabaseModelToCodeConverterConfigManager.convertFromSerializableObject(serializableConfig.mysql.databaseModelToCodeConverterConfig)
 			},
 			sqlserver: {
-				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.convertFromSerializableObject(serializedConfig.sqlserver.databaseModelGeneratorConfig),
-				databaseModelToCodeConverterConfig: sqlServerDatabaseModelToCodeConverterConfigManager.convertFromSerializableObject(serializedConfig.sqlserver.databaseModelToCodeConverterConfig),
+				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.convertFromSerializableObject(serializableConfig.sqlserver.databaseModelGeneratorConfig),
+				databaseModelToCodeConverterConfig: sqlServerDatabaseModelToCodeConverterConfigManager.convertFromSerializableObject(serializableConfig.sqlserver.databaseModelToCodeConverterConfig),
 			},
 			oracle: {
-				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.convertFromSerializableObject(serializedConfig.oracle.databaseModelGeneratorConfig),
-				databaseModelToCodeConverterConfig: oracleDatabaseModelToCodeConverterConfigManager.convertFromSerializableObject(serializedConfig.oracle.databaseModelToCodeConverterConfig),
+				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.convertFromSerializableObject(serializableConfig.oracle.databaseModelGeneratorConfig),
+				databaseModelToCodeConverterConfig: oracleDatabaseModelToCodeConverterConfigManager.convertFromSerializableObject(serializableConfig.oracle.databaseModelToCodeConverterConfig),
 			},
 			java: {
-				classModelToCodeConverterConfig: javaClassModelToCodeConverterConfigManager.convertFromSerializableObject(serializedConfig.java.classModelToCodeConverterConfig)
+				classModelToCodeConverterConfig: javaClassModelToCodeConverterConfigManager.convertFromSerializableObject(serializableConfig.java.classModelToCodeConverterConfig)
 			},
 			typescript: {
-				classModelToCodeConverterConfig: typescriptClassModelToCodeConverterConfigManager.convertFromSerializableObject(serializedConfig.typescript.classModelToCodeConverterConfig)
+				classModelToCodeConverterConfig: typescriptClassModelToCodeConverterConfigManager.convertFromSerializableObject(serializableConfig.typescript.classModelToCodeConverterConfig)
 			}
 		};
 	}

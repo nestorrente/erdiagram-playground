@@ -103,6 +103,7 @@
     import SaveInputCodeButton from '@/components/layout/main-container/SaveInputCodeButton.vue';
     import OpenInputCodeButton from '@/components/layout/main-container/OpenInputCodeButton.vue';
     import Icon from '@/components/generic/form/Icon.vue';
+    import localStorageAccessor from '@/storage/localStorageAccessor';
 
     interface Props {
         config: ERDiagramPlaygroundConfig;
@@ -148,7 +149,7 @@
                 liveRef: inputCodeLive,
                 debouncedRef: inputCodeDebounced,
                 synced: inputCodeSynced
-            } = useDebouncedRef(localStorage.getItem('inputCode') || pokemonSampleCode, 300);
+            } = useDebouncedRef(localStorageAccessor.getInputCode() || pokemonSampleCode, 300);
 
             useBeforeUnload(() => !inputCodeSynced.value);
 
@@ -158,7 +159,7 @@
 
             const parseResult = computed(() => {
 
-                localStorage.setItem('inputCode', inputCodeDebounced.value);
+                localStorageAccessor.setInputCode(inputCodeDebounced.value);
 
                 try {
                     return {

@@ -201,8 +201,8 @@
             }
 
             function getConfigFileContents() {
-                const serializedConfig = erdiagramPlaygroundConfigManager.convertToSerializableObject(internalConfig.value);
-                return JSON.stringify(serializedConfig, undefined, 2);
+                const serializableConfig = erdiagramPlaygroundConfigManager.convertToSerializableObject(internalConfig.value);
+                return JSON.stringify(serializableConfig, undefined, 2);
             }
 
             return {

@@ -30,10 +30,9 @@
     import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
     import GlobalModalDialog from '@/components/generic/modal/GlobalModalDialog.vue';
     import erdiagramPlaygroundConfigManager, {LAST_CONFIG_VERSION} from '@/config/ERDiagramPlaygroundConfigManager';
-    import {localJsonStorage} from '@/storage/JsonStorage';
-    import ERDiagramPlaygroundSerializedConfig from '@/config/ERDiagramPlaygroundSerializedConfig';
     import GlobalToastMessage from '@/components/generic/modal/GlobalToastMessage.vue';
     import MainContainer from '@/components/layout/main-container/MainContainer.vue';
+    import localStorageAccessor from '@/storage/localStorageAccessor';
 
     interface OutputFormat {
         id: string;
@@ -56,15 +55,16 @@
             const config = ref<ERDiagramPlaygroundConfig>(getInitialConfig());
 
             watch(config, newValue => {
-                localJsonStorage.setItem('erdiagramConfig', erdiagramPlaygroundConfigManager.convertToSerializableObject(newValue));
+                const serializableConfig = erdiagramPlaygroundConfigManager.convertToSerializableObject(newValue);
+                localStorageAccessor.setConfig(serializableConfig);
             });
 
             function getInitialConfig(): ERDiagramPlaygroundConfig {
 
-                const serializedConfig = localJsonStorage.getItem<ERDiagramPlaygroundSerializedConfig>('erdiagramConfig');
+                const serializableConfig = localStorageAccessor.getConfig();
 
-                if (serializedConfig) {
-                    const config = erdiagramPlaygroundConfigManager.convertFromSerializableObject(serializedConfig);
+                if (serializableConfig) {
+                    const config = erdiagramPlaygroundConfigManager.convertFromSerializableObject(serializableConfig);
 
                     // Check you are using the last version of the config
                     if (config._version === LAST_CONFIG_VERSION) {
