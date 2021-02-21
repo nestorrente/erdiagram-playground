@@ -111,7 +111,7 @@
         StandardCaseFormats,
         StandardIdNamingStrategies
     } from '@nestorrente/erdiagram';
-    import useSelectInputOptions, {SelectInputOption} from '@/composition/useSelectInputOptions';
+    import useSelectInputOptions, {SelectInputOption} from '@/composition/form/useSelectInputOptions';
     import Button from '@/components/generic/form/Button.vue';
 
     interface Props {
@@ -222,6 +222,7 @@
 
             label.checkbox {
                 width: 100%;
+                padding: 0.5em;
             }
 
             .input {

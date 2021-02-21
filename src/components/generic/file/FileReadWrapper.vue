@@ -11,7 +11,7 @@
 
 <script lang="ts">
     import {defineComponent, ref} from 'vue';
-    import useDocumentEventListener from '@/composition/useDocumentEventListener';
+    import useDocumentEventListener from '@/composition/event/useDocumentEventListener';
 
     interface Props {
         accept?: string;

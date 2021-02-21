@@ -55,7 +55,7 @@
 <script lang="ts">
     import {computed, defineComponent, getCurrentInstance, watch} from 'vue';
     import openModalsStore from '@/store/openModalsStore';
-    import useDocumentEventListener from '@/composition/useDocumentEventListener';
+    import useDocumentEventListener from '@/composition/event/useDocumentEventListener';
 
     interface Props {
         disableCloseOnBackgroundClick: boolean;

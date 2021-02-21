@@ -1,4 +1,4 @@
-import DeviceType from '@/device/DeviceType';
+import DeviceType from './DeviceType';
 
 const userAgent: string = navigator.userAgent
 		|| navigator.vendor
@@ -20,14 +20,6 @@ const currentDeviceType: DeviceType = (() => {
 
 })();
 
-export function getCurrentDeviceType(): DeviceType {
+export default function getCurrentDeviceType(): DeviceType {
 	return currentDeviceType;
-}
-
-export function isMobileDevice(deviceType: DeviceType = currentDeviceType): boolean {
-	return deviceType !== DeviceType.DESKTOP;
-}
-
-export function isDesktopDevice(deviceType: DeviceType = currentDeviceType): boolean {
-	return deviceType === DeviceType.DESKTOP;
 }

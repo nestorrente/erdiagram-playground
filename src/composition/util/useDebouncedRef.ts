@@ -1,18 +1,18 @@
 import {nextTick, ref, watch} from 'vue';
-import {throttle} from '@/util/function-utils';
+import {debounce} from '@/util/function-utils';
 
-export function useThrottledRef<T>(initialValue: T, delayInMilliseconds: number) {
+export default function useDebouncedRef<T>(initialValue: T, delayInMilliseconds: number) {
 
 	const liveRef = ref(initialValue);
-	const throttledRef = ref(initialValue);
+	const debouncedRef = ref(initialValue);
 	const synced = ref(true);
 
 	let updatingLiveRef = false;
-	let updatingThrottledRef = false;
+	let updatingDebouncedRef = false;
 
-	watch(throttledRef, newValue => {
+	watch(debouncedRef, newValue => {
 
-		if (updatingThrottledRef) {
+		if (updatingDebouncedRef) {
 			return;
 		}
 
@@ -34,30 +34,30 @@ export function useThrottledRef<T>(initialValue: T, delayInMilliseconds: number)
 		}
 
 		synced.value = false;
-		updateThrottledRefCallback(newValue);
+		updateDebouncedRefCallback(newValue);
 
 	});
 
-	const updateThrottledRefCallback = throttle(newValue => {
+	const updateDebouncedRefCallback = debounce(newValue => {
 
 		if (synced.value) {
 			return;
 		}
 
-		updatingThrottledRef = true;
+		updatingDebouncedRef = true;
 
 		try {
-			throttledRef.value = newValue;
+			debouncedRef.value = newValue;
 			synced.value = true;
 		} finally {
-			nextTick(() => updatingThrottledRef = false);
+			nextTick(() => updatingDebouncedRef = false);
 		}
 
 	}, delayInMilliseconds);
 
 	return {
 		liveRef,
-		throttledRef,
+		debouncedRef,
 		synced
 	};
 

@@ -28,6 +28,7 @@
         <Icon
                 v-if="icon"
                 :icon="icon"
+                :color="iconColor"
         />
         <span v-if="$slots.default" class="button-text">
             <slot></slot>
@@ -62,6 +63,7 @@
             loading: Boolean,
             static: Boolean,
             icon: String,
+            iconColor: String
         },
         methods: {
             click() {

@@ -79,7 +79,7 @@
     import Icon from '@/components/generic/form/Icon.vue';
     import FileReadWrapper from '@/components/generic/file/FileReadWrapper.vue';
     import FileDownloadWrapper from '@/components/generic/file/FileDownloadWrapper.vue';
-    import useDocumentEventListener from '@/composition/useDocumentEventListener';
+    import useDocumentEventListener from '@/composition/event/useDocumentEventListener';
 
     export default defineComponent({
         name: 'SettingsModalFooter',

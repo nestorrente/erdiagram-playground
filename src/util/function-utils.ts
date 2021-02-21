@@ -1,4 +1,4 @@
-export function throttle(
+export function debounce(
 		callback: (...args: any[]) => void,
 		delayInMilliseconds: number
 ): (...args: any[]) => void {

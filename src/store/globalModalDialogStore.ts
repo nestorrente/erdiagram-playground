@@ -100,7 +100,12 @@ export interface ConfirmModalOptions {
 	cancelButtonColor?: string;
 }
 
-export function showConfirmModal(options: ConfirmModalOptions) {
+export function showConfirmModal(optionsOrMessage: ConfirmModalOptions | string) {
+
+	const options: ConfirmModalOptions = typeof optionsOrMessage === 'string'
+			? {message: optionsOrMessage}
+			: optionsOrMessage;
+
 	return globalModalDialogStore.show({
 		headerClass: undefined,
 		titleClass: undefined,
@@ -115,6 +120,7 @@ export function showConfirmModal(options: ConfirmModalOptions) {
 		},
 		...options
 	});
+
 }
 
 export interface ErrorModalOptions {
@@ -124,16 +130,22 @@ export interface ErrorModalOptions {
 	acceptButtonColor?: string;
 }
 
-export function showErrorModal(options: ErrorModalOptions) {
+export function showErrorModal(optionsOrMessage: ErrorModalOptions | string) {
+
+	const options: ErrorModalOptions = typeof optionsOrMessage === 'string'
+			? {message: optionsOrMessage}
+			: optionsOrMessage;
+
 	return globalModalDialogStore.show({
 		headerClass: 'has-background-danger',
 		titleClass: 'has-text-white',
 		titleIcon: 'fas fa-exclamation-circle',
-		title: 'Information',
+		title: 'Error',
 		acceptButton: {
 			text: 'Accept'
 		},
 		cancelButton: undefined,
 		...options
 	});
+
 }

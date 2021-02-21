@@ -28,8 +28,8 @@
 
 <script lang="ts">
     import {defineComponent, ref} from 'vue';
-    import useClickOutside from '@/composition/useClickOutside';
-    import useDelegatedClick from '@/composition/useDelegatedClick';
+    import useClickOutside from '@/composition/event/useClickOutside';
+    import useDelegatedClick from '@/composition/event/useDelegatedClick';
 
     export default defineComponent({
         name: 'Dropdown',

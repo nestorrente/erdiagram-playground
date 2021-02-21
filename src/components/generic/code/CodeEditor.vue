@@ -13,7 +13,7 @@
     import 'ace-builds/src-noconflict/mode-json';
     import 'ace-builds/src-noconflict/ext-language_tools';
     import '@/ace/mode/ERDiagramMode';
-    import {isDesktopDevice} from '@/device/device-type-detection';
+    import {isDesktopDevice} from '@/device-type-detection';
 
     export default defineComponent({
         name: 'CodeEditor',

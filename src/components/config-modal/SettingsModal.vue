@@ -187,17 +187,17 @@
                         internalConfig.value = erdiagramPlaygroundConfigManager.mergeConfigs(internalConfig.value, importedConfig);
                     } else {
                         console.warn('Detected an invalid version of settings');
-                        showErrorModal({title: 'Error', message: 'Detected an invalid version of settings'});
+                        showErrorModal('Detected an invalid version of settings');
                     }
                 } catch (error) {
                     console.error('Cannot parse config file:', error);
-                    showErrorModal({title: 'Error', message: 'Cannot parse config file'});
+                    showErrorModal('Cannot parse config file');
                 }
             }
 
             function onImportConfigError(error: any) {
                 console.error('Cannot read config file:', error);
-                showErrorModal({title: 'Error', message: 'Cannot read config file'});
+                showErrorModal('Cannot read config file');
             }
 
             function getConfigFileContents() {

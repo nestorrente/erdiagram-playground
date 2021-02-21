@@ -10,7 +10,7 @@
 
 <script lang="ts">
     import {defineComponent, nextTick, ref} from 'vue';
-    import useDocumentEventListener from '@/composition/useDocumentEventListener';
+    import useDocumentEventListener from '@/composition/event/useDocumentEventListener';
     import {triggerClickEvent} from '@/util/dom-event-utils';
 
     interface Props {
