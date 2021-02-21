@@ -21,19 +21,19 @@
 
             <DropdownDivider/>
 
-            <DropdownItem>
+            <DropdownItem @click="$emit('loadExample', cardinalitiesExampleCode)">
                 <Icon icon="fas fa-users"/>
                 Relationship cardinalities
             </DropdownItem>
-            <DropdownItem>
+            <DropdownItem @click="$emit('loadExample', directionsExampleCode)">
                 <Icon icon="fas fa-arrows-alt-h"/>
                 Relationship directions
             </DropdownItem>
-            <DropdownItem>
+            <DropdownItem @click="$emit('loadExample', relationshipModifiersExampleCode)">
                 <Icon icon="fas fa-wrench"/>
                 Relationship modifiers
             </DropdownItem>
-            <DropdownItem>
+            <DropdownItem @click="$emit('loadExample', relationshipAliasesExampleCode)">
                 <Icon icon="fas fa-at"/>
                 Relationship aliases
             </DropdownItem>
@@ -43,10 +43,6 @@
             <DropdownItem @click="$emit('loadExample', pokemonExampleCode)">
                 <Icon icon="fas fa-gamepad"/>
                 Pokemon
-            </DropdownItem>
-            <DropdownItem @click="$emit('loadExample', companyExampleCode)">
-                <Icon icon="fas fa-user-tie"/>
-                Company
             </DropdownItem>
         </template>
     </Dropdown>
@@ -62,8 +58,11 @@
     import basicEntitiesExampleCode from '!!raw-loader!@/sample-erd-files/entities/BasicEntities.erd';
     import dataTypesExampleCode from '!!raw-loader!@/sample-erd-files/entities/DataTypes.erd';
     import propertyModifiersExampleCode from '!!raw-loader!@/sample-erd-files/entities/PropertyModifiers.erd';
+    import cardinalitiesExampleCode from '!!raw-loader!@/sample-erd-files/relationships/Cardinalities.erd';
+    import directionsExampleCode from '!!raw-loader!@/sample-erd-files/relationships/Directions.erd';
+    import relationshipModifiersExampleCode from '!!raw-loader!@/sample-erd-files/relationships/Modifiers.erd';
+    import relationshipAliasesExampleCode from '!!raw-loader!@/sample-erd-files/relationships/Aliases.erd';
     import pokemonExampleCode from '!!raw-loader!@/sample-erd-files/Pokemon.erd';
-    import companyExampleCode from '!!raw-loader!@/sample-erd-files/Company.erd';
 
     export default defineComponent({
         name: 'ExamplesDropdown',
@@ -80,8 +79,11 @@
                 basicEntitiesExampleCode,
                 dataTypesExampleCode,
                 propertyModifiersExampleCode,
-                pokemonExampleCode,
-                companyExampleCode
+                cardinalitiesExampleCode,
+                directionsExampleCode,
+                relationshipModifiersExampleCode,
+                relationshipAliasesExampleCode,
+                pokemonExampleCode
             };
         }
     });

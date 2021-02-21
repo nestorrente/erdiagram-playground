@@ -7,3 +7,5 @@ User
 Task
     description text(200)
     done bool
+
+EntityWithoutProperties

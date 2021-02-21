@@ -1,0 +1,42 @@
+# Some entities without properties:
+User
+Profile
+UserType
+ChatRoom
+Message
+
+
+# One-to-one relationship:
+
+# Each user has one profile.
+# Each profile belongs to one user.
+User <-> Profile
+
+# When the cardinality is 1, you can omit it.
+# So, the previous relationship is the same as:
+# User 1<->1 Profile
+
+
+# One-to-many relationship:
+
+# Each chat room has many message.
+# Each message belongs to one chat room.
+ChatRoom <->* Message
+
+# Each user can write many messages.
+# Each message is written by one user.
+User <->* Message
+
+
+# Many-to-one relationship:
+
+# Each user has a type.
+# One type can be assigned to many users.
+User *<-> UserType
+
+
+# Many-to-one relationship:
+
+# Each chat room has many users.
+# Each user can access to many chat rooms.
+ChatRoom *<->* User
