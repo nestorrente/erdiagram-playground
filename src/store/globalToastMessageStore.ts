@@ -89,3 +89,12 @@ export function showErrorToastMessage(message: string, duration?: number) {
 		duration
 	});
 }
+
+// @ts-expect-error
+window.showSuccessToastMessage = showSuccessToastMessage;
+// @ts-expect-error
+window.showInfoToastMessage = showInfoToastMessage;
+// @ts-expect-error
+window.showWarningToastMessage = showWarningToastMessage;
+// @ts-expect-error
+window.showErrorToastMessage = showErrorToastMessage;

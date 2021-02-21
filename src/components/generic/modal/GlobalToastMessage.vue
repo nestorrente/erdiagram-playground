@@ -1,21 +1,26 @@
 <template>
-    <div class="toast-container is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
-        <transition name="slide-down">
+    <div class="toast-message-container is-flex is-flex-direction-column is-align-items-center is-justify-content-center">
+        <transition-group name="slide-down-max-height">
             <div
-                    v-if="toastMessage != null"
-                    class="notification p-4"
-                    :class="getToastColorClass(toastMessage.type)"
+                    v-for="toastMessage in globalToastMessageStore.toastMessages"
+                    :key="toastMessage.uuid"
+                    class="toast-message"
             >
-                <Icon :icon="'fas fa-' + getToastMessageIcon(toastMessage.type)"/>
-                {{ toastMessage.message }}
+                <div
+                        class="notification p-4"
+                        :class="getToastColorClass(toastMessage.type)"
+                >
+                    <Icon :icon="'fas fa-' + getToastMessageIcon(toastMessage.type)"/>
+                    {{ toastMessage.message }}
+                </div>
             </div>
-        </transition>
+        </transition-group>
     </div>
 </template>
 
 <script lang="ts">
-    import {computed, defineComponent} from 'vue';
-    import globalToastMessageStore, {ToastMessage, ToastMessageType} from '@/store/globalToastMessageStore';
+    import {defineComponent} from 'vue';
+    import globalToastMessageStore, {ToastMessageType} from '@/store/globalToastMessageStore';
     import Icon from '@/components/generic/form/Icon.vue';
 
     export default defineComponent({
@@ -53,21 +58,8 @@
                 }
             }
 
-            const lastToastMessage = computed((): ToastMessage | null => {
-
-                const {toastMessages} = globalToastMessageStore;
-
-                if (toastMessages.length === 0) {
-                    return null;
-                }
-
-                return toastMessages[toastMessages.length - 1];
-
-            });
-
             return {
                 globalToastMessageStore,
-                toastMessage: lastToastMessage,
                 getToastColorClass,
                 getToastMessageIcon
             };
@@ -77,18 +69,31 @@
 </script>
 
 <style lang="scss">
-    .toast-container {
+    .toast-message-container {
 
         position: fixed;
-        top: 3rem;
+        top: 1.5rem;
         left: 0;
         right: 0;
         z-index: 1000;
+        pointer-events: none;
 
-        > .notification {
+        > .toast-message {
+
+            $toas-message-max-height: 200px;
+
+            display: flex;
+            align-items: flex-end;
+
             max-width: min(50%, 400px);
-            position: relative;
-            transition-property: opacity, transform, height;
+            max-height: $toas-message-max-height;
+
+            > .notification {
+                max-height: $toas-message-max-height;
+                margin-top: 1.5rem;
+                pointer-events: all;
+            }
+
         }
 
     }
