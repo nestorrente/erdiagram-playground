@@ -100,7 +100,7 @@ export interface ConfirmModalOptions {
 	cancelButtonColor?: string;
 }
 
-export function showConfirmModal(optionsOrMessage: ConfirmModalOptions | string) {
+export function showConfirmModalDialog(optionsOrMessage: ConfirmModalOptions | string) {
 
 	const options: ConfirmModalOptions = typeof optionsOrMessage === 'string'
 			? {message: optionsOrMessage}
@@ -130,7 +130,7 @@ export interface ErrorModalOptions {
 	acceptButtonColor?: string;
 }
 
-export function showErrorModal(optionsOrMessage: ErrorModalOptions | string) {
+export function showErrorModalDialog(optionsOrMessage: ErrorModalOptions | string) {
 
 	const options: ErrorModalOptions = typeof optionsOrMessage === 'string'
 			? {message: optionsOrMessage}

@@ -97,13 +97,14 @@
         from '@/composition/erdiagram/useEntityRelationshipModelToClassCodeConverter';
     import useEntityRelationshipModelToDatabaseCodeConverter
         from '@/composition/erdiagram/useEntityRelationshipModelToDatabaseCodeConverter';
-    import {showConfirmModal} from '@/store/globalModalDialogStore';
+    import {showConfirmModalDialog} from '@/store/globalModalDialogStore';
     import useDebouncedRef from '@/composition/util/useDebouncedRef';
     import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
     import SaveInputCodeButton from '@/components/layout/main-container/SaveInputCodeButton.vue';
     import OpenInputCodeButton from '@/components/layout/main-container/OpenInputCodeButton.vue';
     import Icon from '@/components/generic/form/Icon.vue';
     import localStorageAccessor from '@/storage/localStorageAccessor';
+    import {showErrorToastMessage} from '@/store/globalToastMessageStore';
 
     interface Props {
         config: ERDiagramPlaygroundConfig;
@@ -168,6 +169,7 @@
                     };
                 } catch (error) {
                     console.error(`Parse error: ${error.message}`);
+                    showErrorToastMessage('There is an error in your code: ' + error.message);
                     return {
                         erModel: null,
                         error
@@ -259,7 +261,7 @@
             }
 
             function confirmExampleLoading() {
-                return showConfirmModal('Any unsaved changes will be lost. Do you want to continue?');
+                return showConfirmModalDialog('Any unsaved changes will be lost. Do you want to continue?');
             }
 
             return {

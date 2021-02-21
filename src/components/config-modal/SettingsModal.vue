@@ -68,7 +68,7 @@
     import {defineComponent, nextTick, ref, watch} from 'vue';
     import Modal from '@/components/generic/modal/Modal.vue';
     import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
-    import {showConfirmModal, showErrorModal} from '@/store/globalModalDialogStore';
+    import {showConfirmModalDialog} from '@/store/globalModalDialogStore';
     import Tabs from '@/components/tabs/Tabs.vue';
     import erdiagramPlaygroundConfigManager, {LAST_CONFIG_VERSION} from '@/config/ERDiagramPlaygroundConfigManager';
     import Tab from '@/components/tabs/Tab.vue';
@@ -79,6 +79,7 @@
     import JavaTabContent from '@/components/config-modal/tabs/JavaTabContent.vue';
     import TypeScriptTabContent from '@/components/config-modal/tabs/TypeScriptTabContent.vue';
     import SettingsModalFooter from '@/components/config-modal/SettingsModalFooter.vue';
+    import {showErrorToastMessage, showSuccessToastMessage} from '@/store/globalToastMessageStore';
 
     interface Props {
         showing: boolean;
@@ -168,7 +169,7 @@
             }
 
             function confirmChangesDiscard() {
-                return showConfirmModal({
+                return showConfirmModalDialog({
                     message: 'Do you really want to exit without saving changes?',
                     acceptButtonText: 'Yes, discard them',
                     cancelButtonText: 'No, take me back'
@@ -185,19 +186,20 @@
 
                     if (importedConfig._version === LAST_CONFIG_VERSION) {
                         internalConfig.value = erdiagramPlaygroundConfigManager.mergeConfigs(internalConfig.value, importedConfig);
+                        showSuccessToastMessage('Settings imported successfully');
                     } else {
-                        console.warn('Detected an invalid version of settings');
-                        showErrorModal('Detected an invalid version of settings');
+                        console.warn('Detected an invalid version of settings:', importedConfig._version);
+                        showErrorToastMessage('Invalid settings file');
                     }
                 } catch (error) {
                     console.error('Cannot parse config file:', error);
-                    showErrorModal('Cannot parse config file');
+                    showErrorToastMessage('There was an error parsing the settings file');
                 }
             }
 
             function onImportConfigError(error: any) {
                 console.error('Cannot read config file:', error);
-                showErrorModal('Cannot read config file');
+                showErrorToastMessage('There was an error reading the settings file');
             }
 
             function getConfigFileContents() {

@@ -71,7 +71,7 @@
 
 <script lang="ts">
     import {defineComponent} from 'vue';
-    import {showConfirmModal} from '@/store/globalModalDialogStore';
+    import {showConfirmModalDialog} from '@/store/globalModalDialogStore';
     import Button from '@/components/generic/form/Button.vue';
     import Dropdown from '@/components/generic/form/Dropdown.vue';
     import DropdownItem from '@/components/generic/form/DropdownItem.vue';
@@ -119,7 +119,7 @@
             }
 
             function confirmRestoreDefaultConfig() {
-                return showConfirmModal({
+                return showConfirmModalDialog({
                     message: 'Do you really want restore the default values?',
                     acceptButtonText: 'Yes, go ahead',
                     cancelButtonText: 'No, take me back'

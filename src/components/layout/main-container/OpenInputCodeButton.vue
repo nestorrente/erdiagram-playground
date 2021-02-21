@@ -22,7 +22,7 @@
 <script lang="ts">
     import {defineComponent} from 'vue';
     import Button from '@/components/generic/form/Button.vue';
-    import {showErrorModal} from '@/store/globalModalDialogStore';
+    import {showErrorModalDialog} from '@/store/globalModalDialogStore';
     import FileReadWrapper from '@/components/generic/file/FileReadWrapper.vue';
 
     export default defineComponent({
@@ -46,7 +46,7 @@
 
             function onOpenFileError(error: any) {
                 console.error('Cannot read file:', error);
-                showErrorModal('Cannot read file. Cause: ' + error);
+                showErrorModalDialog('Cannot read file. Cause: ' + error);
             }
 
             function onOpenFileMaxSizeError(file: File) {
@@ -54,7 +54,7 @@
                 const fileSizeInMegabytes = file.size / ONE_MEGABYTE_IN_BYTES;
                 const formattedFileSize = fileSizeInMegabytes.toFixed(2);
 
-                showErrorModal(`File exceeds the maximum size allowed of 10 MB (file size: ${formattedFileSize} MB)`);
+                showErrorModalDialog(`File exceeds the maximum size allowed of 10 MB (file size: ${formattedFileSize} MB)`);
 
             }
 
