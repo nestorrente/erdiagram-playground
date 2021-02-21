@@ -1,6 +1,6 @@
 <template>
     <button
-            v-bind="$attrs"
+            ref="button"
             class="button"
             :class="[
                 color ? `is-${color}` : '',
@@ -23,7 +23,7 @@
                     'is-static': static,
                 }
             ]"
-            :disabled="disabled"
+            v-bind="$attrs"
     >
         <Icon
                 v-if="icon"
@@ -61,8 +61,15 @@
             active: Boolean,
             loading: Boolean,
             static: Boolean,
-            disabled: Boolean,
             icon: String,
+        },
+        methods: {
+            click() {
+                (this.$refs.button as HTMLButtonElement).click();
+            },
+            focus() {
+                (this.$refs.button as HTMLButtonElement).focus();
+            }
         }
     });
 </script>

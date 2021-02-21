@@ -70,7 +70,7 @@
     export default defineComponent({
         name: 'Modal',
         inheritAttrs: false,
-        emits: ['update:showing', 'globalKeydown'],
+        emits: ['update:showing'],
         props: {
             disableCloseOnBackgroundClick: {
                 type: Boolean,
@@ -161,8 +161,6 @@
                 if (!props.disableCloseOnEscKey && event.key === 'Escape') {
                     event.stopImmediatePropagation();
                     close();
-                } else {
-                    context.emit('globalKeydown', event);
                 }
 
             });

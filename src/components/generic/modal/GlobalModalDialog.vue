@@ -6,7 +6,6 @@
             max-width="420px"
             :append-header-class="globalModalDialogStore.headerClass"
             :append-title-class="globalModalDialogStore.titleClass"
-            @global-keydown="onGlobalKeydown"
     >
         <template #title>
             <Icon v-if="globalModalDialogStore.titleIcon" :icon="globalModalDialogStore.titleIcon"/>
@@ -18,8 +17,10 @@
         <template #footer>
             <div class="buttons is-justify-content-flex-end">
                 <Button
+                        ref="acceptButtonRef"
                         v-if="globalModalDialogStore.acceptButton != null"
                         :color="globalModalDialogStore.acceptButton.color"
+                        autofocus
                         @click="globalModalDialogStore.accept()"
                 >
                     {{ globalModalDialogStore.acceptButton.text }}
@@ -37,11 +38,15 @@
 </template>
 
 <script lang="ts">
-    import {defineComponent} from 'vue';
+    import {defineComponent, nextTick, ref, watch} from 'vue';
     import Modal from '@/components/generic/modal/Modal.vue';
     import globalModalDialogStore from '@/store/globalModalDialogStore';
     import Button from '@/components/generic/form/Button.vue';
     import Icon from '@/components/generic/form/Icon.vue';
+
+    interface Focusable {
+        focus(): void;
+    }
 
     export default defineComponent({
         name: 'GlobalModalDialog',
@@ -52,23 +57,29 @@
         },
         setup() {
 
+            const acceptButtonRef = ref<Focusable>();
+
             function onModalShowingChange(showing: boolean) {
                 if (!showing) {
                     globalModalDialogStore.cancel();
                 }
             }
 
-            function onGlobalKeydown(event: KeyboardEvent) {
-                if (event.key === 'Enter') {
-                    event.stopImmediatePropagation();
-                    globalModalDialogStore.accept();
+            watch(() => globalModalDialogStore.showing, showing => {
+                if (showing) {
+                    nextTick(() => {
+                        const acceptButton = acceptButtonRef.value!;
+                        setTimeout(() => {
+                            acceptButton.focus();
+                        }, 50);
+                    });
                 }
-            }
+            });
 
             return {
                 globalModalDialogStore,
-                onModalShowingChange,
-                onGlobalKeydown
+                acceptButtonRef,
+                onModalShowingChange
             };
 
         }
