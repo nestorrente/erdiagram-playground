@@ -1,5 +1,6 @@
 import './assets/scss/custom-bulma.scss';
 import './assets/scss/layout.scss';
+import './assets/scss/transitions.scss';
 import 'highlight.js/styles/monokai-sublime.css';
 // import 'highlight.js/styles/rainbow.css';
 // import 'highlight.js/styles/tomorrow.css';

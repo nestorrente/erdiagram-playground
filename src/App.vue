@@ -107,6 +107,7 @@
             v-model:selected-tab-name="settingsModalSelectedTabName"
     />
     <GlobalModalDialog/>
+    <GlobalToastMessage/>
 </template>
 
 <script lang="ts">
@@ -134,14 +135,13 @@
     import SelectInput from '@/components/generic/form/SelectInput.vue';
     import ExamplesDropdown from '@/components/ExamplesDropdown.vue';
     import useBeforeUnload from '@/composition/useBeforeUnload';
-    import useEntityRelationshipModelToClassCodeConverter
-        from '@/composition/useEntityRelationshipModelToClassCodeConverter';
-    import useEntityRelationshipModelToDatabaseCodeConverter
-        from '@/composition/useEntityRelationshipModelToDatabaseCodeConverter';
+    import useEntityRelationshipModelToClassCodeConverter from '@/composition/useEntityRelationshipModelToClassCodeConverter';
+    import useEntityRelationshipModelToDatabaseCodeConverter from '@/composition/useEntityRelationshipModelToDatabaseCodeConverter';
     import {showConfirmModal, showErrorModal} from '@/store/globalModalDialogStore';
     import FileReadWrapper from '@/components/generic/file/FileReadWrapper.vue';
     import {useThrottledRef} from '@/composition/useThrottledRef';
     import FileDownloadWrapper from '@/components/generic/file/FileDownloadWrapper.vue';
+    import GlobalToastMessage from '@/components/generic/modal/GlobalToastMessage.vue';
 
     interface OutputFormat {
         id: string;
@@ -153,6 +153,7 @@
     export default defineComponent({
         name: 'App',
         components: {
+            GlobalToastMessage,
             FileDownloadWrapper,
             FileReadWrapper,
             ExamplesDropdown,
