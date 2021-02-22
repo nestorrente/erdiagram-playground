@@ -31,11 +31,11 @@
             </DropdownItem>
             <DropdownItem @click="$emit('loadExample', relationshipModifiersExampleCode)">
                 <Icon icon="fas fa-wrench"/>
-                Relationship modifiers
+                Relationship modifiers (pending)
             </DropdownItem>
             <DropdownItem @click="$emit('loadExample', relationshipAliasesExampleCode)">
                 <Icon icon="fas fa-at"/>
-                Relationship aliases
+                Relationship aliases (pending)
             </DropdownItem>
 
             <DropdownDivider/>

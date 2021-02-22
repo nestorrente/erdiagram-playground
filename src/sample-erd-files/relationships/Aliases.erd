@@ -1,1 +1,7 @@
+# Some entities without properties:
+User
+UserType
+ChatRoom
+Message
+
 # TODO pending...
