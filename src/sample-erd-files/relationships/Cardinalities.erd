@@ -19,7 +19,7 @@ User <-> Profile
 
 # One-to-many relationship:
 
-# Each chat room has many message.
+# Each chat room has many messages.
 # Each message belongs to one chat room.
 ChatRoom <->* Message
 
