@@ -29,13 +29,13 @@
                 <Icon icon="fas fa-arrows-alt-h"/>
                 Relationship directions
             </DropdownItem>
-            <DropdownItem @click="$emit('loadExample', relationshipModifiersExampleCode)">
-                <Icon icon="fas fa-wrench"/>
-                Relationship modifiers (pending)
-            </DropdownItem>
-            <DropdownItem @click="$emit('loadExample', relationshipAliasesExampleCode)">
+            <DropdownItem @click="$emit('loadExample', aliasesExampleCode)">
                 <Icon icon="fas fa-at"/>
-                Relationship aliases (pending)
+                Aliases and relationship's name
+            </DropdownItem>
+            <DropdownItem @click="$emit('loadExample', relationshipNameExampleCode)">
+                <Icon icon="fas fa-tag"/>
+                Relationship's name
             </DropdownItem>
 
             <DropdownDivider/>
@@ -43,6 +43,10 @@
             <DropdownItem @click="$emit('loadExample', pokemonExampleCode)">
                 <Icon icon="fas fa-gamepad"/>
                 Pokemon
+            </DropdownItem>
+            <DropdownItem @click="$emit('loadExample', virtualShopExampleCode)">
+                <Icon icon="fas fa-shopping-cart"/>
+                Virtual shop
             </DropdownItem>
         </template>
     </Dropdown>
@@ -60,9 +64,10 @@
     import propertyModifiersExampleCode from '!!raw-loader!@/sample-erd-files/entities/PropertyModifiers.erd';
     import cardinalitiesExampleCode from '!!raw-loader!@/sample-erd-files/relationships/Cardinalities.erd';
     import directionsExampleCode from '!!raw-loader!@/sample-erd-files/relationships/Directions.erd';
-    import relationshipModifiersExampleCode from '!!raw-loader!@/sample-erd-files/relationships/Modifiers.erd';
-    import relationshipAliasesExampleCode from '!!raw-loader!@/sample-erd-files/relationships/Aliases.erd';
+    import aliasesExampleCode from '!!raw-loader!@/sample-erd-files/relationships/Aliases.erd';
+    import relationshipNameExampleCode from '!!raw-loader!@/sample-erd-files/relationships/RelationshipName.erd';
     import pokemonExampleCode from '!!raw-loader!@/sample-erd-files/Pokemon.erd';
+    import virtualShopExampleCode from '!!raw-loader!@/sample-erd-files/VirtualShop.erd';
 
     export default defineComponent({
         name: 'ExamplesDropdown',
@@ -81,9 +86,10 @@
                 propertyModifiersExampleCode,
                 cardinalitiesExampleCode,
                 directionsExampleCode,
-                relationshipModifiersExampleCode,
-                relationshipAliasesExampleCode,
-                pokemonExampleCode
+                aliasesExampleCode,
+                relationshipNameExampleCode,
+                pokemonExampleCode,
+                virtualShopExampleCode
             };
         }
     });

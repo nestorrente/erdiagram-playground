@@ -2,7 +2,7 @@
 # but it has no effect on the database model (MySQL, Oracle, SQL Server).
 
 
-# Some entities without properties:
+# Some example entities without properties:
 User
 UserType
 ChatRoom
@@ -11,20 +11,22 @@ Message
 
 # Left to right
 
-# It's possible to access from an User to its UserType,
-# but it's not possible to access from a UserType to the Users of that type.
 User *-> UserType
 
+	# It's possible to access from an User to its UserType,
+	# but it's not possible to access from a UserType to the Users of that type.
 
 # Right to left
 
-# It's possible to access from a Message to the User who wrote it,
-# but it's not possible to access from the User to its Messages.
 User <-* Message
+
+	# It's possible to access from a Message to the User who wrote it,
+	# but it's not possible to access from the User to its Messages.
 
 
 # Bidirectional
 
-# It's possible to access from a ChatRoom to its Messages,
-# and also from a Message to the ChatRoom it belongs to.
 ChatRoom <->* Message
+
+	# It's possible to access from a ChatRoom to its Messages,
+	# and also from a Message to the ChatRoom it belongs to.

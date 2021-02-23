@@ -1,7 +1,24 @@
-# Some entities without properties:
+# Some example entities without properties:
 User
-UserType
-ChatRoom
-Message
+Travel
+City
+Country
 
-# TODO pending...
+# It's possible to specify an alias for the members of the relationship.
+# This is specially useful (in fact, required) when you have many
+# references from a relationship A to the same relationship B.
+
+# A travel has 2 cities: the origin city and the destiny city.
+Travel -> City origin
+Travel -> City destiny
+
+# The alias can be also used on the left member of the relationship:
+User traveler *<-> Travel
+
+# When no alias is specified, the name of the entity is used as the member alias.
+# This means that this:
+
+City *-> Country
+
+# Is the same as this:
+# City city *-> Country country

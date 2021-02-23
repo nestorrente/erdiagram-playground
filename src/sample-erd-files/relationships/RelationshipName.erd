@@ -1,0 +1,25 @@
+# Some example entities without properties:
+Actor
+Director
+Film
+MovieSaga
+
+# It's possible to specify the name of the relationships.
+
+# This is useful when generating database's creation script,
+# as this name name may be used for naming the intermediate
+# tables used to model many-to-many relationships.
+
+Film *<->* Actor
+
+	# As we haven't specify the relationship's name,
+	# the name of the table will be FilmActor.
+
+Film *<->* Director (DirectedBy)
+
+	# The name of the table will be DirectedBy
+
+# Specify the name of one-to-one, one-to-many
+# or many-to-one relationships has no effect:
+
+Film *-> MovieSaga (UselessName)

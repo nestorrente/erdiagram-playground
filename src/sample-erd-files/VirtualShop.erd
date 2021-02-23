@@ -1,0 +1,30 @@
+User
+    username text(30)
+    active bool
+
+Vendor
+    name text(50)
+
+Product
+    name text(50)
+    price int
+
+Product *<-> Vendor
+
+WishList
+    description text(200)
+
+WishList *<-> User
+WishList *->* Product
+
+DiscountCode
+    code text(20)
+    startDate date
+    endDate? date
+    amount int
+
+Order
+    date datetime
+
+Order *->* DiscountCode
+Order *->* Product (OrderLine)
