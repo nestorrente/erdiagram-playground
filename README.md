@@ -1,29 +1,5 @@
-# erdiagram-playground
+# ERDiagram playground
 
-## Project setup
-```
-npm install
-```
+This is the playground application of the [ERDiagram project](https://github.com/nestorrente/erdiagram).
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your unit tests
-```
-npm run test:unit
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+You can try this application here: [http://erdiagram.nestorrente.com/](http://erdiagram.nestorrente.com/).
