@@ -30,9 +30,9 @@
                         <a class="navbar-item" href="https://github.com/nestorrente/erdiagram" target="_blank">
                             ERDiagram library
                         </a>
-                        <a class="navbar-item" href="https://github.com/nestorrente/erdiagram-cli" target="_blank">
-                            ERDiagram CLI
-                        </a>
+                        <!--<a class="navbar-item" href="https://github.com/nestorrente/erdiagram-cli" target="_blank">-->
+                        <!--    ERDiagram CLI (coming soon)-->
+                        <!--</a>-->
                         <a class="navbar-item" href="https://github.com/nestorrente/erdiagram-playground"
                            target="_blank">
                             ERDiagram playground - this app 😀
