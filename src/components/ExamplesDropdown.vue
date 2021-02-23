@@ -23,15 +23,15 @@
 
             <DropdownItem @click="$emit('loadExample', cardinalitiesExampleCode)">
                 <Icon icon="fas fa-users"/>
-                Relationship cardinalities
+                Relationship's cardinality
             </DropdownItem>
             <DropdownItem @click="$emit('loadExample', directionsExampleCode)">
                 <Icon icon="fas fa-arrows-alt-h"/>
-                Relationship directions
+                Relationship's direction
             </DropdownItem>
             <DropdownItem @click="$emit('loadExample', aliasesExampleCode)">
                 <Icon icon="fas fa-at"/>
-                Aliases and relationship's name
+                Naming relationship's members
             </DropdownItem>
             <DropdownItem @click="$emit('loadExample', relationshipNameExampleCode)">
                 <Icon icon="fas fa-tag"/>
