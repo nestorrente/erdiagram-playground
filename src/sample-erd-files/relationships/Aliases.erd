@@ -9,8 +9,8 @@ Country
 # references from a relationship A to the same relationship B.
 
 # A travel has 2 cities: the origin city and the destiny city.
-Travel -> City origin
-Travel -> City destiny
+Travel -> City originCity
+Travel -> City destinyCity
 
 # The alias can be also used on the left member of the relationship:
 User traveler *<-> Travel
