@@ -20,30 +20,30 @@
                     >
                         <DropdownItem
                                 @click="openFile"
-                                :title="listenKeyboardShortcuts ? 'Ctrl + O' : ''"
+                                :title="'Upload a settings JSON file' + (listenKeyboardShortcuts ? ' (Ctrl + O)' : '')"
                         >
                             <Icon icon="fas fa-file-import"/>
-                            Import config
+                            Import settings
                         </DropdownItem>
                     </FileReadWrapper>
                     <FileDownloadWrapper
-                            file-name="erdiagram_config.json"
+                            file-name="erdiagram_settings.json"
                             :file-contents="configFileContentsSupplier"
                             :listen-keyboard-save-shortcut="listenKeyboardShortcuts"
                             #default="{downloadFile}"
                     >
                         <DropdownItem
                                 @click="downloadFile"
-                                :title="listenKeyboardShortcuts ? 'Ctrl + S' : ''"
+                                :title="'Download the settings as a JSON file' + (listenKeyboardShortcuts ? ' (Ctrl + S)' : '')"
                         >
                             <Icon icon="fas fa-file-export"/>
-                            Export config
+                            Export settings
                         </DropdownItem>
                     </FileDownloadWrapper>
                     <DropdownDivider/>
                     <DropdownItem
                             @click="restoreDefaultConfig"
-                            :title="listenKeyboardShortcuts ? 'Ctrl + Backspace' : ''"
+                            title="Restores the default value of all settings"
                     >
                         <Icon icon="fas fa-undo-alt"/>
                         Restore default values
@@ -79,7 +79,6 @@
     import Icon from '@/components/generic/form/Icon.vue';
     import FileReadWrapper from '@/components/generic/file/FileReadWrapper.vue';
     import FileDownloadWrapper from '@/components/generic/file/FileDownloadWrapper.vue';
-    import useDocumentEventListener from '@/composition/event/useDocumentEventListener';
 
     export default defineComponent({
         name: 'SettingsModalFooter',
@@ -125,12 +124,6 @@
                     cancelButtonText: 'No, take me back'
                 });
             }
-
-            useDocumentEventListener('keydown', (event: KeyboardEvent) => {
-                if (props.listenKeyboardShortcuts && event.ctrlKey && event.key === 'Backspace') {
-                    restoreDefaultConfig();
-                }
-            });
 
             return {
                 restoreDefaultConfig

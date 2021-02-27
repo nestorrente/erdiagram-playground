@@ -1,5 +1,6 @@
 import {
 	AbstractComponentConfigManager,
+	classModelGeneratorConfigManager,
 	databaseModelGeneratorConfigManager,
 	entityRelationshipModelParserConfigManager,
 	javaClassModelToCodeConverterConfigManager,
@@ -12,7 +13,7 @@ import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
 import ERDiagramPlaygroundSerializableConfig from '@/config/ERDiagramPlaygroundSerializableConfig';
 import PartialERDiagramPlaygroundConfig from '@/config/PartialERDiagramPlaygroundConfig';
 
-export const LAST_CONFIG_VERSION = '0.1.0-alpha.0';
+export const LAST_CONFIG_VERSION = '0.1.0-alpha.1';
 
 export class ERDiagramPlaygroundConfigManager
 		extends AbstractComponentConfigManager<ERDiagramPlaygroundConfig, PartialERDiagramPlaygroundConfig, ERDiagramPlaygroundSerializableConfig> {
@@ -34,9 +35,11 @@ export class ERDiagramPlaygroundConfigManager
 				databaseModelToCodeConverterConfig: oracleDatabaseModelToCodeConverterConfigManager.getDefaultConfig()
 			},
 			java: {
+				classModelGeneratorConfig: classModelGeneratorConfigManager.getDefaultConfig(),
 				classModelToCodeConverterConfig: javaClassModelToCodeConverterConfigManager.getDefaultConfig()
 			},
 			typescript: {
+				classModelGeneratorConfig: classModelGeneratorConfigManager.getDefaultConfig(),
 				classModelToCodeConverterConfig: typescriptClassModelToCodeConverterConfigManager.getDefaultConfig()
 			}
 		};
@@ -80,12 +83,20 @@ export class ERDiagramPlaygroundConfigManager
 				),
 			},
 			java: {
+				classModelGeneratorConfig: classModelGeneratorConfigManager.mergeConfigs(
+						fullConfig.java.classModelGeneratorConfig,
+						partialConfig?.java?.classModelGeneratorConfig
+				),
 				classModelToCodeConverterConfig: javaClassModelToCodeConverterConfigManager.mergeConfigs(
 						fullConfig.java.classModelToCodeConverterConfig,
 						partialConfig?.java?.classModelToCodeConverterConfig
 				)
 			},
 			typescript: {
+				classModelGeneratorConfig: classModelGeneratorConfigManager.mergeConfigs(
+						fullConfig.typescript.classModelGeneratorConfig,
+						partialConfig?.typescript?.classModelGeneratorConfig
+				),
 				classModelToCodeConverterConfig: typescriptClassModelToCodeConverterConfigManager.mergeConfigs(
 						fullConfig.typescript.classModelToCodeConverterConfig,
 						partialConfig?.typescript?.classModelToCodeConverterConfig
@@ -111,9 +122,11 @@ export class ERDiagramPlaygroundConfigManager
 				databaseModelToCodeConverterConfig: oracleDatabaseModelToCodeConverterConfigManager.convertToSerializableObject(fullConfig.oracle.databaseModelToCodeConverterConfig),
 			},
 			java: {
+				classModelGeneratorConfig: classModelGeneratorConfigManager.convertToSerializableObject(fullConfig.java.classModelGeneratorConfig),
 				classModelToCodeConverterConfig: javaClassModelToCodeConverterConfigManager.convertToSerializableObject(fullConfig.java.classModelToCodeConverterConfig)
 			},
 			typescript: {
+				classModelGeneratorConfig: classModelGeneratorConfigManager.convertToSerializableObject(fullConfig.typescript.classModelGeneratorConfig),
 				classModelToCodeConverterConfig: typescriptClassModelToCodeConverterConfigManager.convertToSerializableObject(fullConfig.typescript.classModelToCodeConverterConfig)
 			}
 		};
@@ -136,9 +149,11 @@ export class ERDiagramPlaygroundConfigManager
 				databaseModelToCodeConverterConfig: oracleDatabaseModelToCodeConverterConfigManager.convertFromSerializableObject(serializableConfig.oracle.databaseModelToCodeConverterConfig),
 			},
 			java: {
+				classModelGeneratorConfig: classModelGeneratorConfigManager.convertFromSerializableObject(serializableConfig.java.classModelGeneratorConfig),
 				classModelToCodeConverterConfig: javaClassModelToCodeConverterConfigManager.convertFromSerializableObject(serializableConfig.java.classModelToCodeConverterConfig)
 			},
 			typescript: {
+				classModelGeneratorConfig: classModelGeneratorConfigManager.convertFromSerializableObject(serializableConfig.typescript.classModelGeneratorConfig),
 				classModelToCodeConverterConfig: typescriptClassModelToCodeConverterConfigManager.convertFromSerializableObject(serializableConfig.typescript.classModelToCodeConverterConfig)
 			}
 		};

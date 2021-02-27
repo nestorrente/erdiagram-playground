@@ -27,6 +27,29 @@
                 </tr>
                 <tr>
                     <td class="setting-description">
+                        ID naming strategy:
+                    </td>
+                    <td class="setting-value">
+                        <SelectInput
+                                :items="idNamingStrategyOptions"
+                                v-model="selectedIdNamingStrategyOption"
+                                text-field="text"
+                                id-field="value"
+                                block
+                        ></SelectInput>
+                    </td>
+                    <td style="width: 58px">
+                        <Button
+                                title="Restore default value"
+                                rounded
+                                small
+                                icon="fas fa-undo-alt"
+                                @click="config.java.classModelGeneratorConfig.idNamingStrategy = defaultClassModelGeneratorConfig.idNamingStrategy"
+                        ></Button>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="setting-description">
                         Use Spring @Nullable and @NotNull annotations:
                     </td>
                     <td class="setting-value">
@@ -64,29 +87,66 @@
 
 <script lang="ts">
     import {defineComponent} from 'vue';
-    import {javaClassModelToCodeConverterConfigManager, JavaType, parseJavaType} from '@nestorrente/erdiagram';
+    import {
+        classModelGeneratorConfigManager,
+        IdNamingStrategy,
+        javaClassModelToCodeConverterConfigManager,
+        JavaType,
+        parseJavaType,
+        StandardIdNamingStrategies
+    } from '@nestorrente/erdiagram';
     import TypeBindingsTable from '@/components/config-modal/tabs/TypeBindingsTable.vue';
     import SettingsTabSection from '@/components/config-modal/tabs/SettingsTabSection.vue';
     import Button from '@/components/generic/form/Button.vue';
+    import SelectInput from '@/components/generic/form/SelectInput.vue';
+    import useSelectInputOptions, {SelectInputOption} from '@/composition/form/useSelectInputOptions';
+    import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
+
+    interface Props {
+        config: ERDiagramPlaygroundConfig;
+    }
 
     export default defineComponent({
         name: 'JavaTabContent',
-        components: {Button, SettingsTabSection, TypeBindingsTable},
+        components: {SelectInput, Button, SettingsTabSection, TypeBindingsTable},
         props: {
             config: {
                 type: Object,
                 required: true
             }
         },
-        setup() {
+        setup(uncastedProps) {
+
+            const props = uncastedProps as Props;
 
             const formatJavaType = (javaType: JavaType) => javaType.formatCanonical();
 
+            const idNamingStrategyOptions: SelectInputOption<IdNamingStrategy>[] = [
+                {
+                    text: 'Default ("id")',
+                    value: StandardIdNamingStrategies.DEFAULT
+                },
+                {
+                    text: 'Prefix entity name ("userId")',
+                    value: StandardIdNamingStrategies.ENTITY_NAME_PREFIX
+                }
+            ];
+
+            const selectedIdNamingStrategyOption = useSelectInputOptions(
+                    idNamingStrategyOptions,
+                    () => props.config.java.classModelGeneratorConfig.idNamingStrategy,
+                    newValue => props.config.java.classModelGeneratorConfig.idNamingStrategy = newValue
+            );
+
+            const defaultClassModelGeneratorConfig = classModelGeneratorConfigManager.getDefaultConfig();
             const defaultClassModelToCodeConverterConfig = javaClassModelToCodeConverterConfigManager.getDefaultConfig();
 
             return {
                 parseJavaType,
                 formatJavaType,
+                idNamingStrategyOptions,
+                selectedIdNamingStrategyOption,
+                defaultClassModelGeneratorConfig,
                 defaultClassModelToCodeConverterConfig
             };
 

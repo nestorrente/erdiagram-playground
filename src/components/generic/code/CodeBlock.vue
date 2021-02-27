@@ -21,10 +21,13 @@
 
         <pre
                 class="code-container"
-                :class="{'is-full-height': fullHeight}"
+                :class="{
+                    'has-white-space-pre-wrap': wrap,
+                    'is-full-height': fullHeight
+                }"
         ><code
                 ref="codeBlock"
-                :class="[lang, {'is-full-height': fullHeight}]"
+                :class="[lang, customCodeClass, {'is-full-height': fullHeight}]"
                 v-text="code"
         ></code></pre>
 
@@ -43,15 +46,23 @@
         props: {
             lang: {
                 type: String,
-                required: true
+                default: 'plaintext'
             },
             code: {
                 type: String,
                 required: true
             },
+            wrap: {
+                type: Boolean,
+                default: false
+            },
             fullHeight: {
                 type: Boolean,
                 default: false
+            },
+            customCodeClass: {
+                type: String,
+                required: false
             }
         },
         setup(props) {

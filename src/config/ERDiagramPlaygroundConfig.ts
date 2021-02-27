@@ -1,4 +1,5 @@
 import {
+	ClassModelGeneratorConfig,
 	ClassModelToCodeConverterConfig,
 	DatabaseModelGeneratorConfig,
 	DatabaseModelToCodeConverterConfig,
@@ -26,5 +27,6 @@ export interface DatabaseDialectConfig<T extends DatabaseModelToCodeConverterCon
 }
 
 export interface ClassLanguageConfig<T extends ClassModelToCodeConverterConfig<any>> {
+	classModelGeneratorConfig: ClassModelGeneratorConfig;
 	classModelToCodeConverterConfig: T;
 }

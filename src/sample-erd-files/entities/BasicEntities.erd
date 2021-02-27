@@ -9,3 +9,8 @@ Task
     done bool
 
 EntityWithoutProperties
+
+EntityWithCustomIdProperty
+    # You can customize identifier's name by defining it explicitly.
+    # However, only one property with "identifier" type is allowed.
+    customIdProperty identifier

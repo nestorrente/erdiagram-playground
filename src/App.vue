@@ -64,14 +64,14 @@
                 const serializableConfig = localStorageAccessor.getConfig();
 
                 if (serializableConfig) {
-                    const config = erdiagramPlaygroundConfigManager.convertFromSerializableObject(serializableConfig);
 
                     // Check you are using the last version of the config
-                    if (config._version === LAST_CONFIG_VERSION) {
-                        return config;
-                    } else {
-                        console.warn('Detected old version of settings: using default settings.');
+                    if (serializableConfig._version === LAST_CONFIG_VERSION) {
+                        return erdiagramPlaygroundConfigManager.convertFromSerializableObject(serializableConfig);
                     }
+
+                    console.warn('Detected old version of settings: using default settings.');
+
                 }
 
                 return erdiagramPlaygroundConfigManager.getDefaultConfig();

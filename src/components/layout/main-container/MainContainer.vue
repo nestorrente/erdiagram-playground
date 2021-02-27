@@ -65,8 +65,10 @@
                 </div>
                 <div class="vfc-item vfc-grow">
                     <CodeBlock
-                            :lang="selectedOutputFormat.codeBlockLang"
-                            :code="outputCode"
+                            :lang="parseError ? 'plaintext' : selectedOutputFormat.codeBlockLang"
+                            :code="parseErrorDisplaytext ?? outputCode"
+                            :wrap="parseError != null"
+                            :custom-code-class="parseError ? 'has-text-danger' : undefined"
                             full-height
                     />
                 </div>
@@ -104,7 +106,6 @@
     import OpenInputCodeButton from '@/components/layout/main-container/OpenInputCodeButton.vue';
     import Icon from '@/components/generic/form/Icon.vue';
     import localStorageAccessor from '@/storage/localStorageAccessor';
-    import {showErrorToastMessage} from '@/store/globalToastMessageStore';
 
     interface Props {
         config: ERDiagramPlaygroundConfig;
@@ -169,7 +170,6 @@
                     };
                 } catch (error) {
                     console.error(`Parse error: ${error.message}`);
-                    showErrorToastMessage('There is an error in your code: ' + error.message);
                     return {
                         erModel: null,
                         error
@@ -179,6 +179,15 @@
 
             const entityRelationshipModel = computed(() => parseResult.value.erModel);
             const parseError = computed(() => parseResult.value.error);
+            const parseErrorDisplaytext = computed((): string | null => {
+
+                if (!parseError.value) {
+                    return null;
+                }
+
+                return `There is an error in your code:\n\n${parseError.value.message}`;
+
+            });
 
             const mysqlConverter = useEntityRelationshipModelToDatabaseCodeConverter(
                     () => props.config.mysql.databaseModelGeneratorConfig,
@@ -195,13 +204,15 @@
                     () => new OracleDatabaseModelToCodeConverter(props.config.oracle.databaseModelToCodeConverterConfig)
             );
 
-            const javaConverter = useEntityRelationshipModelToClassCodeConverter(() => {
-                return new JavaClassModelToCodeConverter(props.config.java.classModelToCodeConverterConfig);
-            });
+            const javaConverter = useEntityRelationshipModelToClassCodeConverter(
+                    () => props.config.java.classModelGeneratorConfig,
+                    () => new JavaClassModelToCodeConverter(props.config.java.classModelToCodeConverterConfig)
+            );
 
-            const typescriptConverter = useEntityRelationshipModelToClassCodeConverter(() => {
-                return new TypeScriptClassModelToCodeConverter(props.config.typescript.classModelToCodeConverterConfig);
-            });
+            const typescriptConverter = useEntityRelationshipModelToClassCodeConverter(
+                    () => props.config.typescript.classModelGeneratorConfig,
+                    () => new TypeScriptClassModelToCodeConverter(props.config.typescript.classModelToCodeConverterConfig)
+            );
 
             const outputFormats: Record<string, OutputFormat[]> = {
                 'Database': [
@@ -269,6 +280,7 @@
                 inputCodeDebounced,
                 inputCodeSynced,
                 parseError,
+                parseErrorDisplaytext,
                 outputFormats,
                 selectedOutputFormat,
                 outputCode,
