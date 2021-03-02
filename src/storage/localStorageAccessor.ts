@@ -11,42 +11,26 @@ const ItemKeys = {
 	CONFIG: 'erdiagramConfig'
 };
 
-export interface LocalStorageAccessor {
+export default {
 
-	getInputCode(): string;
-
-	setInputCode(inputCode: string): void;
-
-	getOutputFormat(): OutputFormat;
-
-	setOutputFormat(outputFormat: OutputFormat): void;
-
-	getConfig(): ERDiagramPlaygroundConfig;
-
-	setConfig(config: ERDiagramPlaygroundConfig): void;
-
-}
-
-const localStorageAccessor: LocalStorageAccessor = {
-
-	getInputCode() {
+	getInputCode(): string {
 		return localStorage.getItem(ItemKeys.INPUT_CODE) || pokemonSampleCode;
 	},
 
-	setInputCode(value) {
+	setInputCode(value: string): void {
 		localStorage.setItem(ItemKeys.INPUT_CODE, value);
 	},
 
-	getOutputFormat() {
+	getOutputFormat(): OutputFormat {
 		const outputFormatId = localStorage.getItem(ItemKeys.OUTPUT_FORMAT_ID);
 		return outputFormatId != null && outputFormats[outputFormatId] || outputFormats.mysql;
 	},
 
-	setOutputFormat(value) {
+	setOutputFormat(value: OutputFormat): void {
 		localStorage.setItem(ItemKeys.OUTPUT_FORMAT_ID, value.id);
 	},
 
-	getConfig() {
+	getConfig(): ERDiagramPlaygroundConfig {
 
 		const serializableConfig = localJsonStorage.getItem<ERDiagramPlaygroundSerializableConfig>(ItemKeys.CONFIG);
 
@@ -65,7 +49,7 @@ const localStorageAccessor: LocalStorageAccessor = {
 
 	},
 
-	setConfig(value) {
+	setConfig(value: ERDiagramPlaygroundConfig): void {
 		if (value == null) {
 			localJsonStorage.removeItem(ItemKeys.CONFIG);
 		} else {
@@ -75,5 +59,3 @@ const localStorageAccessor: LocalStorageAccessor = {
 	}
 
 };
-
-export default localStorageAccessor;
