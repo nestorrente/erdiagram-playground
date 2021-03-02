@@ -3,74 +3,30 @@
 
         <table class="table is-fullwidth is-striped is-hoverable settings-table">
             <tbody>
-                <tr>
-                    <td class="setting-description">
-                        Generated classes package:
-                    </td>
-                    <td class="setting-value">
+                <SettingRow
+                        description="Generated classes package"
+                        @restore-default="config.java.classModelToCodeConverterConfig.generatedClassesPackage = defaultClassModelToCodeConverterConfig.generatedClassesPackage"
+                >
+                    <input
+                            type="text"
+                            class="input"
+                            v-model="config.java.classModelToCodeConverterConfig.generatedClassesPackage"
+                            placeholder="com.example"
+                    >
+                </SettingRow>
+                <IdNamingStrategySettingRow :config="config.java.classModelGeneratorConfig"/>
+                <SettingRow
+                        description="Use Spring @Nullable and @NotNull annotations"
+                        @restore-default="config.java.classModelToCodeConverterConfig.useSpringNullabilityAnnotations = defaultClassModelToCodeConverterConfig.useSpringNullabilityAnnotations"
+                >
+                    <label class="checkbox">
                         <input
-                                type="text"
-                                class="input"
-                                v-model="config.java.classModelToCodeConverterConfig.generatedClassesPackage"
-                                placeholder="com.example"
+                                type="checkbox"
+                                v-model="config.java.classModelToCodeConverterConfig.useSpringNullabilityAnnotations"
+                                class="mr-1"
                         >
-                    </td>
-                    <td style="width: 58px">
-                        <Button
-                                title="Restore default value"
-                                rounded
-                                small
-                                icon="fas fa-undo-alt"
-                                @click="config.java.classModelToCodeConverterConfig.generatedClassesPackage = defaultClassModelToCodeConverterConfig.generatedClassesPackage"
-                        ></Button>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="setting-description">
-                        ID naming strategy:
-                    </td>
-                    <td class="setting-value">
-                        <SelectInput
-                                :items="idNamingStrategyOptions"
-                                v-model="selectedIdNamingStrategyOption"
-                                text-field="text"
-                                id-field="value"
-                                block
-                        ></SelectInput>
-                    </td>
-                    <td style="width: 58px">
-                        <Button
-                                title="Restore default value"
-                                rounded
-                                small
-                                icon="fas fa-undo-alt"
-                                @click="config.java.classModelGeneratorConfig.idNamingStrategy = defaultClassModelGeneratorConfig.idNamingStrategy"
-                        ></Button>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="setting-description">
-                        Use Spring @Nullable and @NotNull annotations:
-                    </td>
-                    <td class="setting-value">
-                        <label class="checkbox">
-                            <input
-                                    type="checkbox"
-                                    v-model="config.java.classModelToCodeConverterConfig.useSpringNullabilityAnnotations"
-                                    class="mr-1"
-                            >
-                        </label>
-                    </td>
-                    <td style="width: 58px">
-                        <Button
-                                title="Restore default value"
-                                rounded
-                                small
-                                icon="fas fa-undo-alt"
-                                @click="config.java.classModelToCodeConverterConfig.useSpringNullabilityAnnotations = defaultClassModelToCodeConverterConfig.useSpringNullabilityAnnotations"
-                        ></Button>
-                    </td>
-                </tr>
+                    </label>
+                </SettingRow>
             </tbody>
         </table>
 
@@ -97,10 +53,10 @@
     } from '@nestorrente/erdiagram';
     import TypeBindingsTable from '@/components/config-modal/tabs/TypeBindingsTable.vue';
     import SettingsTabSection from '@/components/config-modal/tabs/SettingsTabSection.vue';
-    import Button from '@/components/generic/form/Button.vue';
-    import SelectInput from '@/components/generic/form/SelectInput.vue';
     import useSelectInputOptions, {SelectInputOption} from '@/composition/form/useSelectInputOptions';
     import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
+    import SettingRow from '@/components/config-modal/tabs/SettingRow.vue';
+    import IdNamingStrategySettingRow from '@/components/config-modal/tabs/common-rows/IdNamingStrategySettingRow.vue';
 
     interface Props {
         config: ERDiagramPlaygroundConfig;
@@ -108,7 +64,12 @@
 
     export default defineComponent({
         name: 'JavaTabContent',
-        components: {SelectInput, Button, SettingsTabSection, TypeBindingsTable},
+        components: {
+            IdNamingStrategySettingRow,
+            SettingRow,
+            SettingsTabSection,
+            TypeBindingsTable
+        },
         props: {
             config: {
                 type: Object,

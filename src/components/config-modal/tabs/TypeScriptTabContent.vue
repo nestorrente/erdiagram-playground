@@ -3,29 +3,7 @@
 
         <table class="table is-fullwidth is-striped is-hoverable settings-table">
             <tbody>
-                <tr>
-                    <td class="setting-description">
-                        ID naming strategy:
-                    </td>
-                    <td class="setting-value">
-                        <SelectInput
-                                :items="idNamingStrategyOptions"
-                                v-model="selectedIdNamingStrategyOption"
-                                text-field="text"
-                                id-field="value"
-                                block
-                        ></SelectInput>
-                    </td>
-                    <td style="width: 58px">
-                        <Button
-                                title="Restore default value"
-                                rounded
-                                small
-                                icon="fas fa-undo-alt"
-                                @click="config.typescript.classModelGeneratorConfig.idNamingStrategy = defaultClassModelGeneratorConfig.idNamingStrategy"
-                        ></Button>
-                    </td>
-                </tr>
+                <IdNamingStrategySettingRow :config="config.typescript.classModelGeneratorConfig"/>
             </tbody>
         </table>
 
@@ -54,8 +32,7 @@
     import SettingsTabSection from '@/components/config-modal/tabs/SettingsTabSection.vue';
     import useSelectInputOptions, {SelectInputOption} from '@/composition/form/useSelectInputOptions';
     import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
-    import SelectInput from '@/components/generic/form/SelectInput.vue';
-    import Button from '@/components/generic/form/Button.vue';
+    import IdNamingStrategySettingRow from '@/components/config-modal/tabs/common-rows/IdNamingStrategySettingRow.vue';
 
     interface Props {
         config: ERDiagramPlaygroundConfig;
@@ -63,7 +40,11 @@
 
     export default defineComponent({
         name: 'TypeScriptTabContent',
-        components: {Button, SelectInput, SettingsTabSection, TypeBindingsTable},
+        components: {
+            IdNamingStrategySettingRow,
+            SettingsTabSection,
+            TypeBindingsTable
+        },
         props: {
             config: {
                 type: Object,

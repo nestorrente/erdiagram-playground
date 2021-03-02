@@ -1,100 +1,43 @@
 <template>
     <table class="table is-fullwidth is-striped is-hoverable settings-table">
         <tbody>
-            <slot name="rows-before"></slot>
-            <tr>
-                <td class="setting-description">
-                    Plural table names:
-                </td>
-                <td class="setting-value">
-                    <label class="checkbox">
-                        <input
-                                type="checkbox"
-                                v-model="databaseModelGeneratorConfig.usePluralTableNames"
-                                class="mr-1"
-                        >
-                    </label>
-                </td>
-                <td style="width: 58px">
-                    <Button
-                            title="Restore default value"
-                            rounded
-                            small
-                            icon="fas fa-undo-alt"
-                            @click="databaseModelGeneratorConfig.usePluralTableNames = defaultDatabaseModelConfig.usePluralTableNames"
-                    ></Button>
-                </td>
-            </tr>
-            <tr>
-                <td class="setting-description">
-                    ID naming strategy:
-                </td>
-                <td class="setting-value">
-                    <SelectInput
-                            :items="idNamingStrategyOptions"
-                            v-model="selectedIdNamingStrategyOption"
-                            text-field="text"
-                            id-field="value"
-                            block
-                    ></SelectInput>
-                </td>
-                <td style="width: 58px">
-                    <Button
-                            title="Restore default value"
-                            rounded
-                            small
-                            icon="fas fa-undo-alt"
-                            @click="databaseModelGeneratorConfig.idNamingStrategy = defaultDatabaseModelConfig.idNamingStrategy"
-                    ></Button>
-                </td>
-            </tr>
-            <tr>
-                <td class="setting-description">
-                    Table name case format:
-                </td>
-                <td class="setting-value">
-                    <SelectInput
-                            :items="caseFormatOptions"
-                            v-model="selectedTableNameCaseFormatOption"
-                            text-field="text"
-                            id-field="text"
-                            block
-                    ></SelectInput>
-                </td>
-                <td style="width: 58px">
-                    <Button
-                            title="Restore default value"
-                            rounded
-                            small
-                            icon="fas fa-undo-alt"
-                            @click="databaseModelToCodeConverterConfig.tableNameCaseFormat = defaultDatabaseModelToCodeConverterConfig.tableNameCaseFormat"
-                    ></Button>
-                </td>
-            </tr>
-            <tr>
-                <td class="setting-description">
-                    Column name case format:
-                </td>
-                <td class="setting-value">
-                    <SelectInput
-                            :items="caseFormatOptions"
-                            v-model="selectedColumnNameCaseFormatOption"
-                            text-field="text"
-                            id-field="text"
-                            block
-                    ></SelectInput>
-                </td>
-                <td style="width: 58px">
-                    <Button
-                            title="Restore default value"
-                            rounded
-                            small
-                            icon="fas fa-undo-alt"
-                            @click="databaseModelToCodeConverterConfig.columnNameCaseFormat = defaultDatabaseModelToCodeConverterConfig.columnNameCaseFormat"
-                    ></Button>
-                </td>
-            </tr>
-            <slot name="rows-after"></slot>
+            <SettingRow
+                    description="Plural table names"
+                    @restore-default="databaseModelGeneratorConfig.usePluralTableNames = defaultDatabaseModelConfig.usePluralTableNames"
+            >
+                <label class="checkbox">
+                    <input
+                            type="checkbox"
+                            v-model="databaseModelGeneratorConfig.usePluralTableNames"
+                            class="mr-1"
+                    >
+                </label>
+            </SettingRow>
+            <IdNamingStrategySettingRow :config="databaseModelGeneratorConfig"/>
+            <SettingRow
+                    description="Table name case format"
+                    @restore-default="databaseModelToCodeConverterConfig.tableNameCaseFormat = defaultDatabaseModelToCodeConverterConfig.tableNameCaseFormat"
+            >
+                <SelectInput
+                        :items="caseFormatOptions"
+                        v-model="selectedTableNameCaseFormatOption"
+                        text-field="text"
+                        id-field="text"
+                        block
+                ></SelectInput>
+            </SettingRow>
+            <SettingRow
+                    description="Column name case format"
+                    @restore-default="databaseModelToCodeConverterConfig.columnNameCaseFormat = defaultDatabaseModelToCodeConverterConfig.columnNameCaseFormat"
+            >
+                <SelectInput
+                        :items="caseFormatOptions"
+                        v-model="selectedColumnNameCaseFormatOption"
+                        text-field="text"
+                        id-field="text"
+                        block
+                ></SelectInput>
+            </SettingRow>
         </tbody>
     </table>
 </template>
@@ -112,7 +55,8 @@
         StandardIdNamingStrategies
     } from '@nestorrente/erdiagram';
     import useSelectInputOptions, {SelectInputOption} from '@/composition/form/useSelectInputOptions';
-    import Button from '@/components/generic/form/Button.vue';
+    import SettingRow from '@/components/config-modal/tabs/SettingRow.vue';
+    import IdNamingStrategySettingRow from '@/components/config-modal/tabs/common-rows/IdNamingStrategySettingRow.vue';
 
     interface Props {
         databaseModelGeneratorConfig: DatabaseModelGeneratorConfig;
@@ -123,7 +67,8 @@
     export default defineComponent({
         name: 'CommonDatabaseSettingsTable',
         components: {
-            Button,
+            IdNamingStrategySettingRow,
+            SettingRow,
             SelectInput
         },
         props: {

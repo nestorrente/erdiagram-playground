@@ -6,7 +6,6 @@
         <section class="section pb-3 vfc-item vfc-grow">
             <div class="container vertical-full-container">
                 <MainContainer
-                        :config="config"
                         :showing-settings-modal="showingSettingsModal"
                         @show-settings-modal="showSettingsModal"
                 />
@@ -15,7 +14,6 @@
     </div>
     <SettingsModal
             v-model:showing="showingSettingsModal"
-            v-model:config="config"
             v-model:selected-tab-name="settingsModalSelectedTabName"
     />
     <GlobalModalDialog/>
@@ -23,23 +21,13 @@
 </template>
 
 <script lang="ts">
-    import {ComputedRef, defineComponent, ref, watch} from 'vue';
+    import {defineComponent, ref} from 'vue';
     import NavBar from '@/components/layout/NavBar.vue';
-    import {EntityRelationshipModelToCodeConverter} from '@nestorrente/erdiagram';
     import SettingsModal from '@/components/config-modal/SettingsModal.vue';
-    import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
     import GlobalModalDialog from '@/components/generic/modal/GlobalModalDialog.vue';
-    import erdiagramPlaygroundConfigManager, {LAST_CONFIG_VERSION} from '@/config/ERDiagramPlaygroundConfigManager';
     import GlobalToastMessage from '@/components/generic/modal/GlobalToastMessage.vue';
     import MainContainer from '@/components/layout/main-container/MainContainer.vue';
-    import localStorageAccessor from '@/storage/localStorageAccessor';
-
-    interface OutputFormat {
-        id: string;
-        name: string;
-        codeBlockLang: string;
-        erModelToCodeConverter: ComputedRef<EntityRelationshipModelToCodeConverter>;
-    }
+    import configStore from '@/store/configStore';
 
     export default defineComponent({
         name: 'App',
@@ -52,32 +40,6 @@
         },
         setup() {
 
-            const config = ref<ERDiagramPlaygroundConfig>(getInitialConfig());
-
-            watch(config, newValue => {
-                const serializableConfig = erdiagramPlaygroundConfigManager.convertToSerializableObject(newValue);
-                localStorageAccessor.setConfig(serializableConfig);
-            });
-
-            function getInitialConfig(): ERDiagramPlaygroundConfig {
-
-                const serializableConfig = localStorageAccessor.getConfig();
-
-                if (serializableConfig) {
-
-                    // Check you are using the last version of the config
-                    if (serializableConfig._version === LAST_CONFIG_VERSION) {
-                        return erdiagramPlaygroundConfigManager.convertFromSerializableObject(serializableConfig);
-                    }
-
-                    console.warn('Detected old version of settings: using default settings.');
-
-                }
-
-                return erdiagramPlaygroundConfigManager.getDefaultConfig();
-
-            }
-
             const showingSettingsModal = ref(false);
             const settingsModalSelectedTabName = ref('mysql');
 
@@ -87,7 +49,7 @@
             }
 
             return {
-                config,
+                configStore,
                 showingSettingsModal,
                 settingsModalSelectedTabName,
                 showSettingsModal

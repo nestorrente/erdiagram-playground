@@ -80,10 +80,10 @@
     import TypeScriptTabContent from '@/components/config-modal/tabs/TypeScriptTabContent.vue';
     import SettingsModalFooter from '@/components/config-modal/SettingsModalFooter.vue';
     import {showErrorToastMessage, showSuccessToastMessage} from '@/store/globalToastMessageStore';
+    import configStore from '@/store/configStore';
 
     interface Props {
         showing: boolean;
-        config: ERDiagramPlaygroundConfig;
     }
 
     interface SelectInputOption<T> {
@@ -95,7 +95,6 @@
         name: 'SettingsModal',
         emits: [
             'update:showing',
-            'update:config',
             'update:selectedTabName'
         ],
         components: {
@@ -115,10 +114,6 @@
                 type: Boolean,
                 default: false
             },
-            config: {
-                type: Object,
-                required: true
-            },
             selectedTabName: {
                 type: String,
                 required: false
@@ -129,14 +124,14 @@
             // Workaround for an issue with TS types
             const props = uncastedProps as Props;
 
-            const internalConfig = ref(props.config);
+            const internalConfig = ref<ERDiagramPlaygroundConfig>(configStore.config);
             const configChanged = ref(false);
 
             watch(internalConfig, () => configChanged.value = true, {deep: true});
 
             watch(() => props.showing, showing => {
                 if (showing) {
-                    internalConfig.value = erdiagramPlaygroundConfigManager.cloneConfig(props.config);
+                    internalConfig.value = erdiagramPlaygroundConfigManager.cloneConfig(configStore.config);
                     nextTick(() => configChanged.value = false);
                 }
             });
@@ -150,7 +145,7 @@
             function saveChanges() {
 
                 if (configChanged.value) {
-                    context.emit('update:config', internalConfig.value);
+                    configStore.updateConfig(internalConfig.value);
                     configChanged.value = false;
                 }
 

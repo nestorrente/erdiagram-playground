@@ -36,7 +36,7 @@
                     <div class="columns is-mobile">
                         <div class="column is-narrow">
                             <SelectInput
-                                    :items="outputFormats"
+                                    :items="groupedOutputFormats"
                                     v-model="selectedOutputFormat"
                                     id-field="id"
                                     text-field="name"
@@ -78,39 +78,22 @@
 </template>
 
 <script lang="ts">
-    import {computed, ComputedRef, defineComponent, ref} from 'vue';
+    import {computed, ComputedRef, defineComponent, ref, watch} from 'vue';
     import CodeBlock from '@/components/generic/code/CodeBlock.vue';
-    import {
-        EntityRelationshipModelParser,
-        EntityRelationshipModelToCodeConverter,
-        JavaClassModelToCodeConverter,
-        MySqlDatabaseModelToCodeConverter,
-        OracleDatabaseModelToCodeConverter,
-        SqlServerDatabaseModelToCodeConverter,
-        TypeScriptClassModelToCodeConverter
-    } from '@nestorrente/erdiagram';
+    import {EntityRelationshipModelParser, EntityRelationshipModelToCodeConverter} from '@nestorrente/erdiagram';
     import CodeEditor from '@/components/generic/code/CodeEditor.vue';
-    import pokemonSampleCode from '!!raw-loader!@/sample-erd-files/Pokemon.erd';
     import Button from '@/components/generic/form/Button.vue';
     import SelectInput from '@/components/generic/form/SelectInput.vue';
     import ExamplesDropdown from '@/components/ExamplesDropdown.vue';
     import useBeforeUnload from '@/composition/event/useBeforeUnload';
-    import useEntityRelationshipModelToClassCodeConverter
-        from '@/composition/erdiagram/useEntityRelationshipModelToClassCodeConverter';
-    import useEntityRelationshipModelToDatabaseCodeConverter
-        from '@/composition/erdiagram/useEntityRelationshipModelToDatabaseCodeConverter';
     import {showConfirmModalDialog} from '@/store/globalModalDialogStore';
     import useDebouncedRef from '@/composition/util/useDebouncedRef';
-    import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
     import SaveInputCodeButton from '@/components/layout/main-container/SaveInputCodeButton.vue';
     import OpenInputCodeButton from '@/components/layout/main-container/OpenInputCodeButton.vue';
     import Icon from '@/components/generic/form/Icon.vue';
     import localStorageAccessor from '@/storage/localStorageAccessor';
-
-    interface Props {
-        config: ERDiagramPlaygroundConfig;
-        showingSettingsModal: boolean;
-    }
+    import configStore from '@/store/configStore';
+    import outputFormats from '@/common/outputFormats';
 
     interface OutputFormat {
         id: string;
@@ -133,30 +116,23 @@
             CodeBlock,
         },
         props: {
-            config: {
-                type: Object,
-                required: true
-            },
             showingSettingsModal: {
                 type: Boolean,
                 requried: true
             }
         },
-        setup(uncastedProps) {
-
-            // Workaround for an issue with TS types
-            const props = uncastedProps as Props;
+        setup: function () {
 
             const {
                 liveRef: inputCodeLive,
                 debouncedRef: inputCodeDebounced,
                 synced: inputCodeSynced
-            } = useDebouncedRef(localStorageAccessor.getInputCode() || pokemonSampleCode, 300);
+            } = useDebouncedRef(localStorageAccessor.getInputCode(), 300);
 
             useBeforeUnload(() => !inputCodeSynced.value);
 
             const entityRelationshipModelParser = computed(() => {
-                return new EntityRelationshipModelParser(props.config.erModelParser);
+                return new EntityRelationshipModelParser(configStore.config.erModelParser);
             });
 
             const parseResult = computed(() => {
@@ -189,69 +165,21 @@
 
             });
 
-            const mysqlConverter = useEntityRelationshipModelToDatabaseCodeConverter(
-                    () => props.config.mysql.databaseModelGeneratorConfig,
-                    () => new MySqlDatabaseModelToCodeConverter(props.config.mysql.databaseModelToCodeConverterConfig)
-            );
-
-            const sqlserverConverter = useEntityRelationshipModelToDatabaseCodeConverter(
-                    () => props.config.sqlserver.databaseModelGeneratorConfig,
-                    () => new SqlServerDatabaseModelToCodeConverter(props.config.sqlserver.databaseModelToCodeConverterConfig)
-            );
-
-            const oracleConverter = useEntityRelationshipModelToDatabaseCodeConverter(
-                    () => props.config.oracle.databaseModelGeneratorConfig,
-                    () => new OracleDatabaseModelToCodeConverter(props.config.oracle.databaseModelToCodeConverterConfig)
-            );
-
-            const javaConverter = useEntityRelationshipModelToClassCodeConverter(
-                    () => props.config.java.classModelGeneratorConfig,
-                    () => new JavaClassModelToCodeConverter(props.config.java.classModelToCodeConverterConfig)
-            );
-
-            const typescriptConverter = useEntityRelationshipModelToClassCodeConverter(
-                    () => props.config.typescript.classModelGeneratorConfig,
-                    () => new TypeScriptClassModelToCodeConverter(props.config.typescript.classModelToCodeConverterConfig)
-            );
-
-            const outputFormats: Record<string, OutputFormat[]> = {
+            const groupedOutputFormats: Record<string, OutputFormat[]> = {
                 'Database': [
-                    {
-                        id: 'mysql',
-                        name: 'MySQL',
-                        codeBlockLang: 'sql_more',
-                        erModelToCodeConverter: mysqlConverter
-                    },
-                    {
-                        id: 'oracle',
-                        name: 'Oracle DB',
-                        codeBlockLang: 'sql_more',
-                        erModelToCodeConverter: oracleConverter
-                    },
-                    {
-                        id: 'sqlserver',
-                        name: 'SQL Server',
-                        codeBlockLang: 'sql_more',
-                        erModelToCodeConverter: sqlserverConverter
-                    }
+                    outputFormats.mysql,
+                    outputFormats.oracle,
+                    outputFormats.sqlserver
                 ],
                 'OOP': [
-                    {
-                        id: 'java',
-                        name: 'Java POJO',
-                        codeBlockLang: 'java',
-                        erModelToCodeConverter: javaConverter
-                    },
-                    {
-                        id: 'typescript',
-                        name: 'TypeScript',
-                        codeBlockLang: 'typescript',
-                        erModelToCodeConverter: typescriptConverter
-                    }
+                    outputFormats.java,
+                    outputFormats.typescript
                 ]
             };
 
-            const selectedOutputFormat = ref(outputFormats['Database'][0]);
+            const selectedOutputFormat = ref(localStorageAccessor.getOutputFormat());
+
+            watch(selectedOutputFormat, newValue => localStorageAccessor.setOutputFormat(newValue as unknown as OutputFormat));
 
             const outputCode = computed((): string => {
 
@@ -281,7 +209,7 @@
                 inputCodeSynced,
                 parseError,
                 parseErrorDisplaytext,
-                outputFormats,
+                groupedOutputFormats,
                 selectedOutputFormat,
                 outputCode,
                 loadExampleCode
