@@ -41,9 +41,9 @@ export default {
 				return erdiagramPlaygroundConfigManager.convertFromSerializableObject(serializableConfig);
 			}
 
-		}
+			console.warn('Detected old version of settings: using default settings.');
 
-		console.warn('Detected old version of settings: using default settings.');
+		}
 
 		return erdiagramPlaygroundConfigManager.getDefaultConfig();
 
