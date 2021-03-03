@@ -112,7 +112,8 @@ ace.define('ace/mode/erdiagram_highlight_rules', ['require', 'exports'], functio
 						token: 'text',
 						regex: /^\s+/,
 						next: 'entityPropertyName'
-					}
+					},
+					DEFAULT_INVALID_RULE,
 				],
 				afterEntityName: [
 					{
