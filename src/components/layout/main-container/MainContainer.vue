@@ -66,7 +66,7 @@
                 <div class="vfc-item vfc-grow">
                     <CodeBlock
                             :lang="parseError ? 'plaintext' : selectedOutputFormat.codeBlockLang"
-                            :code="parseErrorDisplaytext ?? outputCode"
+                            :code="parseErrorDisplayText ?? outputCode"
                             :wrap="parseError != null"
                             :custom-code-class="parseError ? 'has-text-danger' : undefined"
                             full-height
@@ -80,7 +80,11 @@
 <script lang="ts">
     import {computed, ComputedRef, defineComponent, ref, watch} from 'vue';
     import CodeBlock from '@/components/generic/code/CodeBlock.vue';
-    import {EntityRelationshipModelParser, EntityRelationshipModelToCodeConverter} from '@nestorrente/erdiagram';
+    import {
+        EntityRelationshipModelParser,
+        EntityRelationshipModelToCodeConverter,
+        ERDiagramParseError
+    } from '@nestorrente/erdiagram';
     import CodeEditor from '@/components/generic/code/CodeEditor.vue';
     import Button from '@/components/generic/form/Button.vue';
     import SelectInput from '@/components/generic/form/SelectInput.vue';
@@ -145,7 +149,6 @@
                         error: null
                     };
                 } catch (error) {
-                    console.error(`Parse error: ${error.message}`);
                     return {
                         erModel: null,
                         error
@@ -155,13 +158,19 @@
 
             const entityRelationshipModel = computed(() => parseResult.value.erModel);
             const parseError = computed(() => parseResult.value.error);
-            const parseErrorDisplaytext = computed((): string | null => {
+            const parseErrorDisplayText = computed((): string | null => {
 
-                if (!parseError.value) {
+                const error = parseError.value;
+
+                if (!error) {
                     return null;
                 }
 
-                return `There is an error in your code:\n\n${parseError.value.message}`;
+                if (error instanceof ERDiagramParseError) {
+                    return `There is an error in your code):\n\n${error.message}, line ${error.lineNumber}`;
+                }
+
+                return `Unexpected error when parsing input code:\n\n${error.message}`;
 
             });
 
@@ -208,7 +217,7 @@
                 inputCodeDebounced,
                 inputCodeSynced,
                 parseError,
-                parseErrorDisplaytext,
+                parseErrorDisplayText,
                 groupedOutputFormats,
                 selectedOutputFormat,
                 outputCode,

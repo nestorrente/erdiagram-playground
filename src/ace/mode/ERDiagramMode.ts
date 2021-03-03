@@ -232,6 +232,7 @@ ace.define('ace/mode/erdiagram', ['require', 'exports'], function (require: Requ
 	const ErdHighlightRules = require('./erdiagram_highlight_rules').ErdHighlightRules;
 	// const CstyleBehaviour = require('./behaviour/cstyle').CstyleBehaviour;
 	const ErdFoldMode = require('./folding/erdiagram').FoldMode;
+	const WorkerClient = require('../worker/worker_client').WorkerClient;
 
 	exports.Mode = class Mode extends TextMode {
 
@@ -255,6 +256,76 @@ ace.define('ace/mode/erdiagram', ['require', 'exports'], function (require: Requ
 			} else {
 				return indent;
 			}
+		}
+
+		createWorker(session: Ace.EditSession) {
+			setTimeout(() => {
+				// session.setAnnotations()
+				session.setAnnotations([
+					{
+						row: 4,
+						column: 8,
+						type: 'warning',
+						text: 'La vida es dura para todos'
+					}
+				]);
+			}, 5000);
+			// const worker = new WorkerClient(['ace'], 'ace/mode/json_worker', 'JsonWorker');
+			const theWorker = new Worker(URL.createObjectURL(new Blob([`
+onmessage = (oEvent) => {
+	if(oEvent.type === 'message' && oEvent.data?.event === 'change') {
+		// console.log('A ver:', oEvent.data.data);
+
+		// Si se borra: [position, position]
+		// Si se añade: [position, lines]
+		// Si se añade sobrescribiendo (selección + escribir/pegar): [position, position, position, lines] --> TODO
+		const changeEventData = oEvent.data.data.data;
+
+		const isDeletion = !Array.isArray(changeEventData[1]);
+
+		if(isDeletion) {
+			const fromPosition = changeEventData[0];
+			const toPosition = changeEventData[1];
+			// console.log('[Worker] Deleted:', fromPosition, toPosition);
+		} else {
+			const position = changeEventData[0];
+			const lines = changeEventData[1];
+			// console.log('[Worker] Added:', position, lines.join('\\n'));
+		}
+
+		postMessage({
+			type: "event",
+			name: 'annotate',
+			data: [ { row: Math.floor(10 * Math.random()), column: 3, type: 'error', text: 'Pepe' } ]
+		});
+	} else if(oEvent.type === 'message' && oEvent.data?.command === 'setValue') {
+			const code = oEvent.data.args[0];
+			// console.log('[Worker] Code changed:', code);
+
+			postMessage({
+				type: "event",
+				name: 'annotate',
+				data: [ { row: Math.floor(10 * Math.random()), column: 3, type: 'error', text: 'Pepe' } ]
+			});
+	} else {
+		console.log('[Worker] Unknow event:', oEvent);
+	}
+};
+`])));
+			const worker = new WorkerClient(theWorker);
+			worker.attachToDocument(session.getDocument());
+
+			worker.on('annotate', function (e: any) {
+				// console.log('EVENT:', e);
+				session.setAnnotations(e.data);
+			});
+
+			worker.on('terminate', function () {
+				console.log('Se acabó');
+				session.clearAnnotations();
+			});
+
+			return worker;
 		}
 
 	};
