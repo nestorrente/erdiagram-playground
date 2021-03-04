@@ -17,6 +17,7 @@
         "highlight.js": "^10.5.0",
         "highlightjs-line-numbers.js": "^2.8.0",
         "resize-observer-polyfill": "^1.5.1",
+        "simple-web-worker": "^1.2.0",
         "vue": "^3.0.0"
     },
     "devDependencies": {

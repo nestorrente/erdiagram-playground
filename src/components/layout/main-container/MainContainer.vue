@@ -83,7 +83,7 @@
     import {
         EntityRelationshipModelParser,
         EntityRelationshipModelToCodeConverter,
-        ERDiagramParseError
+        ERDiagramParseLineError
     } from '@nestorrente/erdiagram';
     import CodeEditor from '@/components/generic/code/CodeEditor.vue';
     import Button from '@/components/generic/form/Button.vue';
@@ -166,8 +166,8 @@
                     return null;
                 }
 
-                if (error instanceof ERDiagramParseError) {
-                    return `There is an error in your code):\n\n${error.message}, line ${error.lineNumber}`;
+                if (error instanceof ERDiagramParseLineError) {
+                    return `There is an error in your code:\n\n${error.message}, line ${error.lineNumber}`;
                 }
 
                 return `Unexpected error when parsing input code:\n\n${error.message}`;
