@@ -26,5 +26,6 @@ DiscountCode
 Order
     date datetime
 
-Order *->* DiscountCode
 Order *->* Product (OrderLine)
+Order *->* DiscountCode
+Order *-> User

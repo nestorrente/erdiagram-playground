@@ -44,10 +44,26 @@ const typescriptOutputFormat: OutputFormat = {
 	erModelToCodeConverter: erModelToCodeConverters.typescriptConverter
 };
 
+const nomnomlCodeOutputFormat: OutputFormat = {
+	id: 'nomnomlCode',
+	name: 'Nomnoml (code)',
+	codeBlockLang: 'plaintext',
+	erModelToCodeConverter: erModelToCodeConverters.nomnomlCodeConverter
+};
+
+const nomnomlDiagramOutputFormat: OutputFormat = {
+	id: 'nomnomlDiagram',
+	name: 'Nomnoml (diagram)',
+	codeBlockLang: 'plaintext',
+	erModelToCodeConverter: erModelToCodeConverters.nomnomlCodeConverter
+};
+
 export default {
 	[mysqlOutputFormat.id]: mysqlOutputFormat,
 	[oracleOutputFormat.id]: oracleOutputFormat,
 	[sqlserverOutputFormat.id]: sqlserverOutputFormat,
 	[javaOutputFormat.id]: javaOutputFormat,
-	[typescriptOutputFormat.id]: typescriptOutputFormat
+	[typescriptOutputFormat.id]: typescriptOutputFormat,
+	[nomnomlCodeOutputFormat.id]: nomnomlCodeOutputFormat,
+	[nomnomlDiagramOutputFormat.id]: nomnomlDiagramOutputFormat
 };

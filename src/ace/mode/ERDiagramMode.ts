@@ -6,7 +6,7 @@ type RequireFn = <T = any>(module: string) => T;
 type Exports = any;
 
 // @ts-ignore
-ace.define('ace/mode/folding/erdiagram', ['require', 'exports'], function(require: RequireFn, exports: Exports) {
+ace.define('ace/mode/folding/erdiagram', ['require', 'exports'], function (require: RequireFn, exports: Exports) {
 
 	const Range = require('../../range').Range as typeof RangeType;
 	const BaseFoldMode = require('./fold_mode').FoldMode;
@@ -69,7 +69,7 @@ interface SyntaxHighlightRule {
 }
 
 // @ts-ignore
-ace.define('ace/mode/erdiagram_highlight_rules', ['require', 'exports'], function(require: RequireFn, exports: Exports) {
+ace.define('ace/mode/erdiagram_highlight_rules', ['require', 'exports'], function (require: RequireFn, exports: Exports) {
 
 	const TextHighlightRules = require('./text_highlight_rules').TextHighlightRules;
 
@@ -226,14 +226,14 @@ ace.define('ace/mode/erdiagram_highlight_rules', ['require', 'exports'], functio
 });
 
 // @ts-ignore
-ace.define('ace/mode/erdiagram', ['require', 'exports'], function(require: RequireFn, exports: Exports) {
+ace.define('ace/mode/erdiagram', ['require', 'exports'], function (require: RequireFn, exports: Exports) {
 	'use strict';
 
 	const TextMode = require('./text').Mode;
 	const ErdHighlightRules = require('./erdiagram_highlight_rules').ErdHighlightRules;
 	// const CstyleBehaviour = require('./behaviour/cstyle').CstyleBehaviour;
 	const ErdFoldMode = require('./folding/erdiagram').FoldMode;
-	const WorkerClient = require('../worker/worker_client').WorkerClient;
+	// const WorkerClient = require('../worker/worker_client').WorkerClient;
 
 	exports.Mode = class Mode extends TextMode {
 

@@ -53,6 +53,7 @@
         },
         setup(uncastedProps) {
 
+            // Workaround for an issue with TS types
             const props = uncastedProps as Props;
 
             const formatTypeScriptType = (typeScriptType: TypeScriptType) => typeScriptType.format();

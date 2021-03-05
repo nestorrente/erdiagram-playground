@@ -66,11 +66,16 @@
                 </div>
                 <div class="vfc-item vfc-grow">
                     <CodeBlock
+                            v-if="selectedOutputFormat.id !== 'nomnomlDiagram'"
                             :lang="parseError ? 'plaintext' : selectedOutputFormat.codeBlockLang"
                             :code="parseErrorDisplayText ?? outputCode"
                             :wrap="parseError != null"
                             :custom-code-class="parseError ? 'has-text-danger' : undefined"
                             full-height
+                    />
+                    <EntityRelationshipModelDiagram
+                            v-else
+                            :model="entityRelationshipModel"
                     />
                 </div>
             </div>
@@ -81,7 +86,11 @@
 <script lang="ts">
     import {computed, ComputedRef, defineComponent, ref, watch} from 'vue';
     import CodeBlock from '@/components/generic/code/CodeBlock.vue';
-    import {EntityRelationshipModelParser, EntityRelationshipModelToCodeConverter, ERDiagramParseLineError} from '@nestorrente/erdiagram';
+    import {
+        EntityRelationshipModelParser,
+        EntityRelationshipModelToCodeConverter,
+        ERDiagramParseLineError
+    } from '@nestorrente/erdiagram';
     import CodeEditor from '@/components/generic/code/CodeEditor.vue';
     import Button from '@/components/generic/form/Button.vue';
     import SelectInput from '@/components/generic/form/SelectInput.vue';
@@ -96,6 +105,7 @@
     import configStore from '@/store/configStore';
     import outputFormats from '@/common/outputFormats';
     import {Ace} from 'ace-builds';
+    import EntityRelationshipModelDiagram from '@/components/EntityRelationshipModelDiagram.vue';
 
     interface OutputFormat {
         id: string;
@@ -108,6 +118,7 @@
         name: 'MainContainer',
         emits: ['showSettingsModal'],
         components: {
+            EntityRelationshipModelDiagram,
             Icon,
             OpenInputCodeButton,
             SaveInputCodeButton,
@@ -123,7 +134,7 @@
                 requried: true
             }
         },
-        setup: function() {
+        setup: function () {
 
             const {
                 liveRef: inputCodeLive,
@@ -197,6 +208,10 @@
                 'OOP': [
                     outputFormats.java,
                     outputFormats.typescript
+                ],
+                'Diagram': [
+                    outputFormats.nomnomlCode,
+                    outputFormats.nomnomlDiagram
                 ]
             };
 
@@ -215,6 +230,14 @@
                 return erModelToCodeConverter.generateCode(entityRelationshipModel.value);
 
             });
+
+            // const entityRelationshipModelToNomnomlCodeConverter = new EntityRelationshipModelToNomnomlCodeConverter();
+            // const pepe = computed(() => {
+            //     if (!entityRelationshipModel.value) {
+            //         return '';
+            //     }
+            //     return entityRelationshipModelToNomnomlCodeConverter.generateCode(entityRelationshipModel.value);
+            // });
 
             async function loadExampleCode(exampleCode: string) {
                 if (inputCodeSynced.value || await confirmExampleLoading()) {
@@ -236,7 +259,8 @@
                 groupedOutputFormats,
                 selectedOutputFormat,
                 outputCode,
-                loadExampleCode
+                loadExampleCode,
+                entityRelationshipModel
             };
 
         }

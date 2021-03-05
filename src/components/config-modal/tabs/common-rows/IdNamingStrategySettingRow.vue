@@ -45,6 +45,7 @@
         },
         setup(uncastedProps) {
 
+            // Workaround for an issue with TS types
             const props = uncastedProps as Props;
 
             const idNamingStrategyOptions: SelectInputOption<IdNamingStrategy>[] = [

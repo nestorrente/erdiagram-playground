@@ -2,6 +2,7 @@ import useEntityRelationshipModelToDatabaseCodeConverter
 	from '@/composition/erdiagram/useEntityRelationshipModelToDatabaseCodeConverter';
 import configStore from '@/store/configStore';
 import {
+	EntityRelationshipModelToNomnomlCodeConverter,
 	JavaClassModelToCodeConverter,
 	MySqlDatabaseModelToCodeConverter,
 	OracleDatabaseModelToCodeConverter,
@@ -10,6 +11,7 @@ import {
 } from '@nestorrente/erdiagram';
 import useEntityRelationshipModelToClassCodeConverter
 	from '@/composition/erdiagram/useEntityRelationshipModelToClassCodeConverter';
+import {computed} from 'vue';
 
 const mysqlConverter = useEntityRelationshipModelToDatabaseCodeConverter(
 		() => configStore.config.mysql.databaseModelGeneratorConfig,
@@ -36,10 +38,13 @@ const typescriptConverter = useEntityRelationshipModelToClassCodeConverter(
 		() => new TypeScriptClassModelToCodeConverter(configStore.config.typescript.classModelToCodeConverterConfig)
 );
 
+const nomnomlCodeConverter = computed(() => new EntityRelationshipModelToNomnomlCodeConverter());
+
 export default {
 	mysqlConverter,
 	sqlserverConverter,
 	oracleConverter,
 	javaConverter,
-	typescriptConverter
+	typescriptConverter,
+	nomnomlCodeConverter
 };
