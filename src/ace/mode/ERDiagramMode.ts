@@ -1,12 +1,12 @@
 // @ts-ignore
 import ace, {Ace, Range as RangeType} from 'ace-builds';
-import erdiagramModeWorkerSourceCode from '!!raw-loader!@/ace/mode/erdiagram-mode-worker.js';
+// import erdiagramModeWorkerSourceCode from '!!raw-loader!@/ace/mode/erdiagram-mode-worker.js';
 
 type RequireFn = <T = any>(module: string) => T;
 type Exports = any;
 
 // @ts-ignore
-ace.define('ace/mode/folding/erdiagram', ['require', 'exports'], function (require: RequireFn, exports: Exports) {
+ace.define('ace/mode/folding/erdiagram', ['require', 'exports'], function(require: RequireFn, exports: Exports) {
 
 	const Range = require('../../range').Range as typeof RangeType;
 	const BaseFoldMode = require('./fold_mode').FoldMode;
@@ -69,7 +69,7 @@ interface SyntaxHighlightRule {
 }
 
 // @ts-ignore
-ace.define('ace/mode/erdiagram_highlight_rules', ['require', 'exports'], function (require: RequireFn, exports: Exports) {
+ace.define('ace/mode/erdiagram_highlight_rules', ['require', 'exports'], function(require: RequireFn, exports: Exports) {
 
 	const TextHighlightRules = require('./text_highlight_rules').TextHighlightRules;
 
@@ -226,7 +226,7 @@ ace.define('ace/mode/erdiagram_highlight_rules', ['require', 'exports'], functio
 });
 
 // @ts-ignore
-ace.define('ace/mode/erdiagram', ['require', 'exports'], function (require: RequireFn, exports: Exports) {
+ace.define('ace/mode/erdiagram', ['require', 'exports'], function(require: RequireFn, exports: Exports) {
 	'use strict';
 
 	const TextMode = require('./text').Mode;
@@ -259,35 +259,35 @@ ace.define('ace/mode/erdiagram', ['require', 'exports'], function (require: Requ
 			}
 		}
 
-		createWorker(session: Ace.EditSession) {
-			setTimeout(() => {
-				// session.setAnnotations()
-				session.setAnnotations([
-					{
-						row: 4,
-						column: 8,
-						type: 'warning',
-						text: 'La vida es dura para todos'
-					}
-				]);
-			}, 5000);
-			// const worker = new WorkerClient(['ace'], 'ace/mode/json_worker', 'JsonWorker');
-			const theWorker = new Worker(URL.createObjectURL(new Blob([erdiagramModeWorkerSourceCode])));
-			const worker = new WorkerClient(theWorker);
-			worker.attachToDocument(session.getDocument());
-
-			worker.on('annotate', function (e: any) {
-				// console.log('EVENT:', e);
-				session.setAnnotations(e.data);
-			});
-
-			worker.on('terminate', function () {
-				console.log('Se acabó');
-				session.clearAnnotations();
-			});
-
-			return worker;
-		}
+		// createWorker(session: Ace.EditSession) {
+		// 	setTimeout(() => {
+		// 		// session.setAnnotations()
+		// 		session.setAnnotations([
+		// 			{
+		// 				row: 4,
+		// 				column: 8,
+		// 				type: 'warning',
+		// 				text: 'La vida es dura para todos'
+		// 			}
+		// 		]);
+		// 	}, 5000);
+		// 	// const worker = new WorkerClient(['ace'], 'ace/mode/json_worker', 'JsonWorker');
+		// 	const theWorker = new Worker(URL.createObjectURL(new Blob([erdiagramModeWorkerSourceCode])));
+		// 	const worker = new WorkerClient(theWorker);
+		// 	worker.attachToDocument(session.getDocument());
+		//
+		// 	worker.on('annotate', function (e: any) {
+		// 		// console.log('EVENT:', e);
+		// 		session.setAnnotations(e.data);
+		// 	});
+		//
+		// 	worker.on('terminate', function () {
+		// 		console.log('Se acabó');
+		// 		session.clearAnnotations();
+		// 	});
+		//
+		// 	return worker;
+		// }
 
 	};
 

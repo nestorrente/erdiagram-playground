@@ -25,6 +25,7 @@
                     <CodeEditor
                             v-model="inputCodeLive"
                             lang="erdiagram"
+                            :annotations="codeEditorAnnotations"
                             full-height
                     />
                 </div>
@@ -80,11 +81,7 @@
 <script lang="ts">
     import {computed, ComputedRef, defineComponent, ref, watch} from 'vue';
     import CodeBlock from '@/components/generic/code/CodeBlock.vue';
-    import {
-        EntityRelationshipModelParser,
-        EntityRelationshipModelToCodeConverter,
-        ERDiagramParseLineError
-    } from '@nestorrente/erdiagram';
+    import {EntityRelationshipModelParser, EntityRelationshipModelToCodeConverter, ERDiagramParseLineError} from '@nestorrente/erdiagram';
     import CodeEditor from '@/components/generic/code/CodeEditor.vue';
     import Button from '@/components/generic/form/Button.vue';
     import SelectInput from '@/components/generic/form/SelectInput.vue';
@@ -98,6 +95,7 @@
     import localStorageAccessor from '@/storage/localStorageAccessor';
     import configStore from '@/store/configStore';
     import outputFormats from '@/common/outputFormats';
+    import {Ace} from 'ace-builds';
 
     interface OutputFormat {
         id: string;
@@ -125,7 +123,7 @@
                 requried: true
             }
         },
-        setup: function () {
+        setup: function() {
 
             const {
                 liveRef: inputCodeLive,
@@ -174,6 +172,22 @@
 
             });
 
+            const codeEditorAnnotations = computed((): Ace.Annotation[] => {
+
+                const error = parseError.value;
+
+                if (!(error instanceof ERDiagramParseLineError)) {
+                    return [];
+                }
+
+                return [{
+                    type: 'error',
+                    text: error.message,
+                    row: error.lineNumber - 1
+                }];
+
+            });
+
             const groupedOutputFormats: Record<string, OutputFormat[]> = {
                 'Database': [
                     outputFormats.mysql,
@@ -218,6 +232,7 @@
                 inputCodeSynced,
                 parseError,
                 parseErrorDisplayText,
+                codeEditorAnnotations,
                 groupedOutputFormats,
                 selectedOutputFormat,
                 outputCode,

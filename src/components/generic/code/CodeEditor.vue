@@ -15,6 +15,13 @@
     import '@/ace/mode/ERDiagramMode';
     import {isDesktopDevice} from '@/device-type-detection';
 
+    interface Props {
+        lang: string;
+        modelValue: string;
+        fullHeight: boolean;
+        annotations: Ace.Annotation[];
+    }
+
     export default defineComponent({
         name: 'CodeEditor',
         emits: ['update:modelValue'],
@@ -30,9 +37,15 @@
             fullHeight: {
                 type: Boolean,
                 default: false
+            },
+            annotations: {
+                type: Array,
+                default: () => []
             }
         },
-        setup(props, context) {
+        setup(uncastedProps, context) {
+
+            const props = uncastedProps as Props;
 
             const editorContainer = ref<HTMLElement>();
             const aceEditorRef = ref<Ace.Editor>();
@@ -54,6 +67,7 @@
 
                 aceEditor.setValue(props.modelValue);
                 aceEditor.session.selection.clearSelection();
+                aceEditor.session.setAnnotations(props.annotations);
 
                 aceEditor.on('input', () => onCodeChanged(aceEditor.getValue()));
                 focusEditorOnDesktopDevice(aceEditor);
@@ -80,6 +94,7 @@
 
             watch(() => props.lang, () => {
                 const aceEditor = aceEditorRef.value;
+
                 if (aceEditor) {
                     updateAceEditorMode(aceEditor);
                 }
@@ -93,6 +108,14 @@
             function onCodeChanged(code: string) {
                 context.emit('update:modelValue', code);
             }
+
+            watch(() => props.annotations, annotations => {
+                const aceEditor = aceEditorRef.value;
+
+                if (aceEditor) {
+                    aceEditor.session.setAnnotations(annotations);
+                }
+            });
 
             function destroyAce() {
                 aceEditorRef.value?.destroy();
