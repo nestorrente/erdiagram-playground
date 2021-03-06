@@ -2,6 +2,7 @@ import {
 	EntityRelationshipModelParserConfig,
 	JavaClassModelToCodeConverterConfig,
 	MySqlDatabaseModelToCodeConverterConfig,
+	NomnomlEntityRelationshipModelToDiagramCodeConverterConfig,
 	OracleDatabaseModelToCodeConverterConfig,
 	SqlServerDatabaseModelToCodeConverterConfig,
 	TypeScriptClassModelToCodeConverterConfig
@@ -16,6 +17,7 @@ type PartialERDiagramPlaygroundConfig = Partial<{
 	oracle: Partial<DatabaseDialectConfig<OracleDatabaseModelToCodeConverterConfig>>;
 	java: Partial<ClassLanguageConfig<JavaClassModelToCodeConverterConfig>>;
 	typescript: Partial<ClassLanguageConfig<TypeScriptClassModelToCodeConverterConfig>>;
+	nomnoml: Partial<NomnomlEntityRelationshipModelToDiagramCodeConverterConfig>;
 }>;
 
 export default PartialERDiagramPlaygroundConfig;

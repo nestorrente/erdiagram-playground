@@ -6,6 +6,7 @@ import {
 	EntityRelationshipModelParserConfig,
 	JavaClassModelToCodeConverterConfig,
 	MySqlDatabaseModelToCodeConverterConfig,
+	NomnomlEntityRelationshipModelToDiagramCodeConverterConfig,
 	OracleDatabaseModelToCodeConverterConfig,
 	SqlServerDatabaseModelToCodeConverterConfig,
 	TypeScriptClassModelToCodeConverterConfig
@@ -19,6 +20,7 @@ export default interface ERDiagramPlaygroundConfig {
 	oracle: DatabaseDialectConfig<OracleDatabaseModelToCodeConverterConfig>;
 	java: ClassLanguageConfig<JavaClassModelToCodeConverterConfig>;
 	typescript: ClassLanguageConfig<TypeScriptClassModelToCodeConverterConfig>;
+	nomnoml: NomnomlEntityRelationshipModelToDiagramCodeConverterConfig;
 }
 
 export interface DatabaseDialectConfig<T extends DatabaseModelToCodeConverterConfig> {

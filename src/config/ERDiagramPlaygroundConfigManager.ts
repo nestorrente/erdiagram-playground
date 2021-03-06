@@ -5,6 +5,7 @@ import {
 	entityRelationshipModelParserConfigManager,
 	javaClassModelToCodeConverterConfigManager,
 	mysqlDatabaseModelToCodeConverterConfigManager,
+	nomnomlEntityRelationshipModelToDiagramCodeConverterConfigManager,
 	oracleDatabaseModelToCodeConverterConfigManager,
 	sqlServerDatabaseModelToCodeConverterConfigManager,
 	typescriptClassModelToCodeConverterConfigManager
@@ -13,7 +14,7 @@ import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
 import ERDiagramPlaygroundSerializableConfig from '@/config/ERDiagramPlaygroundSerializableConfig';
 import PartialERDiagramPlaygroundConfig from '@/config/PartialERDiagramPlaygroundConfig';
 
-export const LAST_CONFIG_VERSION = '0.1.0-alpha.1';
+export const LAST_CONFIG_VERSION = '0.1.0-alpha.2-1615063137254';
 
 export class ERDiagramPlaygroundConfigManager
 		extends AbstractComponentConfigManager<ERDiagramPlaygroundConfig, PartialERDiagramPlaygroundConfig, ERDiagramPlaygroundSerializableConfig> {
@@ -41,7 +42,8 @@ export class ERDiagramPlaygroundConfigManager
 			typescript: {
 				classModelGeneratorConfig: classModelGeneratorConfigManager.getDefaultConfig(),
 				classModelToCodeConverterConfig: typescriptClassModelToCodeConverterConfigManager.getDefaultConfig()
-			}
+			},
+			nomnoml: nomnomlEntityRelationshipModelToDiagramCodeConverterConfigManager.getDefaultConfig()
 		};
 	}
 
@@ -101,7 +103,11 @@ export class ERDiagramPlaygroundConfigManager
 						fullConfig.typescript.classModelToCodeConverterConfig,
 						partialConfig?.typescript?.classModelToCodeConverterConfig
 				)
-			}
+			},
+			nomnoml: nomnomlEntityRelationshipModelToDiagramCodeConverterConfigManager.mergeConfigs(
+					fullConfig.nomnoml,
+					partialConfig?.nomnoml
+			)
 		};
 	}
 
@@ -128,7 +134,8 @@ export class ERDiagramPlaygroundConfigManager
 			typescript: {
 				classModelGeneratorConfig: classModelGeneratorConfigManager.convertToSerializableObject(fullConfig.typescript.classModelGeneratorConfig),
 				classModelToCodeConverterConfig: typescriptClassModelToCodeConverterConfigManager.convertToSerializableObject(fullConfig.typescript.classModelToCodeConverterConfig)
-			}
+			},
+			nomnoml: nomnomlEntityRelationshipModelToDiagramCodeConverterConfigManager.convertToSerializableObject(fullConfig.nomnoml)
 		};
 	}
 
@@ -155,7 +162,8 @@ export class ERDiagramPlaygroundConfigManager
 			typescript: {
 				classModelGeneratorConfig: classModelGeneratorConfigManager.convertFromSerializableObject(serializableConfig.typescript.classModelGeneratorConfig),
 				classModelToCodeConverterConfig: typescriptClassModelToCodeConverterConfigManager.convertFromSerializableObject(serializableConfig.typescript.classModelToCodeConverterConfig)
-			}
+			},
+			nomnoml: nomnomlEntityRelationshipModelToDiagramCodeConverterConfigManager.convertFromSerializableObject(serializableConfig.nomnoml)
 		};
 	}
 

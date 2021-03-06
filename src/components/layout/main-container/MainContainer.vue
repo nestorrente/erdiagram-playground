@@ -66,15 +66,21 @@
                 </div>
                 <div class="vfc-item vfc-grow">
                     <CodeBlock
-                            v-if="isCodeOutput"
-                            :lang="parseError ? 'plaintext' : selectedOutputFormat.codeBlockLang"
-                            :code="parseErrorDisplayText ?? outputCode"
-                            :wrap="parseError != null"
-                            :custom-code-class="parseError ? 'has-text-danger' : undefined"
+                            v-if="parseError"
+                            lang="plaintext"
+                            :code="parseErrorDisplayText"
+                            wrap
+                            custom-code-class="has-text-danger"
+                            full-height
+                    />
+                    <CodeBlock
+                            v-else-if="isCodeOutput"
+                            :lang="selectedOutputFormat.codeBlockLang"
+                            :code="outputCode"
                             full-height
                     />
                     <EntityRelationshipModelDiagram
-                            v-if="isDiagramOutput"
+                            v-else-if="isDiagramOutput"
                             :svg-code="outputDiagram"
                     />
                 </div>
