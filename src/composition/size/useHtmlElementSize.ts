@@ -1,18 +1,26 @@
-import {computed, ComputedRef, ref, Ref, watch} from 'vue';
+import {computed, ComputedRef, nextTick, ref, Ref, watch} from 'vue';
 import ResizeObserver from 'resize-observer-polyfill';
 
-export default function useHtmlElementSize(element: Ref<HTMLElement | null | undefined>): ComputedRef<ElementSizeData | null> {
+export default function useHtmlElementSize(element: Ref<HTMLElement | null | undefined>): ComputedRef<ElementSizeData | undefined> {
 
-	const elementSizeData = ref<ElementSizeData | null>(getElementSizeData(element.value));
+	const elementSizeData = ref<ElementSizeData>();
+
+	// Update size data once the element has been mounted
+	nextTick(updateElementSizeData);
 
 	const resizeObserver = new ResizeObserver(() => {
-		elementSizeData.value = getElementSizeData(element.value);
+		console.log('Se resiza el elemento');
+		updateElementSizeData();
 	});
 
 	watch(element, (newValue, oldValue) => {
 		oldValue && resizeObserver.unobserve(oldValue);
 		newValue && resizeObserver.observe(newValue);
 	});
+
+	function updateElementSizeData() {
+		elementSizeData.value = getElementSizeData(element.value);
+	}
 
 	return computed(() => elementSizeData.value);
 
@@ -27,10 +35,10 @@ export interface ElementSizeData {
 	scrollHeight: number;
 }
 
-function getElementSizeData(element: HTMLElement | null | undefined): ElementSizeData | null {
+function getElementSizeData(element: HTMLElement | null | undefined): ElementSizeData | undefined {
 
 	if (element == null) {
-		return null;
+		return undefined;
 	}
 
 	const {

@@ -1,69 +1,97 @@
-import {ComputedRef} from 'vue';
-import {EntityRelationshipModelToCodeConverter} from '@nestorrente/erdiagram';
+import {reactive} from 'vue';
+import {
+	EntityRelationshipModelToCodeConverter,
+	EntityRelationshipModelToDiagramConverter
+} from '@nestorrente/erdiagram';
 import erModelToCodeConverters from '@/common/erModelToCodeConverters';
+import erModelToDiagramConverters from '@/common/erModelToDiagramConverters';
 
 export interface OutputFormat {
 	id: string;
 	name: string;
-	codeBlockLang: string;
-	erModelToCodeConverter: ComputedRef<EntityRelationshipModelToCodeConverter>;
+	type: string;
 }
 
-const mysqlOutputFormat: OutputFormat = {
+export interface CodeOutputFormat extends OutputFormat {
+	type: 'code';
+	codeBlockLang: string;
+	erModelToCodeConverter: EntityRelationshipModelToCodeConverter;
+}
+
+export function isCodeOutputFormat(outputFormat: OutputFormat): outputFormat is CodeOutputFormat {
+	return outputFormat.type === 'code';
+}
+
+export interface DiagramOutputFormat extends OutputFormat {
+	type: 'diagram';
+	erModelToDiagramConverter: EntityRelationshipModelToDiagramConverter;
+}
+
+export function isDiagramOutputFormat(outputFormat: OutputFormat): outputFormat is DiagramOutputFormat {
+	return outputFormat.type === 'diagram';
+}
+
+const mysqlCodeOutputFormat: CodeOutputFormat = reactive({
 	id: 'mysql',
 	name: 'MySQL',
+	type: 'code',
 	codeBlockLang: 'sql_more',
 	erModelToCodeConverter: erModelToCodeConverters.mysqlConverter
-};
+});
 
-const oracleOutputFormat: OutputFormat = {
+const oracleCodeOutputFormat: CodeOutputFormat = reactive({
 	id: 'oracle',
 	name: 'Oracle DB',
+	type: 'code',
 	codeBlockLang: 'sql_more',
 	erModelToCodeConverter: erModelToCodeConverters.oracleConverter
-};
+});
 
-const sqlserverOutputFormat: OutputFormat = {
+const sqlserverCodeOutputFormat: CodeOutputFormat = reactive({
 	id: 'sqlserver',
 	name: 'SQL Server',
+	type: 'code',
 	codeBlockLang: 'sql_more',
 	erModelToCodeConverter: erModelToCodeConverters.sqlserverConverter
-};
+});
 
-const javaOutputFormat: OutputFormat = {
+const javaCodeOutputFormat: CodeOutputFormat = reactive({
 	id: 'java',
 	name: 'Java POJO',
+	type: 'code',
 	codeBlockLang: 'java',
 	erModelToCodeConverter: erModelToCodeConverters.javaConverter
-};
+});
 
-const typescriptOutputFormat: OutputFormat = {
+const typescriptCodeOutputFormat: CodeOutputFormat = reactive({
 	id: 'typescript',
 	name: 'TypeScript',
+	type: 'code',
 	codeBlockLang: 'typescript',
 	erModelToCodeConverter: erModelToCodeConverters.typescriptConverter
-};
+});
 
-const nomnomlCodeOutputFormat: OutputFormat = {
+const nomnomlCodeOutputFormat: CodeOutputFormat = reactive({
 	id: 'nomnomlCode',
 	name: 'Nomnoml (code)',
+	type: 'code',
 	codeBlockLang: 'plaintext',
-	erModelToCodeConverter: erModelToCodeConverters.nomnomlCodeConverter
-};
+	erModelToCodeConverter: erModelToCodeConverters.nomnomlConverter
+});
 
-const nomnomlDiagramOutputFormat: OutputFormat = {
+const nomnomlDiagramOutputFormat: DiagramOutputFormat = reactive({
 	id: 'nomnomlDiagram',
-	name: 'Nomnoml (diagram)',
-	codeBlockLang: 'plaintext',
-	erModelToCodeConverter: erModelToCodeConverters.nomnomlCodeConverter
-};
+	name: 'Nomnoml (SVG)',
+	type: 'diagram',
+	erModelToDiagramConverter: erModelToDiagramConverters.nomnomlConverter
+});
 
 export default {
-	[mysqlOutputFormat.id]: mysqlOutputFormat,
-	[oracleOutputFormat.id]: oracleOutputFormat,
-	[sqlserverOutputFormat.id]: sqlserverOutputFormat,
-	[javaOutputFormat.id]: javaOutputFormat,
-	[typescriptOutputFormat.id]: typescriptOutputFormat,
+	[mysqlCodeOutputFormat.id]: mysqlCodeOutputFormat,
+	[oracleCodeOutputFormat.id]: oracleCodeOutputFormat,
+	[sqlserverCodeOutputFormat.id]: sqlserverCodeOutputFormat,
+	[javaCodeOutputFormat.id]: javaCodeOutputFormat,
+	[typescriptCodeOutputFormat.id]: typescriptCodeOutputFormat,
 	[nomnomlCodeOutputFormat.id]: nomnomlCodeOutputFormat,
 	[nomnomlDiagramOutputFormat.id]: nomnomlDiagramOutputFormat
 };

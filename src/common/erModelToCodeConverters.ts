@@ -2,9 +2,9 @@ import useEntityRelationshipModelToDatabaseCodeConverter
 	from '@/composition/erdiagram/useEntityRelationshipModelToDatabaseCodeConverter';
 import configStore from '@/store/configStore';
 import {
-	EntityRelationshipModelToNomnomlCodeConverter,
 	JavaClassModelToCodeConverter,
 	MySqlDatabaseModelToCodeConverter,
+	NomnomlEntityRelationshipModelToDiagramCodeConverter,
 	OracleDatabaseModelToCodeConverter,
 	SqlServerDatabaseModelToCodeConverter,
 	TypeScriptClassModelToCodeConverter
@@ -38,7 +38,8 @@ const typescriptConverter = useEntityRelationshipModelToClassCodeConverter(
 		() => new TypeScriptClassModelToCodeConverter(configStore.config.typescript.classModelToCodeConverterConfig)
 );
 
-const nomnomlCodeConverter = computed(() => new EntityRelationshipModelToNomnomlCodeConverter());
+// TODO add Nomnoml Diagram config to ERDiagramConfig and use it here
+const nomnomlConverter = computed(() => new NomnomlEntityRelationshipModelToDiagramCodeConverter());
 
 export default {
 	mysqlConverter,
@@ -46,5 +47,5 @@ export default {
 	oracleConverter,
 	javaConverter,
 	typescriptConverter,
-	nomnomlCodeConverter
+	nomnomlConverter
 };

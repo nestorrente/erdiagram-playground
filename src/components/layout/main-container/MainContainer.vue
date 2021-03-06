@@ -66,7 +66,7 @@
                 </div>
                 <div class="vfc-item vfc-grow">
                     <CodeBlock
-                            v-if="selectedOutputFormat.id !== 'nomnomlDiagram'"
+                            v-if="isCodeOutput"
                             :lang="parseError ? 'plaintext' : selectedOutputFormat.codeBlockLang"
                             :code="parseErrorDisplayText ?? outputCode"
                             :wrap="parseError != null"
@@ -74,8 +74,8 @@
                             full-height
                     />
                     <EntityRelationshipModelDiagram
-                            v-else
-                            :model="entityRelationshipModel"
+                            v-if="isDiagramOutput"
+                            :svg-code="outputDiagram"
                     />
                 </div>
             </div>
@@ -84,9 +84,9 @@
 </template>
 
 <script lang="ts">
-    import {computed, ComputedRef, defineComponent, ref, watch} from 'vue';
+    import {computed, defineComponent, ref, watch} from 'vue';
     import CodeBlock from '@/components/generic/code/CodeBlock.vue';
-    import {EntityRelationshipModelParser, EntityRelationshipModelToCodeConverter, ERDiagramParseLineError} from '@nestorrente/erdiagram';
+    import {EntityRelationshipModelParser, ERDiagramParseLineError} from '@nestorrente/erdiagram';
     import CodeEditor from '@/components/generic/code/CodeEditor.vue';
     import Button from '@/components/generic/form/Button.vue';
     import SelectInput from '@/components/generic/form/SelectInput.vue';
@@ -99,16 +99,9 @@
     import Icon from '@/components/generic/form/Icon.vue';
     import localStorageAccessor from '@/storage/localStorageAccessor';
     import configStore from '@/store/configStore';
-    import outputFormats from '@/common/outputFormats';
+    import outputFormats, {CodeOutputFormat, DiagramOutputFormat, isCodeOutputFormat, isDiagramOutputFormat, OutputFormat} from '@/common/outputFormats';
     import {Ace} from 'ace-builds';
     import EntityRelationshipModelDiagram from '@/components/EntityRelationshipModelDiagram.vue';
-
-    interface OutputFormat {
-        id: string;
-        name: string;
-        codeBlockLang: string;
-        erModelToCodeConverter: ComputedRef<EntityRelationshipModelToCodeConverter>;
-    }
 
     export default defineComponent({
         name: 'MainContainer',
@@ -213,27 +206,34 @@
 
             const selectedOutputFormat = ref(localStorageAccessor.getOutputFormat());
 
-            watch(selectedOutputFormat, newValue => localStorageAccessor.setOutputFormat(newValue as unknown as OutputFormat));
+            const isCodeOutput = computed(() => isCodeOutputFormat(selectedOutputFormat.value));
+            const isDiagramOutput = computed(() => isDiagramOutputFormat(selectedOutputFormat.value));
+
+            watch(selectedOutputFormat, newValue => localStorageAccessor.setOutputFormat(newValue));
 
             const outputCode = computed((): string => {
 
-                if (!entityRelationshipModel.value) {
+                if (!entityRelationshipModel.value || !isCodeOutput.value) {
                     return '';
                 }
 
-                const erModelToCodeConverter = selectedOutputFormat.value.erModelToCodeConverter;
+                const erModelToCodeConverter = (selectedOutputFormat.value as CodeOutputFormat).erModelToCodeConverter;
 
-                return erModelToCodeConverter.generateCode(entityRelationshipModel.value);
+                return erModelToCodeConverter.convertToCode(entityRelationshipModel.value);
 
             });
 
-            // const entityRelationshipModelToNomnomlCodeConverter = new EntityRelationshipModelToNomnomlCodeConverter();
-            // const pepe = computed(() => {
-            //     if (!entityRelationshipModel.value) {
-            //         return '';
-            //     }
-            //     return entityRelationshipModelToNomnomlCodeConverter.generateCode(entityRelationshipModel.value);
-            // });
+            const outputDiagram = computed((): string => {
+
+                if (!entityRelationshipModel.value || !isDiagramOutput.value) {
+                    return '';
+                }
+
+                const erModelToDiagramConverter = (selectedOutputFormat.value as DiagramOutputFormat).erModelToDiagramConverter;
+
+                return erModelToDiagramConverter.convertToDiagram(entityRelationshipModel.value) ?? '';
+
+            });
 
             async function loadExampleCode(exampleCode: string) {
                 if (inputCodeSynced.value || await confirmExampleLoading()) {
@@ -254,7 +254,10 @@
                 codeEditorAnnotations,
                 groupedOutputFormats,
                 selectedOutputFormat,
+                isCodeOutput,
+                isDiagramOutput,
                 outputCode,
+                outputDiagram,
                 loadExampleCode,
                 entityRelationshipModel
             };

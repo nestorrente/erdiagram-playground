@@ -10,36 +10,22 @@
 </template>
 
 <script lang="ts">
-    import {computed, defineComponent, ref} from 'vue';
-    import {EntityRelationshipModel, NomnomlDiagramGenerator} from '@nestorrente/erdiagram';
-
-    interface Props {
-        model: EntityRelationshipModel;
-    }
+    import {defineComponent, ref} from 'vue';
 
     export default defineComponent({
         name: 'EntityRelationshipModelDiagram',
         props: {
-            model: {
-                type: Object,
+            svgCode: {
+                type: String,
                 required: true
             }
         },
-        setup(uncastedProps) {
-
-            // Workaround for an issue with TS types
-            const props = uncastedProps as Props;
+        setup() {
 
             const zoom = ref(false);
 
-            const diagramGenerator = new NomnomlDiagramGenerator();
-            const svgCode = computed(() => diagramGenerator.generateSvgDiagram(props.model, {
-                leading: 1.7
-            }));
-
             return {
-                zoom,
-                svgCode
+                zoom
             };
 
         }
@@ -57,6 +43,8 @@
 
         > svg {
             user-select: none;
+            width: auto;
+            height: auto;
         }
 
         &:not(.zoom) > svg {
