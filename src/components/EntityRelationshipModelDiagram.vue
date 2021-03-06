@@ -8,7 +8,6 @@
 <script lang="ts">
     import {computed, defineComponent} from 'vue';
     import {EntityRelationshipModel, NomnomlDiagramGenerator} from '@nestorrente/erdiagram';
-    import mermaid from 'mermaid';
 
     interface Props {
         model: EntityRelationshipModel;
@@ -28,21 +27,9 @@
             const props = uncastedProps as Props;
 
             const diagramGenerator = new NomnomlDiagramGenerator();
-            // const svgCode = computed(() => diagramGenerator.generateSvgDiagram(props.model));
-
-            mermaid.mermaidAPI.initialize({
-                startOnLoad: false
-            });
-
-            const svgCode = computed(() => {
-
-                const graphDefinition = `classDiagram
-order --> product : OrderLine
-`;
-
-                return mermaid.mermaidAPI.render('graphDiv', graphDefinition);
-
-            });
+            const svgCode = computed(() => diagramGenerator.generateSvgDiagram(props.model, {
+                leading: 1.7
+            }));
 
             return {
                 svgCode
@@ -53,7 +40,11 @@ order --> product : OrderLine
 </script>
 
 <style lang="scss">
-    .entity-relationship-model-diagram > svg {
-        width: 100%;
+    .entity-relationship-model-diagram {
+        overflow: auto;
+
+        > svg {
+            max-width: 100%;
+        }
     }
 </style>
