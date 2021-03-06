@@ -205,7 +205,7 @@
                     outputFormats.java,
                     outputFormats.typescript
                 ],
-                'Diagram': [
+                'Diagram (beta)': [
                     outputFormats.nomnomlCode,
                     outputFormats.nomnomlDiagram
                 ]
