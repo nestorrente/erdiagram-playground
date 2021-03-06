@@ -86,11 +86,7 @@
 <script lang="ts">
     import {computed, ComputedRef, defineComponent, ref, watch} from 'vue';
     import CodeBlock from '@/components/generic/code/CodeBlock.vue';
-    import {
-        EntityRelationshipModelParser,
-        EntityRelationshipModelToCodeConverter,
-        ERDiagramParseLineError
-    } from '@nestorrente/erdiagram';
+    import {EntityRelationshipModelParser, EntityRelationshipModelToCodeConverter, ERDiagramParseLineError} from '@nestorrente/erdiagram';
     import CodeEditor from '@/components/generic/code/CodeEditor.vue';
     import Button from '@/components/generic/form/Button.vue';
     import SelectInput from '@/components/generic/form/SelectInput.vue';
@@ -134,7 +130,7 @@
                 requried: true
             }
         },
-        setup: function () {
+        setup: function() {
 
             const {
                 liveRef: inputCodeLive,
@@ -194,7 +190,7 @@
                 return [{
                     type: 'error',
                     text: error.message,
-                    row: error.lineNumber - 1
+                    row: error.lineIndex
                 }];
 
             });
