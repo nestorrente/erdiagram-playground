@@ -43,6 +43,9 @@
                     <Tab name="typescript" title="TypeScript">
                         <TypeScriptTabContent :config="internalConfig"/>
                     </Tab>
+                    <Tab name="nomnoml" title="Nomnoml">
+                        <NomnomlTabContent :config="internalConfig"/>
+                    </Tab>
                     <Tab name="other" title="Other">
                         <OtherTabContent :config="internalConfig"/>
                     </Tab>
@@ -81,6 +84,7 @@
     import SettingsModalFooter from '@/components/config-modal/SettingsModalFooter.vue';
     import {showErrorToastMessage, showSuccessToastMessage} from '@/store/globalToastMessageStore';
     import configStore from '@/store/configStore';
+    import NomnomlTabContent from '@/components/config-modal/tabs/NomnomlTabContent.vue';
 
     interface Props {
         showing: boolean;
@@ -98,6 +102,7 @@
             'update:selectedTabName'
         ],
         components: {
+            NomnomlTabContent,
             SettingsModalFooter,
             TypeScriptTabContent,
             JavaTabContent,

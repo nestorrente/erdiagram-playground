@@ -7,7 +7,7 @@
                 '--svg-width': svgWidth + 'px',
                 '--svg-height': svgHeight + 'px'
             }"
-            @mousedown="onMouseDown"
+            @pointerdown="onPointerDown"
             @touchstart="onTouchStart"
             @wheel="onWheel"
             v-html="svgCode"
@@ -77,7 +77,7 @@
             }
 
             const {
-                onMouseDown,
+                onPointerDown,
                 onTouchStart
             } = useDragElement();
 
@@ -87,7 +87,7 @@
                 svgWidth,
                 svgHeight,
                 onWheel,
-                onMouseDown,
+                onPointerDown,
                 onTouchStart
             };
 

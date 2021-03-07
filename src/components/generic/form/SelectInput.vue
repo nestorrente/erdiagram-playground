@@ -1,6 +1,6 @@
 <template>
     <div class="select" :class="{'is-block': block}">
-        <select v-model="selectedValue">
+        <select v-model="selectedValue" :class="{'has-empty-value': selectedValue === ''}">
             <template v-if="hasOptionGroups">
                 <option
                         v-for="item in items"
@@ -35,14 +35,11 @@
     interface Props<T> {
         emptyOption: boolean;
         items: T[] | Record<string, T[]>;
-        idField: string | MapperCallback<T, any>;
-        textField: string | MapperCallback<T, any>;
+        idField?: string | MapperCallback<T, any>;
+        textField?: string | MapperCallback<T, any>;
         modelValue: any;
         block: boolean;
-    }
-
-    function getIdentityCallback<T>(): MapperCallback<T, T> {
-        return obj => obj;
+        emptyValueText: string;
     }
 
     export default defineComponent({
@@ -59,11 +56,11 @@
             },
             idField: {
                 type: [String, Function],
-                default: getIdentityCallback
+                required: false
             },
             textField: {
                 type: [String, Function],
-                default: getIdentityCallback
+                required: false
             },
             modelValue: {
                 required: false
@@ -71,6 +68,10 @@
             block: {
                 type: Boolean,
                 default: false
+            },
+            emptyValueText: {
+                type: String,
+                default: ''
             }
         },
         setup(uncastedProps, context) {
@@ -83,8 +84,10 @@
 
                 if (typeof idField === 'function') {
                     return idField as MapperCallback<any, any>;
-                } else {
+                } else if (typeof idField === 'string') {
                     return obj => obj[String(idField)];
+                } else {
+                    return obj => obj != null ? obj : '';
                 }
             });
 
@@ -93,8 +96,10 @@
 
                 if (typeof textField === 'function') {
                     return textField as MapperCallback<any, any>;
-                } else {
+                } else if (typeof textField === 'string') {
                     return obj => obj[String(textField)];
+                } else {
+                    return obj => obj != null ? obj : props.emptyValueText;
                 }
             });
 
@@ -144,3 +149,25 @@
         }
     });
 </script>
+
+<style lang="scss" scoped>
+
+    $empty-value-color: #bbb;
+
+    select {
+        color: black;
+
+        &.has-empty-value {
+            color: $empty-value-color;
+        }
+    }
+
+    option {
+        color: black;
+
+        &:not([value]), &[value=''] {
+            color: $empty-value-color;
+        }
+    }
+
+</style>

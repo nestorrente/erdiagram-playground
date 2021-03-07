@@ -38,8 +38,9 @@ const typescriptConverter = useEntityRelationshipModelToClassCodeConverter(
 		() => new TypeScriptClassModelToCodeConverter(configStore.config.typescript.classModelToCodeConverterConfig)
 );
 
-// TODO add Nomnoml Diagram config to ERDiagramConfig and use it here
-const nomnomlConverter = computed(() => new NomnomlEntityRelationshipModelToDiagramCodeConverter());
+const nomnomlConverter = computed(() => {
+	return new NomnomlEntityRelationshipModelToDiagramCodeConverter(configStore.config.nomnoml);
+});
 
 export default {
 	mysqlConverter,

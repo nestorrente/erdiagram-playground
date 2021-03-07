@@ -43,8 +43,9 @@
             const showingSettingsModal = ref(false);
             const settingsModalSelectedTabName = ref('mysql');
 
-            function showSettingsModal(tab: string) {
-                settingsModalSelectedTabName.value = tab;
+            function showSettingsModal(outputFormatId: string) {
+                // FIXME find a clearer way to map each output format to its settings tab
+                settingsModalSelectedTabName.value = outputFormatId.startsWith('nomnoml') ? 'nomnoml' : outputFormatId;
                 showingSettingsModal.value = true;
             }
 

@@ -30,8 +30,8 @@ export default function useDragElement() {
 
 	}
 
-	useDocumentEventListener('mousemove', event => {
-		onDragMove(event, () => getCurrentDragPointFromMouse(event));
+	useDocumentEventListener('pointermove', event => {
+		onDragMove(event, () => getCurrentDragPointFromPointer(event));
 	});
 
 	useDocumentEventListener('touchmove', (event: TouchEvent) => {
@@ -65,7 +65,7 @@ export default function useDragElement() {
 	useDocumentEventListener('mouseup', () => state = null);
 	useDocumentEventListener('touchend', () => state = null);
 
-	function getCurrentDragPointFromMouse(event: MouseEvent) {
+	function getCurrentDragPointFromPointer(event: PointerEvent) {
 		return {
 			x: event.pageX,
 			y: event.pageY
@@ -80,8 +80,8 @@ export default function useDragElement() {
 	}
 
 	return {
-		onMouseDown(event: MouseEvent) {
-			onDragStart(event, () => getCurrentDragPointFromMouse(event));
+		onPointerDown(event: PointerEvent) {
+			onDragStart(event, () => getCurrentDragPointFromPointer(event));
 		},
 		onTouchStart(event: TouchEvent) {
 			event.preventDefault();
