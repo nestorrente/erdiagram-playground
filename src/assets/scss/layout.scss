@@ -38,18 +38,21 @@ body,
 
 }
 
-.code-editor-container.is-full-height {
-    //@media(max-width: 768px) {
-    @media(max-width: 1023px) {
+//@media(max-width: 768px) {
+@media(max-width: 1023px) {
+
+    .code-editor-container.is-full-height {
         height: 400px;
     }
-}
 
-.code-container.is-full-height {
-    //@media(max-width: 768px) {
-    @media(max-width: 1023px) {
+    .code-container.is-full-height {
         height: 600px;
     }
+
+    .entity-relationship-model-diagram-container.is-full-height {
+        height: 600px;
+    }
+
 }
 
 .has-hidden-scrollbar::-webkit-scrollbar {

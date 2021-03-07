@@ -133,7 +133,7 @@
 <style lang="scss">
 
     .code-editor-container {
-        border: 1px solid lightgrey;
+        border: 1px solid #dbdbdb;
         border-radius: 4px;
         overflow: hidden;
     }
