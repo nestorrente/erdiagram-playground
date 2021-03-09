@@ -8,6 +8,7 @@ import {
 	MySqlDatabaseModelToCodeConverterSerializableConfig,
 	NomnomlEntityRelationshipModelToDiagramCodeConverterSerializableConfig,
 	OracleDatabaseModelToCodeConverterSerializableConfig,
+	PlantUmlEntityRelationshipModelToDiagramCodeConverterSerializableConfig,
 	SqlServerDatabaseModelToCodeConverterSerializableConfig,
 	TypeScriptClassModelToCodeConverterSerializableConfig
 } from '@nestorrente/erdiagram';
@@ -21,6 +22,7 @@ export default interface ERDiagramPlaygroundSerializableConfig {
 	java: ClassLanguageSerializableConfig<JavaClassModelToCodeConverterSerializableConfig>;
 	typescript: ClassLanguageSerializableConfig<TypeScriptClassModelToCodeConverterSerializableConfig>;
 	nomnoml: NomnomlEntityRelationshipModelToDiagramCodeConverterSerializableConfig;
+	plantuml: PlantUmlEntityRelationshipModelToDiagramCodeConverterSerializableConfig;
 }
 
 export interface DatabaseDialectSerializableConfig<T extends DatabaseModelToCodeConverterSerializableConfig> {

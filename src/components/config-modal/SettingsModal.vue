@@ -46,6 +46,9 @@
                     <Tab name="nomnoml" title="Nomnoml">
                         <NomnomlTabContent :config="internalConfig"/>
                     </Tab>
+                    <Tab name="plantuml" title="PlantUml">
+                        <PlantUmlTabContent :config="internalConfig"/>
+                    </Tab>
                     <Tab name="other" title="Other">
                         <OtherTabContent :config="internalConfig"/>
                     </Tab>
@@ -85,6 +88,7 @@
     import {showErrorToastMessage, showSuccessToastMessage} from '@/store/globalToastMessageStore';
     import configStore from '@/store/configStore';
     import NomnomlTabContent from '@/components/config-modal/tabs/NomnomlTabContent.vue';
+    import PlantUmlTabContent from '@/components/config-modal/tabs/PlantUmlTabContent.vue';
 
     interface Props {
         showing: boolean;
@@ -102,6 +106,7 @@
             'update:selectedTabName'
         ],
         components: {
+            PlantUmlTabContent,
             NomnomlTabContent,
             SettingsModalFooter,
             TypeScriptTabContent,

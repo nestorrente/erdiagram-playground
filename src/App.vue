@@ -45,7 +45,11 @@
 
             function showSettingsModal(outputFormatId: string) {
                 // FIXME find a clearer way to map each output format to its settings tab
-                settingsModalSelectedTabName.value = outputFormatId.startsWith('nomnoml') ? 'nomnoml' : outputFormatId;
+                settingsModalSelectedTabName.value = outputFormatId.startsWith('nomnoml')
+                        ? 'nomnoml'
+                        : outputFormatId.startsWith('plantuml')
+                                ? 'plantuml'
+                                : outputFormatId;
                 showingSettingsModal.value = true;
             }
 

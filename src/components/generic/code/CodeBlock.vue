@@ -7,7 +7,6 @@
         <Button
                 color="warning"
                 small
-                :outlined="copiedState"
                 :icon="copiedState ? 'fas fa-clipboard-check' : 'fas fa-clipboard'"
                 class="copy-button"
                 :style="{
@@ -96,7 +95,7 @@
     });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
     .code-container {
         border-radius: 4px;
         overflow: hidden;

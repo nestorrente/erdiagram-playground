@@ -6,6 +6,7 @@ import {
 	MySqlDatabaseModelToCodeConverter,
 	NomnomlEntityRelationshipModelToDiagramCodeConverter,
 	OracleDatabaseModelToCodeConverter,
+	PlantUmlEntityRelationshipModelToDiagramCodeConverter,
 	SqlServerDatabaseModelToCodeConverter,
 	TypeScriptClassModelToCodeConverter
 } from '@nestorrente/erdiagram';
@@ -42,11 +43,16 @@ const nomnomlConverter = computed(() => {
 	return new NomnomlEntityRelationshipModelToDiagramCodeConverter(configStore.config.nomnoml);
 });
 
+const plantumlConverter = computed(() => {
+	return new PlantUmlEntityRelationshipModelToDiagramCodeConverter(configStore.config.plantuml);
+});
+
 export default {
 	mysqlConverter,
 	sqlserverConverter,
 	oracleConverter,
 	javaConverter,
 	typescriptConverter,
-	nomnomlConverter
+	nomnomlConverter,
+	plantumlConverter
 };

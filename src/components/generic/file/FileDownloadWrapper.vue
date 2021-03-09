@@ -16,11 +16,12 @@
     interface Props {
         fileName: string;
         mimeType: string;
-        fileContents: string | FileContentsSupplier;
+        fileContents?: FileContents | FileContentsSupplier;
         listenKeyboardSaveShortcut: boolean;
     }
 
-    type FileContentsSupplier = () => string;
+    type FileContents = string | undefined;
+    type FileContentsSupplier = () => FileContents;
 
     export default defineComponent({
         name: 'FileDownloadWrapper',
@@ -36,7 +37,7 @@
             },
             fileContents: {
                 type: [String, Function],
-                required: true
+                required: false
             },
             listenKeyboardSaveShortcut: {
                 type: Boolean,
@@ -53,14 +54,15 @@
 
             function downloadFile() {
 
-                const fileData = new Blob(
-                        [
-                            getFileContents()
-                        ],
-                        {
-                            type: props.mimeType
-                        }
-                );
+                const fileContents = getFileContents();
+
+                if (!fileContents) {
+                    return;
+                }
+
+                const fileData = new Blob([fileContents], {
+                    type: props.mimeType
+                });
 
                 linkUrl.value = URL.createObjectURL(fileData);
 
@@ -73,7 +75,7 @@
 
             }
 
-            function getFileContents(): string {
+            function getFileContents(): FileContents {
 
                 const {fileContents} = props;
 

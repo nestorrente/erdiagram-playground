@@ -1,33 +1,90 @@
 <template>
     <div
             class="is-full-height entity-relationship-model-diagram-container"
-            ref="containerRef"
-            :style="{
-                '--zoom-scale': zoomScale,
-                '--svg-width': svgWidth + 'px',
-                '--svg-height': svgHeight + 'px'
-            }"
-            @pointerdown="onPointerDown"
-            @touchstart="onTouchStart"
-            @wheel="onWheel"
-            v-html="svgCode"
-    ></div>
+    >
+        <div
+                v-show="loading"
+                class="loading-spinner-container"
+        >
+            <p class="mb-3">Generating chart...</p>
+            <progress class="progress is-extra-small is-info mb-3"></progress>
+        </div>
+
+        <div class="diagram-toolbar" v-show="computedSvgCode">
+            <span class="zoom-scale-indicator">{{ zoomScaleText }}</span>
+
+            <Button
+                    icon="fas fa-plus"
+                    outlined
+                    small
+                    @click="incrementZoom"
+            ></Button>
+
+            <Button
+                    icon="fas fa-minus"
+                    outlined
+                    small
+                    @click="decrementZoom"
+            ></Button>
+
+            <FileDownloadWrapper
+                    file-name="diagram.svg"
+                    :file-contents="computedSvgCode"
+                    #default="{downloadFile}"
+            >
+                <Button
+                        color="dark"
+                        small
+                        icon="fas fa-download"
+                        class="copy-button"
+                        title="Download"
+                        @click="downloadFile"
+                ></Button>
+            </FileDownloadWrapper>
+        </div>
+
+        <div
+                v-show="computedSvgCode"
+                ref="diagramRef"
+                class="entity-relationship-model-diagram"
+                :style="{
+                    '--zoom-scale': zoomScale,
+                    '--svg-width': svgWidth + 'px',
+                    '--svg-height': svgHeight + 'px'
+                }"
+                @pointerdown="onPointerDown"
+                @touchstart="onTouchStart"
+                @wheel="onWheel"
+                v-html="computedSvgCode"
+        ></div>
+    </div>
 </template>
 
 <script lang="ts">
-    import {defineComponent, nextTick, onMounted, ref, watch} from 'vue';
+    import {computed, defineComponent, nextTick, onMounted, ref, watch} from 'vue';
     import useDragElement from '@/components/useDragElement';
+    import useSvgImage from '@/components/useSvgImage';
+    import Button from '@/components/generic/form/Button.vue';
+    import FileDownloadWrapper from '@/components/generic/file/FileDownloadWrapper.vue';
 
     interface Props {
-        svgCode: string;
+        svgCode?: string;
+        svgUrl?: string;
     }
+
+    const ZOOM_SCALES = [0.25, 0.33, 0.5, 0.67, 0.75, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 3];
 
     export default defineComponent({
         name: 'EntityRelationshipModelDiagram',
+        components: {FileDownloadWrapper, Button},
         props: {
             svgCode: {
                 type: String,
-                required: true
+                required: false
+            },
+            svgUrl: {
+                type: String,
+                required: false
             }
         },
         setup(uncastedProps) {
@@ -35,18 +92,26 @@
             // Workaround for an issue with TS types
             const props = uncastedProps as Props;
 
-            const containerRef = ref<HTMLElement>();
-            const zoomScale = ref(1);
+            const {
+                data: computedSvgCode,
+                loading
+            } = useSvgImage(props);
+
+            const zoomScaleIndex = ref(ZOOM_SCALES.indexOf(1));
+            const zoomScale = computed(() => ZOOM_SCALES[zoomScaleIndex.value]);
+            const zoomScaleText = computed(() => `${(zoomScale.value * 100).toFixed(0)}%`);
+
+            const diagramRef = ref<HTMLElement>();
 
             const svgWidth = ref<number>(0);
             const svgHeight = ref<number>(0);
 
             onMounted(updateSvgSize);
-            watch(() => props.svgCode, () => nextTick(updateSvgSize));
+            watch(computedSvgCode, () => nextTick(updateSvgSize));
 
             function updateSvgSize() {
 
-                const svg = containerRef.value?.firstElementChild;
+                const svg = diagramRef.value?.firstElementChild;
 
                 svgWidth.value = getNumberAttribute(svg, 'width') ?? 0;
                 svgHeight.value = getNumberAttribute(svg, 'height') ?? 0;
@@ -64,16 +129,21 @@
 
                 const delta = event.deltaX || event.deltaY || event.deltaZ;
 
-                const zoomScaleFactor = 1 + 0.15 * -Math.sign(delta);
-
-                zoomScale.value = applyBoundaries(zoomScale.value * zoomScaleFactor, 0.1, 3);
-
                 // FIXME it's necessary to change the scroll position taking into account the position (x, y) of the event
+                if (delta < 0) {
+                    incrementZoom();
+                } else if (delta > 0) {
+                    decrementZoom();
+                }
 
             }
 
-            function applyBoundaries(value: number, minValue: number, maxValue: number) {
-                return Math.min(Math.max(value, minValue), maxValue);
+            function incrementZoom() {
+                zoomScaleIndex.value = Math.min(zoomScaleIndex.value + 1, ZOOM_SCALES.length - 1);
+            }
+
+            function decrementZoom() {
+                zoomScaleIndex.value = Math.max(zoomScaleIndex.value - 1, 0);
             }
 
             const {
@@ -82,8 +152,13 @@
             } = useDragElement();
 
             return {
-                containerRef,
+                computedSvgCode,
+                loading,
                 zoomScale,
+                zoomScaleText,
+                incrementZoom,
+                decrementZoom,
+                diagramRef,
                 svgWidth,
                 svgHeight,
                 onWheel,
@@ -97,25 +172,60 @@
 
 <style lang="scss">
     .entity-relationship-model-diagram-container {
-        --zoom-scale: 1;
-        --svg-width: 0;
-        --svg-height: 0;
-
+        position: relative;
         border: 1px solid #dbdbdb;
         border-radius: 4px;
         overflow: hidden;
         cursor: move;
 
-        //display: flex;
-        //align-items: center;
-        //justify-content: center;
+        > .loading-spinner-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
 
-        > svg {
-            //flex: 0 0 auto;
-            user-select: none;
-            width: calc(var(--svg-width) * var(--zoom-scale));
-            height: calc(var(--svg-height) * var(--zoom-scale));
+            width: 100%;
+            height: 100%;
+            padding: 1rem;
         }
 
+        > .diagram-toolbar {
+            position: absolute;
+            top: 1em;
+            right: 1em;
+            opacity: 0.7;
+            transition: opacity ease-in-out 0.15s;
+
+            &:hover {
+                opacity: 1;
+            }
+
+            > .zoom-scale-indicator {
+                vertical-align: middle;
+            }
+
+            > * + * {
+                margin-left: 0.5em;
+            }
+        }
+
+        > .entity-relationship-model-diagram {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            padding: 1em;
+
+            --zoom-scale: 1;
+            --svg-width: 0;
+            --svg-height: 0;
+
+            > svg {
+                user-select: none;
+                // We use important in order to override inline style of the <svg> tag (if present)
+                width: calc(var(--svg-width) * var(--zoom-scale)) !important;
+                height: calc(var(--svg-height) * var(--zoom-scale)) !important;
+            }
+
+        }
     }
 </style>

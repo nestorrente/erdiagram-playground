@@ -1,5 +1,6 @@
-import {reactive} from 'vue';
+import {computed, reactive} from 'vue';
 import {
+	EntityRelationshipModel,
 	EntityRelationshipModelToCodeConverter,
 	EntityRelationshipModelToDiagramConverter
 } from '@nestorrente/erdiagram';
@@ -29,6 +30,15 @@ export interface DiagramOutputFormat extends OutputFormat {
 
 export function isDiagramOutputFormat(outputFormat: OutputFormat): outputFormat is DiagramOutputFormat {
 	return outputFormat.type === 'diagram';
+}
+
+export interface DiagramUrlOutputFormat extends OutputFormat {
+	type: 'diagram_url';
+	erModelToDiagramUrlConverter: (model: EntityRelationshipModel) => string;
+}
+
+export function isDiagramUrlOutputFormat(outputFormat: OutputFormat): outputFormat is DiagramUrlOutputFormat {
+	return outputFormat.type === 'diagram_url';
 }
 
 const mysqlCodeOutputFormat: CodeOutputFormat = reactive({
@@ -86,6 +96,28 @@ const nomnomlDiagramOutputFormat: DiagramOutputFormat = reactive({
 	erModelToDiagramConverter: erModelToDiagramConverters.nomnomlConverter
 });
 
+const plantumlCodeOutputFormat: CodeOutputFormat = reactive({
+	id: 'plantumlCode',
+	name: 'PlantUml (code)',
+	type: 'code',
+	codeBlockLang: 'plaintext',
+	erModelToCodeConverter: erModelToCodeConverters.plantumlConverter
+});
+
+const plantumlDiagramOutputFormat: DiagramUrlOutputFormat = reactive({
+	id: 'plantumlDiagram',
+	name: 'PlantUml (SVG)',
+	type: 'diagram_url',
+	erModelToDiagramUrlConverter: computed(() => {
+		const plantumlConverter = erModelToCodeConverters.plantumlConverter.value;
+		return (model: EntityRelationshipModel) => {
+			const plantumlCode = plantumlConverter.convertToCode(model);
+			const plantumlHexCode = [...plantumlCode].map(e => e.charCodeAt(0).toString(16).padStart(2, '0')).join('');
+			return `http://www.plantuml.com/plantuml/svg/~h${plantumlHexCode}`;
+		};
+	})
+});
+
 export default {
 	[mysqlCodeOutputFormat.id]: mysqlCodeOutputFormat,
 	[oracleCodeOutputFormat.id]: oracleCodeOutputFormat,
@@ -93,5 +125,7 @@ export default {
 	[javaCodeOutputFormat.id]: javaCodeOutputFormat,
 	[typescriptCodeOutputFormat.id]: typescriptCodeOutputFormat,
 	[nomnomlCodeOutputFormat.id]: nomnomlCodeOutputFormat,
-	[nomnomlDiagramOutputFormat.id]: nomnomlDiagramOutputFormat
+	[nomnomlDiagramOutputFormat.id]: nomnomlDiagramOutputFormat,
+	[plantumlCodeOutputFormat.id]: plantumlCodeOutputFormat,
+	[plantumlDiagramOutputFormat.id]: plantumlDiagramOutputFormat
 };

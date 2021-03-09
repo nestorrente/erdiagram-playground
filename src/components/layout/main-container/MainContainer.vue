@@ -80,8 +80,9 @@
                             full-height
                     />
                     <EntityRelationshipModelDiagram
-                            v-else-if="isDiagramOutput"
-                            :svg-code="outputDiagram"
+                            v-else-if="isDiagramOutput || isDiagramUrlOutput"
+                            :svg-code="isDiagramOutput ? outputDiagram : undefined"
+                            :svg-url="isDiagramUrlOutput ? outputDiagramUrl : undefined"
                     />
                 </div>
             </div>
@@ -105,7 +106,15 @@
     import Icon from '@/components/generic/form/Icon.vue';
     import localStorageAccessor from '@/storage/localStorageAccessor';
     import configStore from '@/store/configStore';
-    import outputFormats, {CodeOutputFormat, DiagramOutputFormat, isCodeOutputFormat, isDiagramOutputFormat, OutputFormat} from '@/common/outputFormats';
+    import outputFormats, {
+        CodeOutputFormat,
+        DiagramOutputFormat,
+        DiagramUrlOutputFormat,
+        isCodeOutputFormat,
+        isDiagramOutputFormat,
+        isDiagramUrlOutputFormat,
+        OutputFormat
+    } from '@/common/outputFormats';
     import {Ace} from 'ace-builds';
     import EntityRelationshipModelDiagram from '@/components/EntityRelationshipModelDiagram.vue';
 
@@ -129,7 +138,7 @@
                 requried: true
             }
         },
-        setup: function() {
+        setup: function () {
 
             const {
                 liveRef: inputCodeLive,
@@ -206,7 +215,9 @@
                 ],
                 'Diagram (beta)': [
                     outputFormats.nomnomlCode,
-                    outputFormats.nomnomlDiagram
+                    outputFormats.nomnomlDiagram,
+                    outputFormats.plantumlCode,
+                    outputFormats.plantumlDiagram
                 ]
             };
 
@@ -214,6 +225,7 @@
 
             const isCodeOutput = computed(() => isCodeOutputFormat(selectedOutputFormat.value));
             const isDiagramOutput = computed(() => isDiagramOutputFormat(selectedOutputFormat.value));
+            const isDiagramUrlOutput = computed(() => isDiagramUrlOutputFormat(selectedOutputFormat.value));
 
             watch(selectedOutputFormat, newValue => localStorageAccessor.setOutputFormat(newValue));
 
@@ -241,6 +253,18 @@
 
             });
 
+            const outputDiagramUrl = computed((): string => {
+
+                if (!entityRelationshipModel.value || !isDiagramUrlOutput.value) {
+                    return '';
+                }
+
+                const erModelToDiagramUrlConverter = (selectedOutputFormat.value as DiagramUrlOutputFormat).erModelToDiagramUrlConverter;
+
+                return erModelToDiagramUrlConverter(entityRelationshipModel.value) ?? '';
+
+            });
+
             async function loadExampleCode(exampleCode: string) {
                 if (inputCodeSynced.value || await confirmExampleLoading()) {
                     inputCodeDebounced.value = exampleCode;
@@ -262,8 +286,10 @@
                 selectedOutputFormat,
                 isCodeOutput,
                 isDiagramOutput,
+                isDiagramUrlOutput,
                 outputCode,
                 outputDiagram,
+                outputDiagramUrl,
                 loadExampleCode,
                 entityRelationshipModel
             };
