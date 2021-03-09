@@ -113,7 +113,7 @@ const plantumlDiagramOutputFormat: DiagramUrlOutputFormat = reactive({
 		return (model: EntityRelationshipModel) => {
 			const plantumlCode = plantumlConverter.convertToCode(model);
 			const plantumlHexCode = [...plantumlCode].map(e => e.charCodeAt(0).toString(16).padStart(2, '0')).join('');
-			return `http://www.plantuml.com/plantuml/svg/~h${plantumlHexCode}`;
+			return `https://www.plantuml.com/plantuml/svg/~h${plantumlHexCode}`;
 		};
 	})
 });
