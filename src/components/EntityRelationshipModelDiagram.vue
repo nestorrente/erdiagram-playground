@@ -49,8 +49,8 @@
                 class="entity-relationship-model-diagram"
                 :style="{
                     '--zoom-scale': zoomScale,
-                    '--svg-width': svgWidth + 'px',
-                    '--svg-height': svgHeight + 'px'
+                    '--svg-width': svgDimension.width + 'px',
+                    '--svg-height': svgDimension.height + 'px'
                 }"
                 @pointerdown="onPointerDown"
                 @touchstart="onTouchStart"
@@ -66,6 +66,7 @@
     import Button from '@/components/generic/form/Button.vue';
     import FileDownloadWrapper from '@/components/generic/file/FileDownloadWrapper.vue';
     import useAsyncOperation from '@/composition/async/useAsyncOperation';
+    import {Dimension, Point} from '@/util/geometric-types';
 
     interface Props {
         svgCode: string | Promise<string>;
@@ -98,8 +99,10 @@
 
             const diagramRef = ref<HTMLElement>();
 
-            const svgWidth = ref<number>(0);
-            const svgHeight = ref<number>(0);
+            const svgDimension = ref<Dimension>({
+                width: 0,
+                height: 0
+            });
 
             onMounted(updateSvgSize);
             watch(computedSvgCode, () => nextTick(updateSvgSize));
@@ -108,8 +111,10 @@
 
                 const svg = diagramRef.value?.firstElementChild;
 
-                svgWidth.value = getNumberAttribute(svg, 'width') ?? 0;
-                svgHeight.value = getNumberAttribute(svg, 'height') ?? 0;
+                svgDimension.value = {
+                    width: getNumberAttribute(svg, 'width') ?? 0,
+                    height: getNumberAttribute(svg, 'height') ?? 0
+                };
 
             }
 
@@ -133,12 +138,75 @@
 
             }
 
-            function incrementZoom() {
-                zoomScaleIndex.value = Math.min(zoomScaleIndex.value + 1, ZOOM_SCALES.length - 1);
+            function incrementZoom(referencePoint?: Point) {
+                changeScale(zoomScaleIndex.value + 1, referencePoint);
             }
 
-            function decrementZoom() {
-                zoomScaleIndex.value = Math.max(zoomScaleIndex.value - 1, 0);
+            function decrementZoom(referencePoint?: Point) {
+                changeScale(zoomScaleIndex.value - 1, referencePoint);
+            }
+
+            function changeScale(newScaleIndex: number, referencePoint: Point = getSvgCenterPoint()) {
+
+                const previousScale = zoomScale.value;
+                zoomScaleIndex.value = Math.min(Math.max(newScaleIndex, 0), ZOOM_SCALES.length - 1);
+
+                // nextTick(() => adjustScrollAfterScaleChanged(referencePoint, previousScale));
+
+            }
+
+            function adjustScrollAfterScaleChanged(referencePoint: Point, previousScale: number) {
+
+                const diagramElement = diagramRef.value;
+
+                if (!diagramElement) {
+                    return;
+                }
+
+                const previousScaledDimension = getSvgScaledDimension(previousScale);
+                const newScaledDimension = getSvgScaledDimension(zoomScale.value);
+
+                const referencePointWidthPercent = referencePoint.x / previousScaledDimension.width;
+                const referencePointHeightPercent = referencePoint.y / previousScaledDimension.height;
+
+                const newReferencePoint: Point = {
+                    x: referencePointWidthPercent * newScaledDimension.width,
+                    y: referencePointHeightPercent * newScaledDimension.height
+                };
+
+                const deltaScroll = subtractPoints(newReferencePoint, referencePoint);
+                console.log('Delta scroll:', deltaScroll);
+
+                diagramElement.scrollBy(deltaScroll.x, deltaScroll.y);
+
+            }
+
+            function getSvgCenterPoint(): Point {
+
+                const {
+                    width,
+                    height
+                } = svgDimension.value;
+
+                return {
+                    x: width / 2,
+                    y: height / 2
+                };
+
+            }
+
+            function getSvgScaledDimension(scale: number): Dimension {
+                return {
+                    width: svgDimension.value.width * scale,
+                    height: svgDimension.value.height * scale
+                };
+            }
+
+            function subtractPoints(pointA: Point, pointB: Point): Point {
+                return {
+                    x: pointA.x - pointB.x,
+                    y: pointA.y - pointB.y
+                };
             }
 
             const {
@@ -154,8 +222,7 @@
                 incrementZoom,
                 decrementZoom,
                 diagramRef,
-                svgWidth,
-                svgHeight,
+                svgDimension,
                 onWheel,
                 onPointerDown,
                 onTouchStart

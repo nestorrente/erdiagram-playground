@@ -1,14 +1,10 @@
 import useDocumentEventListener from '@/composition/event/useDocumentEventListener';
+import {Point} from '@/util/geometric-types';
 
 interface DragState {
 	element: HTMLElement;
 	dragStartPoint: Point;
 	elementScrollStartPoint: Point;
-}
-
-interface Point {
-	x: number;
-	y: number;
 }
 
 export default function useDragElement() {
