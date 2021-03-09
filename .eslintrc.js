@@ -17,6 +17,7 @@ module.exports = {
         // FIXME wait for this to be implemented in order to enable this rule again:
         //  https://github.com/vuejs/eslint-plugin-vue/issues/1371
         'vue/no-mutating-props': 'off',
+        'vue/no-async-in-computed-properties': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
         '@typescript-eslint/no-use-before-define': 'off',
         '@typescript-eslint/no-explicit-any': 'off',

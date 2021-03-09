@@ -46,7 +46,7 @@
                     <Tab name="nomnoml" title="Nomnoml">
                         <NomnomlTabContent :config="internalConfig"/>
                     </Tab>
-                    <Tab name="plantuml" title="PlantUml">
+                    <Tab name="plantuml" title="PlantUML">
                         <PlantUmlTabContent :config="internalConfig"/>
                     </Tab>
                     <Tab name="other" title="Other">

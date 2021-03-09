@@ -1,6 +1,5 @@
-import {computed, reactive} from 'vue';
+import {reactive} from 'vue';
 import {
-	EntityRelationshipModel,
 	EntityRelationshipModelToCodeConverter,
 	EntityRelationshipModelToDiagramConverter
 } from '@nestorrente/erdiagram';
@@ -30,15 +29,6 @@ export interface DiagramOutputFormat extends OutputFormat {
 
 export function isDiagramOutputFormat(outputFormat: OutputFormat): outputFormat is DiagramOutputFormat {
 	return outputFormat.type === 'diagram';
-}
-
-export interface DiagramUrlOutputFormat extends OutputFormat {
-	type: 'diagram_url';
-	erModelToDiagramUrlConverter: (model: EntityRelationshipModel) => string;
-}
-
-export function isDiagramUrlOutputFormat(outputFormat: OutputFormat): outputFormat is DiagramUrlOutputFormat {
-	return outputFormat.type === 'diagram_url';
 }
 
 const mysqlCodeOutputFormat: CodeOutputFormat = reactive({
@@ -98,24 +88,17 @@ const nomnomlDiagramOutputFormat: DiagramOutputFormat = reactive({
 
 const plantumlCodeOutputFormat: CodeOutputFormat = reactive({
 	id: 'plantumlCode',
-	name: 'PlantUml (code)',
+	name: 'PlantUML (code)',
 	type: 'code',
 	codeBlockLang: 'plaintext',
 	erModelToCodeConverter: erModelToCodeConverters.plantumlConverter
 });
 
-const plantumlDiagramOutputFormat: DiagramUrlOutputFormat = reactive({
+const plantumlDiagramOutputFormat: DiagramOutputFormat = reactive({
 	id: 'plantumlDiagram',
-	name: 'PlantUml (SVG)',
-	type: 'diagram_url',
-	erModelToDiagramUrlConverter: computed(() => {
-		const plantumlConverter = erModelToCodeConverters.plantumlConverter.value;
-		return (model: EntityRelationshipModel) => {
-			const plantumlCode = plantumlConverter.convertToCode(model);
-			const plantumlHexCode = [...plantumlCode].map(e => e.charCodeAt(0).toString(16).padStart(2, '0')).join('');
-			return `https://www.plantuml.com/plantuml/svg/~h${plantumlHexCode}`;
-		};
-	})
+	name: 'PlantUML (SVG)',
+	type: 'diagram',
+	erModelToDiagramConverter: erModelToDiagramConverters.plantumlConverter
 });
 
 export default {

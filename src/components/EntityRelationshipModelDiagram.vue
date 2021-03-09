@@ -62,14 +62,13 @@
 
 <script lang="ts">
     import {computed, defineComponent, nextTick, onMounted, ref, watch} from 'vue';
-    import useDragElement from '@/components/useDragElement';
-    import useSvgImage from '@/components/useSvgImage';
+    import useDragElement from '@/composition/dom/useDragElement';
     import Button from '@/components/generic/form/Button.vue';
     import FileDownloadWrapper from '@/components/generic/file/FileDownloadWrapper.vue';
+    import useAsyncOperation from '@/composition/async/useAsyncOperation';
 
     interface Props {
-        svgCode?: string;
-        svgUrl?: string;
+        svgCode: string | Promise<string>;
     }
 
     const ZOOM_SCALES = [0.25, 0.33, 0.5, 0.67, 0.75, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 3];
@@ -79,23 +78,19 @@
         components: {FileDownloadWrapper, Button},
         props: {
             svgCode: {
-                type: String,
-                required: false
-            },
-            svgUrl: {
-                type: String,
-                required: false
+                type: [String, Promise],
+                required: true
             }
         },
         setup(uncastedProps) {
 
             // Workaround for an issue with TS types
-            const props = uncastedProps as Props;
+            const props = uncastedProps as unknown as Props;
 
             const {
                 data: computedSvgCode,
                 loading
-            } = useSvgImage(props);
+            } = useAsyncOperation(() => Promise.resolve(props.svgCode));
 
             const zoomScaleIndex = ref(ZOOM_SCALES.indexOf(1));
             const zoomScale = computed(() => ZOOM_SCALES[zoomScaleIndex.value]);

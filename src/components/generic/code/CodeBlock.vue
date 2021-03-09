@@ -36,7 +36,7 @@
 <script lang="ts">
     import {defineComponent, onMounted, onUpdated, ref} from 'vue';
     import hljs from 'highlight.js';
-    import useElementScrollbarsSize from '@/composition/size/useElementScrollbarsSize';
+    import useElementScrollbarsSize from '@/composition/dom/size/useElementScrollbarsSize';
     import Button from '@/components/generic/form/Button.vue';
 
     export default defineComponent({

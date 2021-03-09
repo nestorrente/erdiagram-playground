@@ -80,9 +80,8 @@
                             full-height
                     />
                     <EntityRelationshipModelDiagram
-                            v-else-if="isDiagramOutput || isDiagramUrlOutput"
-                            :svg-code="isDiagramOutput ? outputDiagram : undefined"
-                            :svg-url="isDiagramUrlOutput ? outputDiagramUrl : undefined"
+                            v-else-if="isDiagramOutput"
+                            :svg-code="outputDiagramPromise"
                     />
                 </div>
             </div>
@@ -109,10 +108,8 @@
     import outputFormats, {
         CodeOutputFormat,
         DiagramOutputFormat,
-        DiagramUrlOutputFormat,
         isCodeOutputFormat,
         isDiagramOutputFormat,
-        isDiagramUrlOutputFormat,
         OutputFormat
     } from '@/common/outputFormats';
     import {Ace} from 'ace-builds';
@@ -225,7 +222,6 @@
 
             const isCodeOutput = computed(() => isCodeOutputFormat(selectedOutputFormat.value));
             const isDiagramOutput = computed(() => isDiagramOutputFormat(selectedOutputFormat.value));
-            const isDiagramUrlOutput = computed(() => isDiagramUrlOutputFormat(selectedOutputFormat.value));
 
             watch(selectedOutputFormat, newValue => localStorageAccessor.setOutputFormat(newValue));
 
@@ -241,27 +237,15 @@
 
             });
 
-            const outputDiagram = computed((): string => {
+            const outputDiagramPromise = computed((): Promise<string> => {
 
                 if (!entityRelationshipModel.value || !isDiagramOutput.value) {
-                    return '';
+                    return Promise.resolve('');
                 }
 
                 const erModelToDiagramConverter = (selectedOutputFormat.value as DiagramOutputFormat).erModelToDiagramConverter;
 
                 return erModelToDiagramConverter.convertToDiagram(entityRelationshipModel.value) ?? '';
-
-            });
-
-            const outputDiagramUrl = computed((): string => {
-
-                if (!entityRelationshipModel.value || !isDiagramUrlOutput.value) {
-                    return '';
-                }
-
-                const erModelToDiagramUrlConverter = (selectedOutputFormat.value as DiagramUrlOutputFormat).erModelToDiagramUrlConverter;
-
-                return erModelToDiagramUrlConverter(entityRelationshipModel.value) ?? '';
 
             });
 
@@ -286,10 +270,8 @@
                 selectedOutputFormat,
                 isCodeOutput,
                 isDiagramOutput,
-                isDiagramUrlOutput,
                 outputCode,
-                outputDiagram,
-                outputDiagramUrl,
+                outputDiagramPromise,
                 loadExampleCode,
                 entityRelationshipModel
             };

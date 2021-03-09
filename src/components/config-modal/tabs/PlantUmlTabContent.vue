@@ -1,5 +1,5 @@
 <template>
-    <SettingsTabSection title="PlantUml settings">
+    <SettingsTabSection title="PlantUML settings">
 
         <p class="is-italic">No configurable settings are available yet.</p>
 
