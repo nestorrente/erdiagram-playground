@@ -2,13 +2,15 @@
     <div
             class="is-full-height entity-relationship-model-diagram-container"
     >
-        <div
-                v-show="loading"
-                class="loading-spinner-container"
-        >
-            <p class="mb-3">Generating chart...</p>
-            <progress class="progress is-extra-small is-info mb-3"></progress>
-        </div>
+        <transition name="fade">
+            <div
+                    v-show="loading"
+                    class="loading-spinner-container"
+            >
+                <p class="mb-3">Generating chart...</p>
+                <progress class="progress is-extra-small is-info mb-3"></progress>
+            </div>
+        </transition>
 
         <div class="diagram-toolbar" v-show="computedSvgCode">
             <span class="zoom-scale-indicator">{{ zoomScaleText }}</span>
@@ -17,14 +19,14 @@
                     icon="fas fa-plus"
                     outlined
                     small
-                    @click="incrementZoom"
+                    @click="incrementZoom()"
             ></Button>
 
             <Button
                     icon="fas fa-minus"
                     outlined
                     small
-                    @click="decrementZoom"
+                    @click="decrementZoom()"
             ></Button>
 
             <FileDownloadWrapper
@@ -44,7 +46,6 @@
         </div>
 
         <div
-                v-show="computedSvgCode"
                 ref="diagramViewportRef"
                 class="diagram-viewport"
                 :style="{
@@ -66,8 +67,8 @@
     import Button from '@/components/generic/form/Button.vue';
     import FileDownloadWrapper from '@/components/generic/file/FileDownloadWrapper.vue';
     import useAsyncOperation from '@/composition/async/useAsyncOperation';
-    import {addPoints, Dimension, Point, scalePoint, substractPoints, unscalePoint} from '@/util/geometric-types';
-    import {parsePixelsAmount} from '@/util/css-utils';
+    import {addPoints, Dimension, getCenterPoint, Point, roundPoint, scalePoint, substractPoints, unscalePoint} from '@/util/geometric-types';
+    import {getElementSize, parsePixelsAmount} from '@/util/css-utils';
 
     interface Props {
         svgCode: string | Promise<string>;
@@ -92,7 +93,9 @@
             const {
                 data: computedSvgCode,
                 loading
-            } = useAsyncOperation(() => Promise.resolve(props.svgCode));
+            } = useAsyncOperation(() => Promise.resolve(props.svgCode), {
+                keepPreviousResultWhileLoading: true
+            });
 
             const zoomScaleIndex = ref(ZOOM_SCALES.indexOf(1));
             const zoomScale = computed(() => ZOOM_SCALES[zoomScaleIndex.value]);
@@ -107,9 +110,24 @@
 
             onMounted(updateSvgSize);
             watch(computedSvgCode, () => {
-                resetDiagramDragPosition();
+                // FIXME we don't have to reset the position, but ensure the diagram is visible.
+                //  We can achieve this by establishing some diagram "boundaries",
+                //  so user can't move with total freedom, which will also prevent
+                //  him/her to "loose" the diagram unintentionally.
+                //  Every time the diagram changes, we can ensure the new diagram
+                //  is inside the boundaries, or move it otherwise.
+                // resetDiagramDragPosition();
                 nextTick(updateSvgSize);
             });
+
+            // function resetDiagramDragPosition() {
+            //     const diagramViewportElement = diagramViewportRef.value;
+            //
+            //     if (diagramViewportElement) {
+            //         diagramViewportElement.style.removeProperty('--drag-position-x');
+            //         diagramViewportElement.style.removeProperty('--drag-position-y');
+            //     }
+            // }
 
             function updateSvgSize() {
 
@@ -140,10 +158,8 @@
                 console.log('Ref point:', viewportReferencePoint);
 
                 if (delta < 0) {
-                    // incrementZoom({x: 300, y: 90});
                     incrementZoom(viewportReferencePoint);
                 } else if (delta > 0) {
-                    // decrementZoom({x: 300, y: 90});
                     decrementZoom(viewportReferencePoint);
                 }
 
@@ -157,7 +173,7 @@
                 changeZoom(zoomScaleIndex.value - 1, viewportReferencePoint);
             }
 
-            function changeZoom(newZoomScaleIndex: number, viewportReferencePoint: Point = getSvgCenterPoint()) {
+            function changeZoom(newZoomScaleIndex: number, viewportReferencePoint: Point = getViewportCenterPoint()) {
 
                 const previousZoomScale = zoomScale.value;
                 zoomScaleIndex.value = Math.min(Math.max(newZoomScaleIndex, 0), ZOOM_SCALES.length - 1);
@@ -180,63 +196,40 @@
                 const currentTranslationPosition = positioningStrategy.getElementPosition(diagramViewportElement);
                 const diagramReferencePoint = substractPoints(viewportReferencePoint, currentTranslationPosition);
 
-                // const previousScaledDimension = getSvgScaledDimension(previousZoomScale);
-                // const newScaledDimension = getSvgScaledDimension(zoomScale.value);
-                //
-                // const referencePointWidthPercent = diagramReferencePoint.x / previousScaledDimension.width;
-                // const referencePointHeightPercent = diagramReferencePoint.y / previousScaledDimension.height;
-                //
-                // const newDiagramReferencePoint: Point = {
-                //     x: referencePointWidthPercent * newScaledDimension.width,
-                //     y: referencePointHeightPercent * newScaledDimension.height
-                // };
-                const newDiagramReferencePoint = scalePoint(unscalePoint(diagramReferencePoint, previousZoomScale), zoomScale.value);
+                const unscaledDiagramPoint = unscalePoint(diagramReferencePoint, previousZoomScale);
+                const newDiagramReferencePoint = scalePoint(unscaledDiagramPoint, zoomScale.value);
 
                 const newViewportReferencePoint = addPoints(newDiagramReferencePoint, currentTranslationPosition);
 
                 const viewportReferencePointsDiff = substractPoints(newViewportReferencePoint, viewportReferencePoint);
-                console.log('VRPDiff', viewportReferencePointsDiff);
 
-                const newTranslationPosition = substractPoints(currentTranslationPosition, viewportReferencePointsDiff);
+                const newTranslationPosition = roundPoint(substractPoints(currentTranslationPosition, viewportReferencePointsDiff));
+
                 positioningStrategy.setElementPosition(diagramViewportElement, newTranslationPosition);
 
             }
 
-            function getSvgScaledDimension(scale: number): Dimension {
-                return {
-                    width: svgDimension.value.width * scale,
-                    height: svgDimension.value.height * scale
-                };
-            }
-
             // FIXME use viewport's center point, not SVG's
-            function getSvgCenterPoint(): Point {
+            function getViewportCenterPoint(): Point {
 
-                const {
-                    width,
-                    height
-                } = svgDimension.value;
-
-                return {
-                    x: width / 2,
-                    y: height / 2
-                };
-
-            }
-
-            function resetDiagramDragPosition() {
                 const diagramViewportElement = diagramViewportRef.value;
 
-                if (diagramViewportElement) {
-                    positioningStrategy.setElementPosition(diagramViewportElement, {x: 0, y: 0});
+                if (diagramViewportElement == null) {
+                    return {x: 0, y: 0};
                 }
+
+                const viewportSize = getElementSize(diagramViewportElement);
+                console.log('Viewport\'s size:', viewportSize);
+                console.log('Viewport\'s center point:', getCenterPoint(viewportSize));
+                return getCenterPoint(viewportSize);
+
             }
 
             const positioningStrategy: PositioningStrategy = {
                 getElementPosition(element: HTMLElement): Point {
                     return {
-                        x: parsePixelsAmount(element.style.getPropertyValue(`--drag-position-x`)),
-                        y: parsePixelsAmount(element.style.getPropertyValue('--drag-position-y'))
+                        x: parsePixelsAmount(getComputedStyle(element).getPropertyValue(`--drag-position-x`)),
+                        y: parsePixelsAmount(getComputedStyle(element).getPropertyValue('--drag-position-y'))
                     };
                 },
                 setElementPosition(element: HTMLElement, newPosition: Point): void {
@@ -246,8 +239,11 @@
             };
             const {
                 onPointerDown,
-                onTouchStart
+                onTouchStart,
+                stopDragging
             } = useDragElement(positioningStrategy);
+
+            watch(loading, newValue => newValue && stopDragging());
 
             return {
                 computedSvgCode,
@@ -276,14 +272,20 @@
         cursor: move;
 
         > .loading-spinner-container {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            padding: 1em;
+            z-index: 1;
+
+            background: rgba(255, 255, 255, 0.85);
+
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-
-            width: 100%;
-            height: 100%;
-            padding: 1rem;
         }
 
         > .diagram-toolbar {
@@ -292,7 +294,7 @@
             right: 1em;
             opacity: 0.7;
             transition: opacity ease-in-out 0.15s;
-            z-index: 1000;
+            z-index: 1;
 
             &:hover {
                 opacity: 1;
@@ -311,14 +313,16 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            padding: 1em;
+            //padding: 1em;
 
             --zoom-scale: 1;
             --svg-width: 0px;
             --svg-height: 0px;
 
-            --drag-position-x: 0px;
-            --drag-position-y: 0px;
+            // This is the same as 1em for the current font-size,
+            // but we need to use pixel units in these variables.
+            --drag-position-x: 16px;
+            --drag-position-y: 16px;
 
             display: flex;
             //align-items: center;
@@ -326,12 +330,12 @@
 
             > svg {
                 flex: 0 0 auto;
+                pointer-events: none;
                 user-select: none;
                 // We use important in order to override inline style of the <svg> tag (if present)
                 width: calc(var(--svg-width) * var(--zoom-scale)) !important;
                 height: calc(var(--svg-height) * var(--zoom-scale)) !important;
                 transform: translate(var(--drag-position-x), var(--drag-position-y));
-                transform-origin: 0 0;
             }
 
         }

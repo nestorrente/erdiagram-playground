@@ -46,6 +46,8 @@ export default function useDragElement(positioningStrategy: PositioningStrategy)
 			return;
 		}
 
+		event.preventDefault();
+
 		const {
 			element,
 			dragStartPoint,
@@ -61,8 +63,19 @@ export default function useDragElement(positioningStrategy: PositioningStrategy)
 
 	}
 
-	useDocumentEventListener('mouseup', () => state = null);
-	useDocumentEventListener('touchend', () => state = null);
+	useDocumentEventListener('mouseup', stopDragging);
+	useDocumentEventListener('touchend', stopDragging);
+
+	function stopDragging() {
+		state = null;
+	}
+
+	function cancelDragging() {
+		if (state != null) {
+			positioningStrategy.setElementPosition(state.element, state.elementStartPosition);
+			stopDragging();
+		}
+	}
 
 	function getCurrentDragPointFromPointer(event: PointerEvent) {
 		return {
@@ -80,12 +93,16 @@ export default function useDragElement(positioningStrategy: PositioningStrategy)
 
 	return {
 		onPointerDown(event: PointerEvent) {
-			onDragStart(event, () => getCurrentDragPointFromPointer(event));
+			if (event.isPrimary && event.button === 0) {
+				onDragStart(event, () => getCurrentDragPointFromPointer(event));
+			}
 		},
 		onTouchStart(event: TouchEvent) {
 			event.preventDefault();
 			onDragStart(event, () => getCurrentDragPointFromTouch(event));
-		}
+		},
+		stopDragging,
+		cancelDragging
 	};
 
 }

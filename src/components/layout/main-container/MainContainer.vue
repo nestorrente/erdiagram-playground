@@ -105,13 +105,7 @@
     import Icon from '@/components/generic/form/Icon.vue';
     import localStorageAccessor from '@/storage/localStorageAccessor';
     import configStore from '@/store/configStore';
-    import outputFormats, {
-        CodeOutputFormat,
-        DiagramOutputFormat,
-        isCodeOutputFormat,
-        isDiagramOutputFormat,
-        OutputFormat
-    } from '@/common/outputFormats';
+    import outputFormats, {CodeOutputFormat, DiagramOutputFormat, isCodeOutputFormat, isDiagramOutputFormat, OutputFormat} from '@/common/outputFormats';
     import {Ace} from 'ace-builds';
     import EntityRelationshipModelDiagram from '@/components/EntityRelationshipModelDiagram.vue';
 
@@ -135,7 +129,7 @@
                 requried: true
             }
         },
-        setup: function () {
+        setup: function() {
 
             const {
                 liveRef: inputCodeLive,
@@ -210,7 +204,7 @@
                     outputFormats.java,
                     outputFormats.typescript
                 ],
-                'Diagram (beta)': [
+                'Diagram (experimental)': [
                     outputFormats.nomnomlCode,
                     outputFormats.nomnomlDiagram,
                     outputFormats.plantumlCode,

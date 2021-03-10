@@ -43,7 +43,7 @@ export default function useAsyncOperation<T, E = any>(
 		const currentFetchUUID = nextFetchUUID++;
 		lastFetchUUID = currentFetchUUID;
 
-		const fullOptions = {...options, ...DEFAULT_ASYNC_OPERATION_OPTIONS};
+		const fullOptions = {...DEFAULT_ASYNC_OPERATION_OPTIONS, ...options};
 
 		const {
 			keepPreviousResultWhileLoading

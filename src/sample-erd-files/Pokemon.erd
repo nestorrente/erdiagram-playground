@@ -20,5 +20,5 @@ Move
     specialAttackStat short
     specialDefenseStat short
 
-Region
+Region # Kanto, Johto, Hoenn...
     name text(30)
