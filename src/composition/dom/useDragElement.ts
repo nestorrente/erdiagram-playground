@@ -1,13 +1,22 @@
 import useDocumentEventListener from '@/composition/event/useDocumentEventListener';
-import {Point} from '@/util/geometric-types';
+import {addPoints, Point, substractPoints} from '@/util/geometric-types';
+import {getTranslatePosition} from '@/util/css-utils';
+
+export interface PositioningStrategy {
+
+	getElementPosition(element: HTMLElement): Point;
+
+	setElementPosition(element: HTMLElement, newPosition: Point): void;
+
+}
 
 interface DragState {
 	element: HTMLElement;
 	dragStartPoint: Point;
-	elementScrollStartPoint: Point;
+	elementStartPosition: Point;
 }
 
-export default function useDragElement() {
+export default function useDragElement(positioningStrategy: PositioningStrategy) {
 
 	let state: DragState | null = null;
 
@@ -18,10 +27,7 @@ export default function useDragElement() {
 		state = {
 			element,
 			dragStartPoint: dragPositionProvider(),
-			elementScrollStartPoint: {
-				x: element.scrollLeft,
-				y: element.scrollTop
-			}
+			elementStartPosition: positioningStrategy.getElementPosition(element)
 		};
 
 	}
@@ -43,18 +49,15 @@ export default function useDragElement() {
 		const {
 			element,
 			dragStartPoint,
-			elementScrollStartPoint
+			elementStartPosition
 		} = state;
 
 		const currentDragPoint = dragPositionProvider();
 
-		const dragDelta: Point = {
-			x: currentDragPoint.x - dragStartPoint.x,
-			y: currentDragPoint.y - dragStartPoint.y
-		};
+		const dragDelta: Point = substractPoints(currentDragPoint, dragStartPoint);
+		const newPosition: Point = addPoints(elementStartPosition, dragDelta);
 
-		element.scrollLeft = elementScrollStartPoint.x - dragDelta.x;
-		element.scrollTop = elementScrollStartPoint.y - dragDelta.y;
+		positioningStrategy.setElementPosition(element, newPosition);
 
 	}
 
@@ -85,4 +88,30 @@ export default function useDragElement() {
 		}
 	};
 
+}
+
+export function useScrollDrag() {
+	return useDragElement({
+		getElementPosition(element: HTMLElement): Point {
+			return {
+				x: -element.scrollLeft,
+				y: -element.scrollTop,
+			};
+		},
+		setElementPosition(element: HTMLElement, newPosition: Point): void {
+			element.scrollLeft = -newPosition.x;
+			element.scrollTop = -newPosition.y;
+		}
+	});
+}
+
+export function useTransformDrag() {
+	return useDragElement({
+		getElementPosition(element: HTMLElement): Point {
+			return getTranslatePosition(element);
+		},
+		setElementPosition(element: HTMLElement, newPosition: Point): void {
+			element.style.transform = `translate(${newPosition.x}px, ${newPosition.y}px)`;
+		}
+	});
 }
