@@ -67,7 +67,16 @@
     import Button from '@/components/generic/form/Button.vue';
     import FileDownloadWrapper from '@/components/generic/file/FileDownloadWrapper.vue';
     import useAsyncOperation from '@/composition/async/useAsyncOperation';
-    import {addPoints, Dimension, getCenterPoint, Point, roundPoint, scalePoint, substractPoints, unscalePoint} from '@/util/geometric-types';
+    import {
+        addPoints,
+        Dimension,
+        getCenterPoint,
+        Point,
+        roundPoint,
+        scalePoint,
+        substractPoints,
+        unscalePoint
+    } from '@/util/geometric-types';
     import {getElementSize, parsePixelsAmount} from '@/util/css-utils';
 
     interface Props {
@@ -155,7 +164,6 @@
                     x: event.offsetX,
                     y: event.offsetY
                 };
-                console.log('Ref point:', viewportReferencePoint);
 
                 if (delta < 0) {
                     incrementZoom(viewportReferencePoint);
@@ -219,8 +227,6 @@
                 }
 
                 const viewportSize = getElementSize(diagramViewportElement);
-                console.log('Viewport\'s size:', viewportSize);
-                console.log('Viewport\'s center point:', getCenterPoint(viewportSize));
                 return getCenterPoint(viewportSize);
 
             }

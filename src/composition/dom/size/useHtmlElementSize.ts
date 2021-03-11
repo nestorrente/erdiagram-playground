@@ -8,10 +8,7 @@ export default function useHtmlElementSize(element: Ref<HTMLElement | null | und
 	// Update size data once the element has been mounted
 	nextTick(updateElementSizeData);
 
-	const resizeObserver = new ResizeObserver(() => {
-		console.log('Se resiza el elemento');
-		updateElementSizeData();
-	});
+	const resizeObserver = new ResizeObserver(updateElementSizeData);
 
 	watch(element, (newValue, oldValue) => {
 		oldValue && resizeObserver.unobserve(oldValue);

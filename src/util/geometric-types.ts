@@ -1,7 +1,5 @@
 import Big from 'big.js';
 
-console.log('big.js:', Big);
-
 export interface Point {
 	x: number;
 	y: number;
