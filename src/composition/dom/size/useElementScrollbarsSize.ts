@@ -1,4 +1,4 @@
-import useHtmlElementSize from '@/composition/dom/size/useHtmlElementSize';
+import useElementSize from '@/composition/dom/size/useElementSize';
 import {computed, ComputedRef, Ref} from 'vue';
 
 interface ScrollbarsSize {
@@ -8,7 +8,9 @@ interface ScrollbarsSize {
 
 export default function useElementScrollbarsSize(element: Ref<HTMLElement | null | undefined>): ComputedRef<ScrollbarsSize> {
 
-	const elementSize = useHtmlElementSize(element);
+	const elementSize = useElementSize(element, {
+		delayMilliseconds: 50
+	});
 
 	return computed(() => {
 

@@ -79,7 +79,7 @@
                             :code="outputCode"
                             full-height
                     />
-                    <EntityRelationshipModelDiagram
+                    <SvgDiagramViewer
                             v-else-if="isDiagramOutput"
                             :svg-code="outputDiagramPromise"
                     />
@@ -105,15 +105,21 @@
     import Icon from '@/components/generic/form/Icon.vue';
     import localStorageAccessor from '@/storage/localStorageAccessor';
     import configStore from '@/store/configStore';
-    import outputFormats, {CodeOutputFormat, DiagramOutputFormat, isCodeOutputFormat, isDiagramOutputFormat, OutputFormat} from '@/common/outputFormats';
+    import outputFormats, {
+        CodeOutputFormat,
+        DiagramOutputFormat,
+        isCodeOutputFormat,
+        isDiagramOutputFormat,
+        OutputFormat
+    } from '@/common/outputFormats';
     import {Ace} from 'ace-builds';
-    import EntityRelationshipModelDiagram from '@/components/EntityRelationshipModelDiagram.vue';
+    import SvgDiagramViewer from '@/components/diagram-viewer/SvgDiagramViewer.vue';
 
     export default defineComponent({
         name: 'MainContainer',
         emits: ['showSettingsModal'],
         components: {
-            EntityRelationshipModelDiagram,
+            SvgDiagramViewer,
             Icon,
             OpenInputCodeButton,
             SaveInputCodeButton,
@@ -129,7 +135,7 @@
                 requried: true
             }
         },
-        setup: function() {
+        setup: function () {
 
             const {
                 liveRef: inputCodeLive,
@@ -205,10 +211,10 @@
                     outputFormats.typescript
                 ],
                 'Diagram (experimental)': [
-                    outputFormats.nomnomlCode,
-                    outputFormats.nomnomlDiagram,
                     outputFormats.plantumlCode,
-                    outputFormats.plantumlDiagram
+                    outputFormats.plantumlDiagram,
+                    outputFormats.nomnomlCode,
+                    outputFormats.nomnomlDiagram
                 ]
             };
 

@@ -21,8 +21,8 @@ export default interface ERDiagramPlaygroundSerializableConfig {
 	oracle: DatabaseDialectSerializableConfig<OracleDatabaseModelToCodeConverterSerializableConfig>;
 	java: ClassLanguageSerializableConfig<JavaClassModelToCodeConverterSerializableConfig>;
 	typescript: ClassLanguageSerializableConfig<TypeScriptClassModelToCodeConverterSerializableConfig>;
-	nomnoml: NomnomlEntityRelationshipModelToDiagramCodeConverterSerializableConfig;
 	plantuml: PlantUmlEntityRelationshipModelToDiagramCodeConverterSerializableConfig;
+	nomnoml: NomnomlEntityRelationshipModelToDiagramCodeConverterSerializableConfig;
 }
 
 export interface DatabaseDialectSerializableConfig<T extends DatabaseModelToCodeConverterSerializableConfig> {

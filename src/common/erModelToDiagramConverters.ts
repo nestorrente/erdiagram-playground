@@ -14,6 +14,6 @@ const plantumlConverter = computed(() => {
 });
 
 export default {
-	nomnomlConverter,
-	plantumlConverter
+	plantumlConverter,
+	nomnomlConverter
 };

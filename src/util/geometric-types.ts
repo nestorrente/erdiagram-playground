@@ -9,11 +9,6 @@ export interface Point3D extends Point {
 	z: number;
 }
 
-export interface Dimension {
-	width: number;
-	height: number;
-}
-
 export function addPoints(pointA: Point, pointB: Point): Point {
 	return {
 		x: Big(pointA.x).plus(pointB.x).toNumber(),
@@ -49,9 +44,71 @@ export function roundPoint(point: Point): Point {
 	};
 }
 
-export function getCenterPoint(dimension: Dimension): Point {
+export interface Dimension {
+	width: number;
+	height: number;
+}
+
+export interface Rectangle extends Point, Dimension {
+
+}
+
+export function getCenterPoint(dimensionOrRectangle: Dimension | Rectangle): Point {
+
+	const x = 'x' in dimensionOrRectangle ? dimensionOrRectangle.x : 0;
+	const y = 'y' in dimensionOrRectangle ? dimensionOrRectangle.y : 0;
+
 	return {
-		x: Big(dimension.width).div(2).toNumber(),
-		y: Big(dimension.height).div(2).toNumber()
+		x: Big(x).plus(dimensionOrRectangle.width).div(2).toNumber(),
+		y: Big(y).plus(dimensionOrRectangle.height).div(2).toNumber()
 	};
+
+}
+
+export function getEnclosingRectangle(...rectangles: Rectangle[]): Rectangle {
+
+	if (rectangles.length === 0) {
+		return {
+			x: 0,
+			y: 0,
+			width: 0,
+			height: 0
+		};
+	}
+
+	let minX = Infinity;
+	let minY = Infinity;
+
+	let maxX = -Infinity;
+	let maxY = -Infinity;
+
+	for (const rectangle of rectangles) {
+
+		const {x, y, width, height} = rectangle;
+
+		if (x < minX) {
+			minX = x;
+		}
+
+		if (y < minY) {
+			minY = y;
+		}
+
+		if (x + width > maxX) {
+			maxX = x + width;
+		}
+
+		if (y + height > maxY) {
+			maxY = y + height;
+		}
+
+	}
+
+	return {
+		x: minX,
+		y: minY,
+		width: maxX - minX,
+		height: maxY - minY
+	};
+
 }

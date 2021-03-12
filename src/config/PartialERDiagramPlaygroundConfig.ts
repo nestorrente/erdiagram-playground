@@ -18,8 +18,8 @@ type PartialERDiagramPlaygroundConfig = Partial<{
 	oracle: Partial<DatabaseDialectConfig<OracleDatabaseModelToCodeConverterConfig>>;
 	java: Partial<ClassLanguageConfig<JavaClassModelToCodeConverterConfig>>;
 	typescript: Partial<ClassLanguageConfig<TypeScriptClassModelToCodeConverterConfig>>;
-	nomnoml: Partial<NomnomlEntityRelationshipModelToDiagramCodeConverterConfig>;
 	plantuml: Partial<PlantUmlEntityRelationshipModelToDiagramCodeConverterConfig>;
+	nomnoml: Partial<NomnomlEntityRelationshipModelToDiagramCodeConverterConfig>;
 }>;
 
 export default PartialERDiagramPlaygroundConfig;

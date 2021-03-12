@@ -71,21 +71,6 @@ const typescriptCodeOutputFormat: CodeOutputFormat = reactive({
 	erModelToCodeConverter: erModelToCodeConverters.typescriptConverter
 });
 
-const nomnomlCodeOutputFormat: CodeOutputFormat = reactive({
-	id: 'nomnomlCode',
-	name: 'Nomnoml (code)',
-	type: 'code',
-	codeBlockLang: 'plaintext',
-	erModelToCodeConverter: erModelToCodeConverters.nomnomlConverter
-});
-
-const nomnomlDiagramOutputFormat: DiagramOutputFormat = reactive({
-	id: 'nomnomlDiagram',
-	name: 'Nomnoml (SVG)',
-	type: 'diagram',
-	erModelToDiagramConverter: erModelToDiagramConverters.nomnomlConverter
-});
-
 const plantumlCodeOutputFormat: CodeOutputFormat = reactive({
 	id: 'plantumlCode',
 	name: 'PlantUML (code)',
@@ -101,14 +86,29 @@ const plantumlDiagramOutputFormat: DiagramOutputFormat = reactive({
 	erModelToDiagramConverter: erModelToDiagramConverters.plantumlConverter
 });
 
+const nomnomlCodeOutputFormat: CodeOutputFormat = reactive({
+	id: 'nomnomlCode',
+	name: 'Nomnoml (code)',
+	type: 'code',
+	codeBlockLang: 'plaintext',
+	erModelToCodeConverter: erModelToCodeConverters.nomnomlConverter
+});
+
+const nomnomlDiagramOutputFormat: DiagramOutputFormat = reactive({
+	id: 'nomnomlDiagram',
+	name: 'Nomnoml (SVG)',
+	type: 'diagram',
+	erModelToDiagramConverter: erModelToDiagramConverters.nomnomlConverter
+});
+
 export default {
 	[mysqlCodeOutputFormat.id]: mysqlCodeOutputFormat,
 	[oracleCodeOutputFormat.id]: oracleCodeOutputFormat,
 	[sqlserverCodeOutputFormat.id]: sqlserverCodeOutputFormat,
 	[javaCodeOutputFormat.id]: javaCodeOutputFormat,
 	[typescriptCodeOutputFormat.id]: typescriptCodeOutputFormat,
-	[nomnomlCodeOutputFormat.id]: nomnomlCodeOutputFormat,
-	[nomnomlDiagramOutputFormat.id]: nomnomlDiagramOutputFormat,
 	[plantumlCodeOutputFormat.id]: plantumlCodeOutputFormat,
-	[plantumlDiagramOutputFormat.id]: plantumlDiagramOutputFormat
+	[plantumlDiagramOutputFormat.id]: plantumlDiagramOutputFormat,
+	[nomnomlCodeOutputFormat.id]: nomnomlCodeOutputFormat,
+	[nomnomlDiagramOutputFormat.id]: nomnomlDiagramOutputFormat
 };

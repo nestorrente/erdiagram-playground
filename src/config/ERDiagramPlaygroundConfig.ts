@@ -21,8 +21,8 @@ export default interface ERDiagramPlaygroundConfig {
 	oracle: DatabaseDialectConfig<OracleDatabaseModelToCodeConverterConfig>;
 	java: ClassLanguageConfig<JavaClassModelToCodeConverterConfig>;
 	typescript: ClassLanguageConfig<TypeScriptClassModelToCodeConverterConfig>;
-	nomnoml: NomnomlEntityRelationshipModelToDiagramCodeConverterConfig;
 	plantuml: PlantUmlEntityRelationshipModelToDiagramCodeConverterConfig;
+	nomnoml: NomnomlEntityRelationshipModelToDiagramCodeConverterConfig;
 }
 
 export interface DatabaseDialectConfig<T extends DatabaseModelToCodeConverterConfig> {

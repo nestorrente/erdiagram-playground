@@ -1,15 +1,4 @@
-import {Dimension, Point3D} from '@/util/geometric-types';
-
-export function getElementSize(element: HTMLElement): Dimension {
-
-	const elementStyle = getComputedStyle(element);
-
-	return {
-		width: parsePixelsAmount(elementStyle.width),
-		height: parsePixelsAmount(elementStyle.height)
-	};
-
-}
+import {Point3D} from '@/util/geometric-types';
 
 export function parsePixelsAmount(pixelsAmount: string) {
 	return parseInt(pixelsAmount, 10) || 0;

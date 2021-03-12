@@ -39,12 +39,12 @@ const typescriptConverter = useEntityRelationshipModelToClassCodeConverter(
 		() => new TypeScriptClassModelToCodeConverter(configStore.config.typescript.classModelToCodeConverterConfig)
 );
 
-const nomnomlConverter = computed(() => {
-	return new NomnomlEntityRelationshipModelToDiagramCodeConverter(configStore.config.nomnoml);
-});
-
 const plantumlConverter = computed(() => {
 	return new PlantUmlEntityRelationshipModelToDiagramCodeConverter(configStore.config.plantuml);
+});
+
+const nomnomlConverter = computed(() => {
+	return new NomnomlEntityRelationshipModelToDiagramCodeConverter(configStore.config.nomnoml);
 });
 
 export default {
@@ -53,6 +53,6 @@ export default {
 	oracleConverter,
 	javaConverter,
 	typescriptConverter,
-	nomnomlConverter,
-	plantumlConverter
+	plantumlConverter,
+	nomnomlConverter
 };

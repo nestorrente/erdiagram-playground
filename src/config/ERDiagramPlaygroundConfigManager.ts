@@ -44,8 +44,8 @@ export class ERDiagramPlaygroundConfigManager
 				classModelGeneratorConfig: classModelGeneratorConfigManager.getDefaultConfig(),
 				classModelToCodeConverterConfig: typescriptClassModelToCodeConverterConfigManager.getDefaultConfig()
 			},
-			nomnoml: nomnomlEntityRelationshipModelToDiagramCodeConverterConfigManager.getDefaultConfig(),
 			plantuml: plantumlEntityRelationshipModelToDiagramCodeConverterConfigManager.getDefaultConfig(),
+			nomnoml: nomnomlEntityRelationshipModelToDiagramCodeConverterConfigManager.getDefaultConfig(),
 		};
 	}
 
@@ -106,13 +106,13 @@ export class ERDiagramPlaygroundConfigManager
 						partialConfig?.typescript?.classModelToCodeConverterConfig
 				)
 			},
-			nomnoml: nomnomlEntityRelationshipModelToDiagramCodeConverterConfigManager.mergeConfigs(
-					fullConfig.nomnoml,
-					partialConfig?.nomnoml
-			),
 			plantuml: plantumlEntityRelationshipModelToDiagramCodeConverterConfigManager.mergeConfigs(
 					fullConfig.plantuml,
 					partialConfig?.plantuml
+			),
+			nomnoml: nomnomlEntityRelationshipModelToDiagramCodeConverterConfigManager.mergeConfigs(
+					fullConfig.nomnoml,
+					partialConfig?.nomnoml
 			)
 		};
 	}
@@ -141,8 +141,8 @@ export class ERDiagramPlaygroundConfigManager
 				classModelGeneratorConfig: classModelGeneratorConfigManager.convertToSerializableObject(fullConfig.typescript.classModelGeneratorConfig),
 				classModelToCodeConverterConfig: typescriptClassModelToCodeConverterConfigManager.convertToSerializableObject(fullConfig.typescript.classModelToCodeConverterConfig)
 			},
-			nomnoml: nomnomlEntityRelationshipModelToDiagramCodeConverterConfigManager.convertToSerializableObject(fullConfig.nomnoml),
-			plantuml: plantumlEntityRelationshipModelToDiagramCodeConverterConfigManager.convertToSerializableObject(fullConfig.plantuml)
+			plantuml: plantumlEntityRelationshipModelToDiagramCodeConverterConfigManager.convertToSerializableObject(fullConfig.plantuml),
+			nomnoml: nomnomlEntityRelationshipModelToDiagramCodeConverterConfigManager.convertToSerializableObject(fullConfig.nomnoml)
 		};
 	}
 
@@ -170,8 +170,8 @@ export class ERDiagramPlaygroundConfigManager
 				classModelGeneratorConfig: classModelGeneratorConfigManager.convertFromSerializableObject(serializableConfig.typescript.classModelGeneratorConfig),
 				classModelToCodeConverterConfig: typescriptClassModelToCodeConverterConfigManager.convertFromSerializableObject(serializableConfig.typescript.classModelToCodeConverterConfig)
 			},
-			nomnoml: nomnomlEntityRelationshipModelToDiagramCodeConverterConfigManager.convertFromSerializableObject(serializableConfig.nomnoml),
-			plantuml: plantumlEntityRelationshipModelToDiagramCodeConverterConfigManager.convertFromSerializableObject(serializableConfig.plantuml)
+			plantuml: plantumlEntityRelationshipModelToDiagramCodeConverterConfigManager.convertFromSerializableObject(serializableConfig.plantuml),
+			nomnoml: nomnomlEntityRelationshipModelToDiagramCodeConverterConfigManager.convertFromSerializableObject(serializableConfig.nomnoml)
 		};
 	}
 

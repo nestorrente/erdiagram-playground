@@ -1,4 +1,4 @@
-import useDocumentEventListener from '@/composition/event/useDocumentEventListener';
+import {useDocumentEventListener} from '@/composition/event/useEventListener';
 import {addPoints, Point, substractPoints} from '@/util/geometric-types';
 import {getTranslatePosition} from '@/util/css-utils';
 
@@ -63,17 +63,21 @@ export default function useDragElement(positioningStrategy: PositioningStrategy)
 
 	}
 
-	useDocumentEventListener('mouseup', stopDragging);
-	useDocumentEventListener('touchend', stopDragging);
+	useDocumentEventListener('pointerup', (event: PointerEvent) => {
+		if (event.isPrimary && event.button === 0) {
+			stopDrag();
+		}
+	});
+	useDocumentEventListener('touchend', stopDrag);
 
-	function stopDragging() {
+	function stopDrag() {
 		state = null;
 	}
 
-	function cancelDragging() {
+	function cancelDrag() {
 		if (state != null) {
 			positioningStrategy.setElementPosition(state.element, state.elementStartPosition);
-			stopDragging();
+			stopDrag();
 		}
 	}
 
@@ -101,8 +105,8 @@ export default function useDragElement(positioningStrategy: PositioningStrategy)
 			event.preventDefault();
 			onDragStart(event, () => getCurrentDragPointFromTouch(event));
 		},
-		stopDragging,
-		cancelDragging
+		stopDrag,
+		cancelDrag
 	};
 
 }
