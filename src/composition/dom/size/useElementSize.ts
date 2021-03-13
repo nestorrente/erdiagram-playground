@@ -1,26 +1,7 @@
-import {computed, ComputedRef, nextTick, onBeforeUnmount, ref, Ref, watch} from 'vue';
-import ResizeObserver from 'resize-observer-polyfill';
+import {computed, ComputedRef, nextTick, ref, Ref} from 'vue';
 import {Nullable} from '@/util/util-types';
-import {useWindowEventListener} from '@/composition/event/useEventListener';
 import {debounce} from '@/util/function-utils';
-
-export enum ResizeListenerStrategy {
-	WINDOW_RESIZE_EVENT = 'window_resize_event',
-	RESIZE_OBSERVER = 'resize_observer'
-}
-
-export interface UseElementSizeOptions {
-	delayMilliseconds: number;
-	resizeListenerStrategy: ResizeListenerStrategy;
-}
-
-function getFullOptions(partialOptions?: Partial<UseElementSizeOptions>): UseElementSizeOptions {
-	return {
-		delayMilliseconds: 200,
-		resizeListenerStrategy: ResizeListenerStrategy.RESIZE_OBSERVER,
-		...partialOptions
-	};
-}
+import {ResizeListenerStrategy, StandardResizeListenerStrategies} from '@/composition/dom/size/ResizeListenerStrategy';
 
 export default function useElementSize(
 		element: Ref<Nullable<HTMLElement>>,
@@ -45,25 +26,23 @@ export default function useElementSize(
 			? debounce(updateElementSizeData, delayMilliseconds)
 			: updateElementSizeData;
 
-	if (resizeListenerStrategy === ResizeListenerStrategy.WINDOW_RESIZE_EVENT) {
-
-		useWindowEventListener('resize', onResize);
-
-	} else {
-
-		const resizeObserver = new ResizeObserver(onResize);
-
-		watch(element, (newValue, oldValue) => {
-			oldValue && resizeObserver.unobserve(oldValue);
-			newValue && resizeObserver.observe(newValue);
-		});
-
-		onBeforeUnmount(() => resizeObserver.disconnect());
-
-	}
+	resizeListenerStrategy(element, onResize);
 
 	return computed(() => elementSizeData.value);
 
+}
+
+export interface UseElementSizeOptions {
+	delayMilliseconds: number;
+	resizeListenerStrategy: ResizeListenerStrategy;
+}
+
+function getFullOptions(partialOptions?: Partial<UseElementSizeOptions>): UseElementSizeOptions {
+	return {
+		delayMilliseconds: 200,
+		resizeListenerStrategy: StandardResizeListenerStrategies.RESIZE_OBSERVER,
+		...partialOptions
+	};
 }
 
 export interface ElementSizeData {

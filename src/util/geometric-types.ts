@@ -49,66 +49,34 @@ export interface Dimension {
 	height: number;
 }
 
-export interface Rectangle extends Point, Dimension {
-
+export function substractDimension(dimensionA: Dimension, dimensionB: Dimension): Dimension {
+	return {
+		width: dimensionA.width - dimensionB.width,
+		height: dimensionA.height - dimensionB.height
+	};
 }
 
-export function getCenterPoint(dimensionOrRectangle: Dimension | Rectangle): Point {
-
-	const x = 'x' in dimensionOrRectangle ? dimensionOrRectangle.x : 0;
-	const y = 'y' in dimensionOrRectangle ? dimensionOrRectangle.y : 0;
-
+export function scaleDimension(dimension: Dimension, scale: number): Dimension {
 	return {
-		x: Big(x).plus(dimensionOrRectangle.width).div(2).toNumber(),
-		y: Big(y).plus(dimensionOrRectangle.height).div(2).toNumber()
+		width: Big(dimension.width).times(scale).toNumber(),
+		height: Big(dimension.height).times(scale).toNumber()
 	};
-
 }
 
-export function getEnclosingRectangle(...rectangles: Rectangle[]): Rectangle {
-
-	if (rectangles.length === 0) {
-		return {
-			x: 0,
-			y: 0,
-			width: 0,
-			height: 0
-		};
-	}
-
-	let minX = Infinity;
-	let minY = Infinity;
-
-	let maxX = -Infinity;
-	let maxY = -Infinity;
-
-	for (const rectangle of rectangles) {
-
-		const {x, y, width, height} = rectangle;
-
-		if (x < minX) {
-			minX = x;
-		}
-
-		if (y < minY) {
-			minY = y;
-		}
-
-		if (x + width > maxX) {
-			maxX = x + width;
-		}
-
-		if (y + height > maxY) {
-			maxY = y + height;
-		}
-
-	}
-
+export function unscaleDimension(dimension: Dimension, scale: number): Dimension {
 	return {
-		x: minX,
-		y: minY,
-		width: maxX - minX,
-		height: maxY - minY
+		width: Big(dimension.width).div(scale).toNumber(),
+		height: Big(dimension.height).div(scale).toNumber()
 	};
+}
+
+export function getDimensionCenterPoint(dimensionOrRectangle: Dimension): Point {
+	return {
+		x: Big(dimensionOrRectangle.width).div(2).toNumber(),
+		y: Big(dimensionOrRectangle.height).div(2).toNumber()
+	};
+}
+
+export interface Rectangle extends Dimension, Point {
 
 }

@@ -62,23 +62,22 @@
 </template>
 
 <script lang="ts">
-    import {computed, defineComponent, ref, watch} from 'vue';
-    import useDragElement, {PositioningStrategy} from '@/composition/dom/useDragElement';
+    import {computed, defineComponent, nextTick, ref, watch} from 'vue';
+    import useDragElement from '@/composition/dom/useDragElement';
+    import StandardPositioningStrategies from '@/util/StandardPositioningStrategies';
     import Button from '@/components/generic/form/Button.vue';
     import FileDownloadWrapper from '@/components/generic/file/FileDownloadWrapper.vue';
     import useAsyncOperation from '@/composition/async/useAsyncOperation';
-    import {Point, Rectangle} from '@/util/geometric-types';
-    import {parsePixelsAmount} from '@/util/css-utils';
+    import {Dimension, Rectangle, scaleDimension} from '@/util/geometric-types';
     import useDiagramViewerZoom from '@/components/diagram-viewer/useDiagramViewerZoom';
     import useSvgDimension from '@/components/diagram-viewer/useSvgDimension';
-    import useElementSize, {ResizeListenerStrategy} from '@/composition/dom/size/useElementSize';
+    import useElementSize from '@/composition/dom/size/useElementSize';
+    import {StandardResizeListenerStrategies} from '@/composition/dom/size/ResizeListenerStrategy';
+    import {addBoundariesToPositionStrategy} from '@/util/PositioningStrategy';
 
     interface Props {
         svgCode: string | Promise<string>;
     }
-
-    const DRAG_POSITION_X_CSS_PROPERTY = '--drag-position-x';
-    const DRAG_POSITION_Y_CSS_PROPERTY = '--drag-position-y';
 
     export default defineComponent({
         name: 'SvgDiagramViewer',
@@ -89,7 +88,7 @@
                 required: true
             }
         },
-        setup(uncastedProps) {
+        setup: function (uncastedProps) {
 
             // Workaround for an issue with TS types
             const props = uncastedProps as unknown as Props;
@@ -101,29 +100,7 @@
                 keepPreviousResultWhileLoading: true
             });
 
-            const positioningStrategy: PositioningStrategy = {
-                getElementPosition(element: HTMLElement): Point {
-                    return {
-                        x: parsePixelsAmount(getComputedStyle(element).getPropertyValue(DRAG_POSITION_X_CSS_PROPERTY)),
-                        y: parsePixelsAmount(getComputedStyle(element).getPropertyValue(DRAG_POSITION_Y_CSS_PROPERTY))
-                    };
-                },
-                setElementPosition(element: HTMLElement, newPosition: Point): void {
-                    element.style.setProperty(DRAG_POSITION_X_CSS_PROPERTY, `${newPosition.x}px`);
-                    element.style.setProperty(DRAG_POSITION_Y_CSS_PROPERTY, `${newPosition.y}px`);
-                }
-            };
-
             const diagramViewportRef = ref<HTMLElement>();
-
-            const {
-                zoomScale,
-                incrementZoom,
-                decrementZoom,
-                onWheel
-            } = useDiagramViewerZoom(diagramViewportRef, positioningStrategy);
-
-            const zoomScaleText = computed(() => `${(zoomScale.value * 100).toFixed(0)}%`);
 
             const {
                 svgDimension,
@@ -132,53 +109,81 @@
 
             watch(computedSvgCode, onSvgUpdate);
 
-            // watch(computedSvgCode, () => {
-            //     // FIXME we don't have to reset the position, but ensure the diagram is visible.
-            //     //  We can achieve this by establishing some diagram "boundaries",
-            //     //  so user can't move with total freedom, which will also prevent
-            //     //  him/her to "loose" the diagram unintentionally.
-            //     //  Every time the diagram changes, we can ensure the new diagram
-            //     //  is inside the boundaries, or move it otherwise.
-            //     resetDiagramDragPosition();
-            // });
-            //
-            // function resetDiagramDragPosition() {
-            //     const diagramViewportElement = diagramViewportRef.value;
-            //
-            //     if (diagramViewportElement) {
-            //         diagramViewportElement.style.removeProperty(DRAG_POSITION_X_CSS_PROPERTY);
-            //         diagramViewportElement.style.removeProperty(DRAG_POSITION_Y_CSS_PROPERTY);
-            //     }
-            // }
+            // START
 
-            // TODO sacar el tamaño escalado del SVG y su posición con respecto al viewport (como rectángulo).
-            //  Sacar el rectángulo que los contiene.
-            //  Escalar hasta el tamaño deseado.
-            //  Ampliar la dimensión necesaria para que mantenga una cierta proporción (p.e. 16:9 o 16:10).
-            //  Pintar todo esto y añadir eventos para moverlo.
-
-            const viewportSize = useElementSize(diagramViewportRef, {
-                resizeListenerStrategy: ResizeListenerStrategy.WINDOW_RESIZE_EVENT
+            const scaledSvgDimension = computed(() => {
+                // FIXME revisar el ciclo de dependencias.
+                //  Esto depende de ZoomScale, zoomScale viene de useDiagramViewerZoom, que depende del position strategy (el cual depende de esto a su vez).
+                if (!zoomScale?.value) {
+                    return svgDimension.value;
+                }
+                return scaleDimension(svgDimension.value, zoomScale.value);
             });
 
-            const viewportRectangle = computed((): Rectangle => {
+            const viewportSize = useElementSize(diagramViewportRef, {
+                resizeListenerStrategy: StandardResizeListenerStrategies.WINDOW_RESIZE_EVENT
+            });
+
+            const viewportDimension = computed((): Dimension => {
                 return {
-                    x: 0,
-                    y: 0,
                     width: viewportSize.value?.clientWidth ?? 0,
                     height: viewportSize.value?.clientHeight ?? 0
                 };
             });
 
-            watch(viewportRectangle, newValue => {
-                console.log('Viewport\'s rectangle:', newValue);
+            const dragBoundaries = computed((): Rectangle => {
+
+                const {
+                    width: imageWidth,
+                    height: imageHeight
+                } = scaledSvgDimension.value;
+
+                const {
+                    width: viewportWidth,
+                    height: viewportHeight
+                } = viewportDimension.value;
+
+                return {
+                    x: -imageWidth,
+                    y: -imageHeight,
+                    width: viewportWidth,
+                    height: viewportHeight
+                };
+
             });
+
+            const boundariesAwarePositioningStrategy = addBoundariesToPositionStrategy(
+                    StandardPositioningStrategies.CSS_VARIABLE,
+                    () => dragBoundaries.value
+            );
+
+            watch(dragBoundaries, () => nextTick(() => {
+
+                const diagramViewportElement = diagramViewportRef.value;
+
+                if (diagramViewportElement) {
+                    const currentPosition = boundariesAwarePositioningStrategy.getElementPosition(diagramViewportElement);
+                    boundariesAwarePositioningStrategy.setElementPosition(diagramViewportElement, currentPosition);
+                }
+
+            }));
+
+            // END
+
+            const {
+                zoomScale,
+                incrementZoom,
+                decrementZoom,
+                onWheel
+            } = useDiagramViewerZoom(diagramViewportRef, boundariesAwarePositioningStrategy);
+
+            const zoomScaleText = computed(() => `${(zoomScale.value * 100).toFixed(0)}%`);
 
             const {
                 onPointerDown,
                 onTouchStart,
                 stopDrag
-            } = useDragElement(positioningStrategy);
+            } = useDragElement(boundariesAwarePositioningStrategy);
 
             watch(loading, newValue => newValue && stopDrag());
 
@@ -259,8 +264,8 @@
 
             // This is the same as 1em for the current font-size,
             // but we need to use pixel units in these variables.
-            --drag-position-x: 16px;
-            --drag-position-y: 16px;
+            --position-x: 16px;
+            --position-y: 16px;
 
             display: flex;
             //align-items: center;
@@ -273,7 +278,7 @@
                 // We use important in order to override inline style of the <svg> tag (if present)
                 width: calc(var(--svg-width) * var(--zoom-scale)) !important;
                 height: calc(var(--svg-height) * var(--zoom-scale)) !important;
-                transform: translate(var(--drag-position-x), var(--drag-position-y));
+                transform: translate(var(--position-x), var(--position-y));
             }
 
         }

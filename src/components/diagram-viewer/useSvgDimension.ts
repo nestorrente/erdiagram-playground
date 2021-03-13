@@ -12,7 +12,6 @@ export default function useSvgDimension(svgGetter: () => Nullable<Element>) {
 	function updateSvgSize() {
 
 		const svgElement = svgGetter();
-		console.log('svgElement:', svgElement);
 
 		svgDimension.value = {
 			width: getNumberAttribute(svgElement, 'width') ?? 0,

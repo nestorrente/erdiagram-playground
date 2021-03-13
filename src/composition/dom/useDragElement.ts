@@ -1,14 +1,6 @@
 import {useDocumentEventListener} from '@/composition/event/useEventListener';
 import {addPoints, Point, substractPoints} from '@/util/geometric-types';
-import {getTranslatePosition} from '@/util/css-utils';
-
-export interface PositioningStrategy {
-
-	getElementPosition(element: HTMLElement): Point;
-
-	setElementPosition(element: HTMLElement, newPosition: Point): void;
-
-}
+import PositioningStrategy from '@/util/PositioningStrategy';
 
 interface DragState {
 	element: HTMLElement;
@@ -109,30 +101,4 @@ export default function useDragElement(positioningStrategy: PositioningStrategy)
 		cancelDrag
 	};
 
-}
-
-export function useScrollDrag() {
-	return useDragElement({
-		getElementPosition(element: HTMLElement): Point {
-			return {
-				x: -element.scrollLeft,
-				y: -element.scrollTop,
-			};
-		},
-		setElementPosition(element: HTMLElement, newPosition: Point): void {
-			element.scrollLeft = -newPosition.x;
-			element.scrollTop = -newPosition.y;
-		}
-	});
-}
-
-export function useTransformDrag() {
-	return useDragElement({
-		getElementPosition(element: HTMLElement): Point {
-			return getTranslatePosition(element);
-		},
-		setElementPosition(element: HTMLElement, newPosition: Point): void {
-			element.style.transform = `translate(${newPosition.x}px, ${newPosition.y}px)`;
-		}
-	});
 }

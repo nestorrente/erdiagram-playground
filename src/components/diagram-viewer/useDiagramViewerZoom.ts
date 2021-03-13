@@ -1,14 +1,15 @@
 import {computed, nextTick, ref, Ref} from 'vue';
-import {PositioningStrategy} from '@/composition/dom/useDragElement';
+import PositioningStrategy from '@/util/PositioningStrategy';
 import {
 	addPoints,
-	getCenterPoint,
+	getDimensionCenterPoint,
 	Point,
 	roundPoint,
 	scalePoint,
 	substractPoints,
 	unscalePoint
 } from '@/util/geometric-types';
+import {applyBoundariesToNumber} from '@/util/math-utils';
 
 const ZOOM_SCALES = [0.25, 0.33, 0.5, 0.67, 0.75, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 3];
 
@@ -28,7 +29,7 @@ export default function useDiagramViewerZoom(diagramViewportRef: Ref<HTMLElement
 	function changeZoom(newZoomScaleIndex: number, viewportReferencePoint: Point = getViewportCenterPoint()) {
 
 		const previousZoomScale = zoomScale.value;
-		zoomScaleIndex.value = Math.min(Math.max(newZoomScaleIndex, 0), ZOOM_SCALES.length - 1);
+		zoomScaleIndex.value = applyBoundariesToNumber(newZoomScaleIndex, 0, ZOOM_SCALES.length - 1);
 
 		if (previousZoomScale != zoomScale.value) {
 			// adjustScrollAfterScaleChanged(viewportReferencePoint, previousZoomScale);
@@ -69,7 +70,7 @@ export default function useDiagramViewerZoom(diagramViewportRef: Ref<HTMLElement
 			return {x: 0, y: 0};
 		}
 
-		return getCenterPoint({
+		return getDimensionCenterPoint({
 			width: diagramViewportElement.clientWidth,
 			height: diagramViewportElement.clientHeight
 		});
