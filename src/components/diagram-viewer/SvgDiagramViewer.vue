@@ -66,7 +66,14 @@
     import useSvgDimension from '@/components/diagram-viewer/useSvgDimension';
     import useElementSize from '@/composition/dom/size/useElementSize';
     import {StandardResizeListenerStrategies} from '@/composition/dom/size/ResizeListenerStrategy';
-    import {Dimension, Point, Rectangle, scaleDimension} from '@/util/geometric-types';
+    import {
+        Dimension,
+        enlargeRectangleToAspectRatioFromCenter,
+        getEnclosingRectangle,
+        Point,
+        Rectangle,
+        scaleDimension
+    } from '@/util/geometric-types';
     import {addBoundariesToPositionManager} from '@/util/positioning-strategy/PositionManager';
 
     interface Props {
@@ -105,7 +112,7 @@
 
             // START
 
-            const scaledSvgDimension = computed(() => {
+            const scaledSvgDimension = computed((): Dimension => {
                 // FIXME revisar el ciclo de dependencias.
                 //  Esto depende de ZoomScale, zoomScale viene de useDiagramViewerZoom,
                 //  que utiliza el position strategy, el cual depende de dragBoundaries,
@@ -167,15 +174,9 @@
             );
 
             watch(dragBoundaries, () => nextTick(() => {
-
-                const diagramViewportElement = diagramViewportRef.value;
-
-                if (diagramViewportElement) {
-                    // Force position recomputing
-                    const previousPosition = boundariesAwarePositionManager.getPosition();
-                    boundariesAwarePositionManager.setPosition(previousPosition);
-                }
-
+                // Force position recomputing
+                const previousPosition = boundariesAwarePositionManager.getPosition();
+                boundariesAwarePositionManager.setPosition(previousPosition);
             }));
 
             // END
@@ -204,6 +205,30 @@
                 translateY: `${svgPosition.value.y}px`,
             }));
 
+            const stagePreviewRectangle = computed(() => {
+
+                const svgRectangle: Rectangle = {
+                    ...svgPosition.value,
+                    ...scaledSvgDimension.value
+                };
+
+                const viewportRectangle: Rectangle = {
+                    x: 0,
+                    y: 0,
+                    ...viewportDimension.value
+                };
+
+                const enclosingRectangle = getEnclosingRectangle(svgRectangle, viewportRectangle);
+
+                const aspectRatioAsDimension = {
+                    width: 16,
+                    height: 9
+                };
+
+                return enlargeRectangleToAspectRatioFromCenter(enclosingRectangle, aspectRatioAsDimension);
+
+            });
+
             return {
                 computedSvgCode,
                 loading,
@@ -215,7 +240,8 @@
                 svgCssVariables,
                 onWheel,
                 onPointerDown,
-                onTouchStart
+                onTouchStart,
+                stagePreviewRectangle
             };
 
         }
@@ -276,8 +302,6 @@
             //padding: 1em;
 
             display: flex;
-            //align-items: center;
-            //justify-content: center;
 
             > svg {
                 flex: 0 0 auto;
