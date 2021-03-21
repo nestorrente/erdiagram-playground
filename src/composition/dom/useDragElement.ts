@@ -1,25 +1,21 @@
 import {useDocumentEventListener} from '@/composition/event/useEventListener';
 import {addPoints, Point, substractPoints} from '@/util/geometric-types';
-import PositioningStrategy from '@/util/PositioningStrategy';
+import PositionManager from '@/util/positioning-strategy/PositionManager';
 
 interface DragState {
-	element: HTMLElement;
 	dragStartPoint: Point;
 	elementStartPosition: Point;
 }
 
-export default function useDragElement(positioningStrategy: PositioningStrategy) {
+export default function useDragElement(positionManager: PositionManager) {
 
 	let state: DragState | null = null;
 
 	function onDragStart(event: Event, dragPositionProvider: () => Point) {
 
-		const element = event.currentTarget as HTMLElement;
-
 		state = {
-			element,
 			dragStartPoint: dragPositionProvider(),
-			elementStartPosition: positioningStrategy.getElementPosition(element)
+			elementStartPosition: positionManager.getPosition()
 		};
 
 	}
@@ -41,17 +37,16 @@ export default function useDragElement(positioningStrategy: PositioningStrategy)
 		event.preventDefault();
 
 		const {
-			element,
 			dragStartPoint,
 			elementStartPosition
 		} = state;
 
 		const currentDragPoint = dragPositionProvider();
 
-		const dragDelta: Point = substractPoints(currentDragPoint, dragStartPoint);
-		const newPosition: Point = addPoints(elementStartPosition, dragDelta);
+		const dragDelta = substractPoints(currentDragPoint, dragStartPoint);
+		const newPosition = addPoints(elementStartPosition, dragDelta);
 
-		positioningStrategy.setElementPosition(element, newPosition);
+		positionManager.setPosition(newPosition);
 
 	}
 
@@ -68,7 +63,7 @@ export default function useDragElement(positioningStrategy: PositioningStrategy)
 
 	function cancelDrag() {
 		if (state != null) {
-			positioningStrategy.setElementPosition(state.element, state.elementStartPosition);
+			positionManager.setPosition(state.elementStartPosition);
 			stopDrag();
 		}
 	}

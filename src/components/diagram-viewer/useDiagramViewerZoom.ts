@@ -1,5 +1,4 @@
 import {computed, nextTick, ref, Ref} from 'vue';
-import PositioningStrategy from '@/util/PositioningStrategy';
 import {
 	addPoints,
 	getDimensionCenterPoint,
@@ -10,10 +9,14 @@ import {
 	unscalePoint
 } from '@/util/geometric-types';
 import {applyBoundariesToNumber} from '@/util/math-utils';
+import PositionManager from '@/util/positioning-strategy/PositionManager';
 
 const ZOOM_SCALES = [0.25, 0.33, 0.5, 0.67, 0.75, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2, 2.5, 3];
 
-export default function useDiagramViewerZoom(diagramViewportRef: Ref<HTMLElement | undefined>, positioningStrategy: PositioningStrategy) {
+export default function useDiagramViewerZoom(
+		diagramViewportRef: Ref<HTMLElement | undefined>,
+		positionManager: PositionManager
+) {
 
 	const zoomScaleIndex = ref(ZOOM_SCALES.indexOf(1));
 	const zoomScale = computed(() => ZOOM_SCALES[zoomScaleIndex.value]);
@@ -40,13 +43,7 @@ export default function useDiagramViewerZoom(diagramViewportRef: Ref<HTMLElement
 
 	function adjustScrollAfterScaleChanged(viewportReferencePoint: Point, previousZoomScale: number) {
 
-		const diagramViewportElement = diagramViewportRef.value;
-
-		if (!diagramViewportElement) {
-			return;
-		}
-
-		const currentTranslationPosition = positioningStrategy.getElementPosition(diagramViewportElement);
+		const currentTranslationPosition = positionManager.getPosition();
 		const diagramReferencePoint = substractPoints(viewportReferencePoint, currentTranslationPosition);
 
 		const unscaledDiagramPoint = unscalePoint(diagramReferencePoint, previousZoomScale);
@@ -58,7 +55,7 @@ export default function useDiagramViewerZoom(diagramViewportRef: Ref<HTMLElement
 
 		const newTranslationPosition = roundPoint(substractPoints(currentTranslationPosition, viewportReferencePointsDiff));
 
-		positioningStrategy.setElementPosition(diagramViewportElement, newTranslationPosition);
+		positionManager.setPosition(newTranslationPosition);
 
 	}
 

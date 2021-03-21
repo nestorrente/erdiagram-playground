@@ -48,11 +48,6 @@
         <div
                 ref="diagramViewportRef"
                 class="svg-diagram-viewport"
-                :style="{
-                    '--zoom-scale': zoomScale,
-                    '--svg-width': svgDimension.width + 'px',
-                    '--svg-height': svgDimension.height + 'px'
-                }"
                 @pointerdown="onPointerDown"
                 @touchstart="onTouchStart"
                 @wheel="onWheel"
@@ -64,16 +59,15 @@
 <script lang="ts">
     import {computed, defineComponent, nextTick, ref, watch} from 'vue';
     import useDragElement from '@/composition/dom/useDragElement';
-    import StandardPositioningStrategies from '@/util/StandardPositioningStrategies';
     import Button from '@/components/generic/form/Button.vue';
     import FileDownloadWrapper from '@/components/generic/file/FileDownloadWrapper.vue';
     import useAsyncOperation from '@/composition/async/useAsyncOperation';
-    import {Dimension, Rectangle, scaleDimension} from '@/util/geometric-types';
     import useDiagramViewerZoom from '@/components/diagram-viewer/useDiagramViewerZoom';
     import useSvgDimension from '@/components/diagram-viewer/useSvgDimension';
     import useElementSize from '@/composition/dom/size/useElementSize';
     import {StandardResizeListenerStrategies} from '@/composition/dom/size/ResizeListenerStrategy';
-    import {addBoundariesToPositionStrategy} from '@/util/PositioningStrategy';
+    import {Dimension, Point, Rectangle, scaleDimension} from '@/util/geometric-types';
+    import {addBoundariesToPositionManager} from '@/util/positioning-strategy/PositionManager';
 
     interface Props {
         svgCode: string | Promise<string>;
@@ -113,7 +107,9 @@
 
             const scaledSvgDimension = computed(() => {
                 // FIXME revisar el ciclo de dependencias.
-                //  Esto depende de ZoomScale, zoomScale viene de useDiagramViewerZoom, que depende del position strategy (el cual depende de esto a su vez).
+                //  Esto depende de ZoomScale, zoomScale viene de useDiagramViewerZoom,
+                //  que utiliza el position strategy, el cual depende de dragBoundaries,
+                //  que depende de esto a su vez.
                 if (!zoomScale?.value) {
                     return svgDimension.value;
                 }
@@ -152,8 +148,21 @@
 
             });
 
-            const boundariesAwarePositioningStrategy = addBoundariesToPositionStrategy(
-                    StandardPositioningStrategies.CSS_VARIABLE,
+            // We use 16px, as it's the equivalent to 1em for the current font size.
+            const svgPosition = ref<Readonly<Point>>({
+                x: 16,
+                y: 16
+            });
+
+            const boundariesAwarePositionManager = addBoundariesToPositionManager(
+                    {
+                        getPosition(): Point {
+                            return svgPosition.value;
+                        },
+                        setPosition(newPosition: Point) {
+                            svgPosition.value = newPosition;
+                        }
+                    },
                     () => dragBoundaries.value
             );
 
@@ -162,8 +171,9 @@
                 const diagramViewportElement = diagramViewportRef.value;
 
                 if (diagramViewportElement) {
-                    const currentPosition = boundariesAwarePositioningStrategy.getElementPosition(diagramViewportElement);
-                    boundariesAwarePositioningStrategy.setElementPosition(diagramViewportElement, currentPosition);
+                    // Force position recomputing
+                    const previousPosition = boundariesAwarePositionManager.getPosition();
+                    boundariesAwarePositionManager.setPosition(previousPosition);
                 }
 
             }));
@@ -175,7 +185,7 @@
                 incrementZoom,
                 decrementZoom,
                 onWheel
-            } = useDiagramViewerZoom(diagramViewportRef, boundariesAwarePositioningStrategy);
+            } = useDiagramViewerZoom(diagramViewportRef, boundariesAwarePositionManager);
 
             const zoomScaleText = computed(() => `${(zoomScale.value * 100).toFixed(0)}%`);
 
@@ -183,9 +193,16 @@
                 onPointerDown,
                 onTouchStart,
                 stopDrag
-            } = useDragElement(boundariesAwarePositioningStrategy);
+            } = useDragElement(boundariesAwarePositionManager);
 
             watch(loading, newValue => newValue && stopDrag());
+
+            const svgCssVariables = computed(() => ({
+                width: `${svgDimension.value.width}px`,
+                height: `${svgDimension.value.height}px`,
+                translateX: `${svgPosition.value.x}px`,
+                translateY: `${svgPosition.value.y}px`,
+            }));
 
             return {
                 computedSvgCode,
@@ -195,7 +212,7 @@
                 incrementZoom,
                 decrementZoom,
                 diagramViewportRef,
-                svgDimension,
+                svgCssVariables,
                 onWheel,
                 onPointerDown,
                 onTouchStart
@@ -258,15 +275,6 @@
             overflow: hidden;
             //padding: 1em;
 
-            --zoom-scale: 1;
-            --svg-width: 0px;
-            --svg-height: 0px;
-
-            // This is the same as 1em for the current font-size,
-            // but we need to use pixel units in these variables.
-            --position-x: 16px;
-            --position-y: 16px;
-
             display: flex;
             //align-items: center;
             //justify-content: center;
@@ -276,9 +284,9 @@
                 pointer-events: none;
                 user-select: none;
                 // We use important in order to override inline style of the <svg> tag (if present)
-                width: calc(var(--svg-width) * var(--zoom-scale)) !important;
-                height: calc(var(--svg-height) * var(--zoom-scale)) !important;
-                transform: translate(var(--position-x), var(--position-y));
+                width: calc(v-bind('svgCssVariables.width') * v-bind(zoomScale)) !important;
+                height: calc(v-bind('svgCssVariables.height') * v-bind(zoomScale)) !important;
+                transform: translate(v-bind('svgCssVariables.translateX'), v-bind('svgCssVariables.translateY'));
             }
 
         }

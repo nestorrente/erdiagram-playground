@@ -9,18 +9,21 @@ export enum ToastMessageType {
 }
 
 export interface ToastMessageOptions {
-	type: ToastMessageType;
-	message: string;
-	duration?: number;
+	duration: number;
+	maxWidth: number;
 }
 
 export interface ToastMessage {
 	uuid: number;
 	type: ToastMessageType;
 	message: string;
+	maxWidth: number;
 }
 
-const DEFAULT_TOAST_DURATION = 2000;
+const DEFAULT_TOAST_MESSAGE_OPTIONS: ToastMessageOptions = {
+	duration: 2000,
+	maxWidth: 400
+};
 
 const globalToastMessageStore = createStore(() => {
 
@@ -30,15 +33,22 @@ const globalToastMessageStore = createStore(() => {
 		toastMessages: [] as ToastMessage[]
 	});
 
-	function showToastMessage(options: ToastMessageOptions) {
+	function showToastMessage(message: string, type: ToastMessageType, options?: Partial<ToastMessageOptions>) {
+
+		const {
+			duration,
+			maxWidth
+		} = {
+			...DEFAULT_TOAST_MESSAGE_OPTIONS,
+			...options
+		};
 
 		const toastMessage: ToastMessage = {
 			uuid: nextToastMessageUUID++,
-			type: options.type,
-			message: options.message
+			type: type,
+			message: message,
+			maxWidth: maxWidth
 		};
-
-		const duration = options.duration ?? DEFAULT_TOAST_DURATION;
 
 		state.toastMessages.push(toastMessage);
 
@@ -58,43 +68,18 @@ const globalToastMessageStore = createStore(() => {
 
 export default globalToastMessageStore;
 
-export function showSuccessToastMessage(message: string, duration?: number) {
-	globalToastMessageStore.showToastMessage({
-		type: ToastMessageType.SUCCESS,
-		message,
-		duration
-	});
+export function showSuccessToastMessage(message: string, options?: Partial<ToastMessageOptions>) {
+	globalToastMessageStore.showToastMessage(message, ToastMessageType.SUCCESS, options);
 }
 
-export function showInfoToastMessage(message: string, duration?: number) {
-	globalToastMessageStore.showToastMessage({
-		type: ToastMessageType.INFO,
-		message,
-		duration
-	});
+export function showInfoToastMessage(message: string, options?: Partial<ToastMessageOptions>) {
+	globalToastMessageStore.showToastMessage(message, ToastMessageType.INFO, options);
 }
 
-export function showWarningToastMessage(message: string, duration?: number) {
-	globalToastMessageStore.showToastMessage({
-		type: ToastMessageType.WARNING,
-		message,
-		duration
-	});
+export function showWarningToastMessage(message: string, options?: Partial<ToastMessageOptions>) {
+	globalToastMessageStore.showToastMessage(message, ToastMessageType.WARNING, options);
 }
 
-export function showErrorToastMessage(message: string, duration?: number) {
-	globalToastMessageStore.showToastMessage({
-		type: ToastMessageType.ERROR,
-		message,
-		duration
-	});
+export function showErrorToastMessage(message: string, options?: Partial<ToastMessageOptions>) {
+	globalToastMessageStore.showToastMessage(message, ToastMessageType.ERROR, options);
 }
-
-// @ts-expect-error
-window.showSuccessToastMessage = showSuccessToastMessage;
-// @ts-expect-error
-window.showInfoToastMessage = showInfoToastMessage;
-// @ts-expect-error
-window.showWarningToastMessage = showWarningToastMessage;
-// @ts-expect-error
-window.showErrorToastMessage = showErrorToastMessage;

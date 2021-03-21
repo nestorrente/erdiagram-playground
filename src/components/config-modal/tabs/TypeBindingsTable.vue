@@ -18,17 +18,18 @@
         </thead>
         <tbody>
             <tr
-                    v-for="inputPropertyType in inputPropertyTypes"
-                    :key="inputPropertyType"
+                    v-for="entityPropertyType in entityPropertyTypes"
+                    :key="entityPropertyType"
             >
                 <td>
-                    {{ inputPropertyType }}
+                    {{ entityPropertyType }}
                 </td>
                 <td>
                     <input
+                            ref="input"
                             type="text"
-                            :value="displayFunction(typeBindings[inputPropertyType])"
-                            @change="typeBindings[inputPropertyType] = parseFunction($event.currentTarget.value)"
+                            :value="displayFunction(typeBindings[entityPropertyType])"
+                            @change="onTypeBindingChange(entityPropertyType, $event.currentTarget.value, $forceUpdate)"
                             class="input type-binding-input"
                     >
                 </td>
@@ -38,7 +39,7 @@
                             rounded
                             small
                             icon="fas fa-undo-alt"
-                            @click="typeBindings[inputPropertyType] = defaultTypeBindings[inputPropertyType]"
+                            @click="typeBindings[entityPropertyType] = defaultTypeBindings[entityPropertyType]"
                     ></Button>
                 </td>
             </tr>
@@ -47,12 +48,21 @@
 </template>
 
 <script lang="ts">
-    import {defineComponent} from 'vue';
+    import {defineComponent, ref,} from 'vue';
     import {EntityPropertyType} from '@nestorrente/erdiagram';
     import Button from '@/components/generic/form/Button.vue';
+    import {showErrorToastMessage} from '@/store/globalToastMessageStore';
 
     function getIdentityFunction<T>() {
         return (value: T) => value;
+    }
+
+    interface Props<T> {
+        targetLang: string;
+        typeBindings: Record<string, T>;
+        defaultTypeBindings: Record<string, T>;
+        displayFunction: (type: T) => string;
+        parseFunction: (type: T) => string;
     }
 
     export default defineComponent({
@@ -80,12 +90,46 @@
                 default: getIdentityFunction()
             }
         },
-        setup() {
+        setup(uncastedProps) {
 
-            const inputPropertyTypes: string[] = Object.values(EntityPropertyType);
+            // Workaround for an issue with TS types
+            const props = uncastedProps as Props<any>;
+
+            const entityPropertyTypes: string[] = Object.values(EntityPropertyType);
+
+            const input = ref<HTMLInputElement>();
+
+            function onTypeBindingChange(entityPropertyType: string, newValue: string, forceUpdate: () => void) {
+
+                const {
+                    typeBindings,
+                    parseFunction,
+                    displayFunction
+                } = props;
+
+                try {
+                    typeBindings[entityPropertyType] = parseFunction(newValue);
+                } catch (error) {
+
+                    const formattedPreviousType = displayFunction(typeBindings[entityPropertyType]);
+                    const errorMessage = `Malformed type "${newValue}". Restored previous type "${formattedPreviousType}".`;
+
+                    showErrorToastMessage(errorMessage, {
+                        duration: 3000,
+                        maxWidth: 800
+                    });
+
+                    // Force a re-render in order to recover the previous value
+                    forceUpdate();
+
+                }
+
+            }
 
             return {
-                inputPropertyTypes
+                entityPropertyTypes,
+                input,
+                onTypeBindingChange
             };
 
         }

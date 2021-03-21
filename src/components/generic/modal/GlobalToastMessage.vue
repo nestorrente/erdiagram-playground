@@ -5,6 +5,9 @@
                     v-for="toastMessage in globalToastMessageStore.toastMessages"
                     :key="toastMessage.uuid"
                     class="toast-message"
+                    :style="{
+                        '--toast-message-max-width': `${toastMessage.maxWidth}px`
+                    }"
             >
                 <div
                         class="notification p-4"
@@ -80,16 +83,17 @@
 
         > .toast-message {
 
-            $toas-message-max-height: 200px;
+            --toast-message-max-height: 200px;
+            --toast-message-max-width: 400px;
 
             display: flex;
             align-items: flex-end;
 
-            max-width: min(50%, 400px);
-            max-height: $toas-message-max-height;
+            max-width: min(50%, var(--toast-message-max-width));
+            max-height: var(--toast-message-max-height);
 
             > .notification {
-                max-height: $toas-message-max-height;
+                max-height: var(--toast-message-max-height);
                 margin-top: 1.5rem;
                 pointer-events: all;
             }
