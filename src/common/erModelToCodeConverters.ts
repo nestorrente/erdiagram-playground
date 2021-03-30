@@ -3,7 +3,7 @@ import useEntityRelationshipModelToDatabaseCodeConverter
 import configStore from '@/store/configStore';
 import {
 	JavaClassModelToCodeConverter,
-	MySqlDatabaseModelToCodeConverter,
+	MysqlDatabaseModelToCodeConverter,
 	NomnomlEntityRelationshipModelToDiagramCodeConverter,
 	OracleDatabaseModelToCodeConverter,
 	PlantUmlEntityRelationshipModelToDiagramCodeConverter,
@@ -16,7 +16,7 @@ import {computed} from 'vue';
 
 const mysqlConverter = useEntityRelationshipModelToDatabaseCodeConverter(
 		() => configStore.config.mysql.databaseModelGeneratorConfig,
-		() => new MySqlDatabaseModelToCodeConverter(configStore.config.mysql.databaseModelToCodeConverterConfig)
+		() => new MysqlDatabaseModelToCodeConverter(configStore.config.mysql.databaseModelToCodeConverterConfig)
 );
 
 const sqlserverConverter = useEntityRelationshipModelToDatabaseCodeConverter(

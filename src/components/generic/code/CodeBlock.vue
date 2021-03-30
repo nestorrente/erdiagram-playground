@@ -72,7 +72,7 @@
             onUpdated(applyHighlights);
 
             function applyHighlights() {
-                hljs.highlightBlock(codeBlock.value!);
+                hljs.highlightElement(codeBlock.value!);
             }
 
             const copiedState = ref(false);

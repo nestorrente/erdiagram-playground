@@ -5,7 +5,7 @@ import {
 	DatabaseModelToCodeConverterSerializableConfig,
 	EntityRelationshipModelParserSerializableConfig,
 	JavaClassModelToCodeConverterSerializableConfig,
-	MySqlDatabaseModelToCodeConverterSerializableConfig,
+	MysqlDatabaseModelToCodeConverterSerializableConfig,
 	NomnomlEntityRelationshipModelToDiagramCodeConverterSerializableConfig,
 	OracleDatabaseModelToCodeConverterSerializableConfig,
 	PlantUmlEntityRelationshipModelToDiagramCodeConverterSerializableConfig,
@@ -16,7 +16,7 @@ import {
 export default interface ERDiagramPlaygroundSerializableConfig {
 	_version: string;
 	erModelParser: EntityRelationshipModelParserSerializableConfig;
-	mysql: DatabaseDialectSerializableConfig<MySqlDatabaseModelToCodeConverterSerializableConfig>;
+	mysql: DatabaseDialectSerializableConfig<MysqlDatabaseModelToCodeConverterSerializableConfig>;
 	sqlserver: DatabaseDialectSerializableConfig<SqlServerDatabaseModelToCodeConverterSerializableConfig>;
 	oracle: DatabaseDialectSerializableConfig<OracleDatabaseModelToCodeConverterSerializableConfig>;
 	java: ClassLanguageSerializableConfig<JavaClassModelToCodeConverterSerializableConfig>;

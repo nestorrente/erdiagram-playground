@@ -4,7 +4,7 @@
             <NavBar/>
         </div>
         <section class="section pb-3 vfc-item vfc-grow">
-            <div class="container vertical-full-container">
+            <div class="vertical-full-container">
                 <MainContainer
                         :showing-settings-modal="showingSettingsModal"
                         @show-settings-modal="showSettingsModal"

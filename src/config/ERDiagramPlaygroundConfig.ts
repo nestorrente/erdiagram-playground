@@ -5,7 +5,7 @@ import {
 	DatabaseModelToCodeConverterConfig,
 	EntityRelationshipModelParserConfig,
 	JavaClassModelToCodeConverterConfig,
-	MySqlDatabaseModelToCodeConverterConfig,
+	MysqlDatabaseModelToCodeConverterConfig,
 	NomnomlEntityRelationshipModelToDiagramCodeConverterConfig,
 	OracleDatabaseModelToCodeConverterConfig,
 	PlantUmlEntityRelationshipModelToDiagramCodeConverterConfig,
@@ -16,7 +16,7 @@ import {
 export default interface ERDiagramPlaygroundConfig {
 	_version: string;
 	erModelParser: EntityRelationshipModelParserConfig;
-	mysql: DatabaseDialectConfig<MySqlDatabaseModelToCodeConverterConfig>;
+	mysql: DatabaseDialectConfig<MysqlDatabaseModelToCodeConverterConfig>;
 	sqlserver: DatabaseDialectConfig<SqlServerDatabaseModelToCodeConverterConfig>;
 	oracle: DatabaseDialectConfig<OracleDatabaseModelToCodeConverterConfig>;
 	java: ClassLanguageConfig<JavaClassModelToCodeConverterConfig>;

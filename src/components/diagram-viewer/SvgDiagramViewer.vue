@@ -1,298 +1,317 @@
 <template>
-	<div
-			class="is-full-height svg-diagram-viewer"
-	>
-		<transition name="fade">
-			<div
-					v-show="loading"
-					class="loading-spinner-container"
-			>
-				<p class="mb-3">Generating chart...</p>
-				<progress class="progress is-extra-small is-info mb-3"></progress>
-			</div>
-		</transition>
+    <div
+            class="is-full-height svg-diagram-viewer"
+    >
+        <transition name="fade">
+            <div
+                    v-show="loading"
+                    class="loading-spinner-container"
+            >
+                <p class="mb-3">Generating chart...</p>
+                <progress class="progress is-extra-small is-info mb-3"></progress>
+            </div>
+        </transition>
 
-		<div class="diagram-toolbar" v-show="computedSvgCode">
-			<span class="zoom-scale-indicator">{{ zoomScaleText }}</span>
+        <div class="diagram-toolbar" v-show="computedSvgCode">
+            <span class="zoom-scale-indicator">{{ zoomScaleText }}</span>
 
-			<Button
-					icon="fas fa-plus"
-					outlined
-					small
-					@click="incrementZoom()"
-			></Button>
+            <Button
+                    icon="fas fa-plus"
+                    outlined
+                    small
+                    @click="incrementZoom()"
+            ></Button>
 
-			<Button
-					icon="fas fa-minus"
-					outlined
-					small
-					@click="decrementZoom()"
-			></Button>
+            <Button
+                    icon="fas fa-minus"
+                    outlined
+                    small
+                    @click="decrementZoom()"
+            ></Button>
 
-			<FileDownloadWrapper
-					file-name="diagram.svg"
-					:file-contents="computedSvgCode"
-					#default="{downloadFile}"
-			>
-				<Button
-						color="dark"
-						small
-						icon="fas fa-download"
-						class="copy-button"
-						title="Download"
-						@click="downloadFile"
-				></Button>
-			</FileDownloadWrapper>
-		</div>
+            <FileDownloadWrapper
+                    file-name="diagram.svg"
+                    :file-contents="computedSvgCode"
+                    #default="{downloadFile}"
+            >
+                <Button
+                        color="dark"
+                        small
+                        icon="fas fa-download"
+                        class="copy-button"
+                        title="Download"
+                        @click="downloadFile"
+                ></Button>
+            </FileDownloadWrapper>
+        </div>
 
-		<div
-				ref="diagramViewportRef"
-				class="svg-diagram-viewport"
-				@pointerdown="onPointerDown"
-				@touchstart="onTouchStart"
-				@wheel="onWheel"
-				v-html="computedSvgCode"
-		></div>
-	</div>
+        <div
+                ref="diagramViewportRef"
+                class="svg-diagram-viewport"
+                @pointerdown="onPointerDown"
+                @touchstart="onTouchStart"
+                @wheel="onWheel"
+                v-html="computedSvgCode"
+        ></div>
+    </div>
 </template>
 
 <script lang="ts">
-	import {computed, defineComponent, nextTick, ref, watch} from 'vue';
-	import useDragElement from '@/composition/dom/useDragElement';
-	import Button from '@/components/generic/form/Button.vue';
-	import FileDownloadWrapper from '@/components/generic/file/FileDownloadWrapper.vue';
-	import useAsyncOperation from '@/composition/async/useAsyncOperation';
-	import useDiagramViewerZoom from '@/components/diagram-viewer/useDiagramViewerZoom';
-	import useSvgDimension from '@/components/diagram-viewer/useSvgDimension';
-	import useElementSize from '@/composition/dom/size/useElementSize';
-	import {StandardResizeListenerStrategies} from '@/composition/dom/size/ResizeListenerStrategy';
-	import {Dimension, Point, Rectangle, scaleDimension} from '@/util/geometric-types';
-	import {addBoundariesToPositionManager} from '@/util/positioning-strategy/PositionManager';
+    import {computed, defineComponent, nextTick, ref, watch} from 'vue';
+    import useDragElement from '@/composition/dom/useDragElement';
+    import Button from '@/components/generic/form/Button.vue';
+    import FileDownloadWrapper from '@/components/generic/file/FileDownloadWrapper.vue';
+    import useAsyncOperation from '@/composition/async/useAsyncOperation';
+    import useDiagramViewerZoom from '@/components/diagram-viewer/useDiagramViewerZoom';
+    import useSvgDimension from '@/components/diagram-viewer/useSvgDimension';
+    import useElementSize from '@/composition/dom/size/useElementSize';
+    import {StandardResizeListenerStrategies} from '@/composition/dom/size/ResizeListenerStrategy';
+    import {Dimension, Point, Rectangle, scaleDimension} from '@/util/geometric-types';
+    import {addBoundariesToPositionManager} from '@/util/positioning-strategy/PositionManager';
 
-	interface Props {
-		svgCode: string | Promise<string>;
-	}
+    interface Props {
+        svgCode: string | Promise<string>;
+    }
 
-	export default defineComponent({
-		name: 'SvgDiagramViewer',
-		components: {FileDownloadWrapper, Button},
-		props: {
-			svgCode: {
-				type: [String, Promise],
-				required: true
-			}
-		},
-		setup: function(uncastedProps) {
+    export default defineComponent({
+        name: 'SvgDiagramViewer',
+        components: {FileDownloadWrapper, Button},
+        props: {
+            svgCode: {
+                type: [String, Promise],
+                required: true
+            }
+        },
+        setup: function (uncastedProps) {
 
-			// Workaround for an issue with TS types
-			const props = uncastedProps as unknown as Props;
+            // Workaround for an issue with TS types
+            const props = uncastedProps as unknown as Props;
 
-			const {
-				data: computedSvgCode,
-				loading
-			} = useAsyncOperation(() => Promise.resolve(props.svgCode), {
-				keepPreviousResultWhileLoading: true
-			});
+            const {
+                data: computedSvgCode,
+                loading
+            } = useAsyncOperation(() => Promise.resolve(props.svgCode), {
+                keepPreviousResultWhileLoading: true
+            });
 
-			const diagramViewportRef = ref<HTMLElement>();
+            const diagramViewportRef = ref<HTMLElement>();
 
-			const {
-				svgDimension,
-				onSvgUpdate
-			} = useSvgDimension(() => diagramViewportRef.value?.firstElementChild);
+            const {
+                svgDimension,
+                onSvgUpdate
+            } = useSvgDimension(() => diagramViewportRef.value?.firstElementChild);
 
-			watch(computedSvgCode, onSvgUpdate);
+            watch(computedSvgCode, onSvgUpdate);
 
-			// START
+            // START
 
-			const scaledSvgDimension = computed((): Dimension => {
-				// FIXME revisar el ciclo de dependencias.
-				//  Esto depende de ZoomScale, zoomScale viene de useDiagramViewerZoom,
-				//  que utiliza el position strategy, el cual depende de dragBoundaries,
-				//  que depende de esto a su vez.
-				if (!zoomScale?.value) {
-					return svgDimension.value;
-				}
-				return scaleDimension(svgDimension.value, zoomScale.value);
-			});
+            const scaledSvgDimension = computed((): Dimension => {
+                // FIXME revisar el ciclo de dependencias.
+                //  Esto depende de ZoomScale, zoomScale viene de useDiagramViewerZoom,
+                //  que utiliza el position strategy, el cual depende de dragBoundaries,
+                //  que depende de esto a su vez.
+                if (!zoomScale?.value) {
+                    return svgDimension.value;
+                }
+                return scaleDimension(svgDimension.value, zoomScale.value);
+            });
 
-			const viewportSize = useElementSize(diagramViewportRef, {
-				resizeListenerStrategy: StandardResizeListenerStrategies.WINDOW_RESIZE_EVENT
-			});
+            const viewportSize = useElementSize(diagramViewportRef, {
+                resizeListenerStrategy: StandardResizeListenerStrategies.WINDOW_RESIZE_EVENT
+            });
 
-			const viewportDimension = computed((): Dimension => {
-				return {
-					width: viewportSize.value?.clientWidth ?? 0,
-					height: viewportSize.value?.clientHeight ?? 0
-				};
-			});
+            const viewportDimension = computed((): Dimension | undefined => {
 
-			// We use 16px, as it's the equivalent to 1em for the current font size.
-			const oneEmInPixels = 16;
+                if (!viewportSize.value) {
+                    return undefined;
+                }
 
-			const dragBoundaries = computed((): Rectangle => {
+                return {
+                    width: viewportSize.value.clientWidth,
+                    height: viewportSize.value.clientHeight
+                };
 
-				const {
-					width: imageWidth,
-					height: imageHeight
-				} = scaledSvgDimension.value;
+            });
 
-				const {
-					width: viewportWidth,
-					height: viewportHeight
-				} = viewportDimension.value;
+            // We use 16px, as it's the equivalent to 1em for the current font size.
+            const oneEmInPixels = 16;
 
-				const boundaryMarginSize = Math.min(imageWidth, oneEmInPixels);
+            const initialSvgPositionX = oneEmInPixels / 2;
+            const initialSvgPositionY = oneEmInPixels / 2;
 
-				return {
-					x: boundaryMarginSize - imageWidth,
-					y: boundaryMarginSize - imageHeight,
-					width: viewportWidth - boundaryMarginSize,
-					height: viewportHeight - boundaryMarginSize
-				};
+            const dragBoundaries = computed((): Rectangle => {
 
-			});
+                if (!viewportDimension.value) {
+                    // While the component is mounting, we return an empty rectangle
+                    // positioned in the point we want to place the SVG image.
+                    return {
+                        x: initialSvgPositionX,
+                        y: initialSvgPositionY,
+                        width: 0,
+                        height: 0
+                    };
+                }
 
-			const svgPosition = ref<Readonly<Point>>({
-				x: oneEmInPixels / 2,
-				y: oneEmInPixels / 2
-			});
+                const {
+                    width: viewportWidth,
+                    height: viewportHeight
+                } = viewportDimension.value;
 
-			const boundariesAwarePositionManager = addBoundariesToPositionManager(
-					{
-						getPosition(): Point {
-							return svgPosition.value;
-						},
-						setPosition(newPosition: Point) {
-							svgPosition.value = newPosition;
-						}
-					},
-					() => dragBoundaries.value
-			);
+                const {
+                    width: imageWidth,
+                    height: imageHeight
+                } = scaledSvgDimension.value;
 
-			watch(dragBoundaries, () => nextTick(() => {
-				// Force position recomputing
-				const previousPosition = boundariesAwarePositionManager.getPosition();
-				boundariesAwarePositionManager.setPosition(previousPosition);
-			}));
+                const boundaryMarginSize = Math.min(imageWidth, oneEmInPixels);
 
-			// END
+                return {
+                    x: boundaryMarginSize - imageWidth,
+                    y: boundaryMarginSize - imageHeight,
+                    width: viewportWidth - boundaryMarginSize,
+                    height: viewportHeight - boundaryMarginSize
+                };
 
-			const {
-				zoomScale,
-				incrementZoom,
-				decrementZoom,
-				onWheel
-			} = useDiagramViewerZoom(diagramViewportRef, boundariesAwarePositionManager);
+            });
 
-			const zoomScaleText = computed(() => `${(zoomScale.value * 100).toFixed(0)}%`);
+            const svgPosition = ref<Readonly<Point>>({
+                x: initialSvgPositionX,
+                y: initialSvgPositionY
+            });
 
-			const {
-				onPointerDown,
-				onTouchStart,
-				stopDrag
-			} = useDragElement(boundariesAwarePositionManager);
+            const boundariesAwarePositionManager = addBoundariesToPositionManager(
+                    {
+                        getPosition(): Point {
+                            return svgPosition.value;
+                        },
+                        setPosition(newPosition: Point) {
+                            svgPosition.value = newPosition;
+                        }
+                    },
+                    () => dragBoundaries.value
+            );
 
-			watch(loading, newValue => newValue && stopDrag());
+            watch(dragBoundaries, () => nextTick(() => {
+                // Force position recomputing
+                const previousPosition = boundariesAwarePositionManager.getPosition();
+                boundariesAwarePositionManager.setPosition(previousPosition);
+            }));
 
-			const svgCssVariables = computed(() => ({
-				width: `${svgDimension.value.width}px`,
-				height: `${svgDimension.value.height}px`,
-				translateX: `${svgPosition.value.x}px`,
-				translateY: `${svgPosition.value.y}px`,
-			}));
+            // END
 
-			return {
-				computedSvgCode,
-				loading,
-				zoomScale,
-				zoomScaleText,
-				incrementZoom,
-				decrementZoom,
-				diagramViewportRef,
-				svgCssVariables,
-				onWheel,
-				onPointerDown,
-				onTouchStart
-			};
+            const {
+                zoomScale,
+                incrementZoom,
+                decrementZoom,
+                onWheel
+            } = useDiagramViewerZoom(diagramViewportRef, boundariesAwarePositionManager);
 
-		}
-	});
+            const zoomScaleText = computed(() => `${(zoomScale.value * 100).toFixed(0)}%`);
+
+            const {
+                onPointerDown,
+                onTouchStart,
+                stopDrag
+            } = useDragElement(boundariesAwarePositionManager);
+
+            watch(loading, newValue => newValue && stopDrag());
+
+            const svgCssVariables = computed(() => ({
+                width: `${svgDimension.value.width}px`,
+                height: `${svgDimension.value.height}px`,
+                translateX: `${svgPosition.value.x}px`,
+                translateY: `${svgPosition.value.y}px`,
+            }));
+
+            return {
+                computedSvgCode,
+                loading,
+                zoomScale,
+                zoomScaleText,
+                incrementZoom,
+                decrementZoom,
+                diagramViewportRef,
+                svgCssVariables,
+                onWheel,
+                onPointerDown,
+                onTouchStart
+            };
+
+        }
+    });
 </script>
 
 <style lang="scss">
-	.svg-diagram-viewer {
-		position: relative;
-		border: 1px solid #dbdbdb;
-		background: #eee;
-		border-radius: 4px;
-		overflow: hidden;
-		cursor: move;
+    .svg-diagram-viewer {
+        position: relative;
+        border: 1px solid #dbdbdb;
+        background: #eee;
+        border-radius: 4px;
+        overflow: hidden;
+        cursor: move;
 
-		> .loading-spinner-container {
-			position: absolute;
-			top: 0;
-			bottom: 0;
-			width: 100%;
-			height: 100%;
-			padding: 1em;
-			z-index: 1;
+        > .loading-spinner-container {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            padding: 1em;
+            z-index: 1;
 
-			background: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.7);
 
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-		}
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
 
-		> .diagram-toolbar {
-			position: absolute;
-			top: 1em;
-			right: 1em;
-			opacity: 0.7;
-			transition: opacity ease-in-out 0.15s;
-			z-index: 1;
+        > .diagram-toolbar {
+            position: absolute;
+            top: 1em;
+            right: 1em;
+            opacity: 0.7;
+            transition: opacity ease-in-out 0.15s;
+            z-index: 1;
 
-			&:hover {
-				opacity: 1;
-			}
+            &:hover {
+                opacity: 1;
+            }
 
-			> .zoom-scale-indicator {
-				vertical-align: middle;
-			}
+            > .zoom-scale-indicator {
+                vertical-align: middle;
+            }
 
-			> * + * {
-				margin-left: 0.5em;
-			}
-		}
+            > * + * {
+                margin-left: 0.5em;
+            }
+        }
 
-		> .svg-diagram-viewport {
-			width: 100%;
-			height: 100%;
-			overflow: hidden;
-			//padding: 1em;
+        > .svg-diagram-viewport {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
 
-			display: flex;
+            display: flex;
 
-			> svg {
+            > svg {
 
-				flex: 0 0 auto;
+                flex: 0 0 auto;
 
-				pointer-events: none;
-				user-select: none;
+                pointer-events: none;
+                user-select: none;
 
-				background: white;
-				border: 1px solid #999;
-				box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, 0.3);
+                background: white;
+                border: 1px solid #999;
+                box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, 0.3);
 
-				// We use important in order to override inline style of the <svg> tag (if present)
-				width: calc(v-bind('svgCssVariables.width') * v-bind(zoomScale)) !important;
-				height: calc(v-bind('svgCssVariables.height') * v-bind(zoomScale)) !important;
-				transform: translate(v-bind('svgCssVariables.translateX'), v-bind('svgCssVariables.translateY'));
+                // We use important in order to override inline style of the <svg> tag (if present)
+                width: calc(v-bind('svgCssVariables.width') * v-bind(zoomScale)) !important;
+                height: calc(v-bind('svgCssVariables.height') * v-bind(zoomScale)) !important;
+                transform: translate(v-bind('svgCssVariables.translateX'), v-bind('svgCssVariables.translateY'));
 
-			}
+            }
 
-		}
-	}
+        }
+    }
 </style>

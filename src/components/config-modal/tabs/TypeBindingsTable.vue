@@ -48,7 +48,7 @@
 </template>
 
 <script lang="ts">
-    import {defineComponent, ref,} from 'vue';
+    import {defineComponent, ref} from 'vue';
     import {EntityPropertyType} from '@nestorrente/erdiagram';
     import Button from '@/components/generic/form/Button.vue';
     import {showErrorToastMessage} from '@/store/globalToastMessageStore';
@@ -90,7 +90,7 @@
                 default: getIdentityFunction()
             }
         },
-        setup(uncastedProps) {
+        setup(uncastedProps: any) {
 
             // Workaround for an issue with TS types
             const props = uncastedProps as Props<any>;

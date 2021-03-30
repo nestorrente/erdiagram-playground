@@ -1,7 +1,7 @@
 import {
 	EntityRelationshipModelParserConfig,
 	JavaClassModelToCodeConverterConfig,
-	MySqlDatabaseModelToCodeConverterConfig,
+	MysqlDatabaseModelToCodeConverterConfig,
 	NomnomlEntityRelationshipModelToDiagramCodeConverterConfig,
 	OracleDatabaseModelToCodeConverterConfig,
 	PlantUmlEntityRelationshipModelToDiagramCodeConverterConfig,
@@ -13,7 +13,7 @@ import {ClassLanguageConfig, DatabaseDialectConfig} from '@/config/ERDiagramPlay
 type PartialERDiagramPlaygroundConfig = Partial<{
 	_version: string;
 	erModelParser: EntityRelationshipModelParserConfig;
-	mysql: Partial<DatabaseDialectConfig<MySqlDatabaseModelToCodeConverterConfig>>;
+	mysql: Partial<DatabaseDialectConfig<MysqlDatabaseModelToCodeConverterConfig>>;
 	sqlserver: Partial<DatabaseDialectConfig<SqlServerDatabaseModelToCodeConverterConfig>>;
 	oracle: Partial<DatabaseDialectConfig<OracleDatabaseModelToCodeConverterConfig>>;
 	java: Partial<ClassLanguageConfig<JavaClassModelToCodeConverterConfig>>;
