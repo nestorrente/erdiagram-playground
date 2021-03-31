@@ -115,7 +115,7 @@
     } from '@/common/outputFormats';
     import {Ace} from 'ace-builds';
     import SvgDiagramViewer from '@/components/diagram-viewer/SvgDiagramViewer.vue';
-    import VerticalSplitPanel from '@/components/generic/VerticalSplitPanel.vue';
+    import VerticalSplitPanel from '@/components/generic/split-panel/VerticalSplitPanel.vue';
 
     export default defineComponent({
         name: 'MainContainer',
