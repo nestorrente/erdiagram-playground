@@ -1,4 +1,5 @@
 import {movePointInsideBoundaries, Point, Rectangle} from '@/util/geometric-types';
+import {isRef, Ref} from 'vue';
 
 export default interface PositionManager {
 
@@ -10,8 +11,11 @@ export default interface PositionManager {
 
 export function addBoundariesToPositionManager(
 		positionManager: PositionManager,
-		boundariesGetter: () => Rectangle
+		boundaries: Ref<Rectangle> | (() => Rectangle)
 ): PositionManager {
+
+	const boundariesGetter = isRef(boundaries) ? () => boundaries.value : boundaries;
+
 	return {
 		getPosition() {
 			return positionManager.getPosition();
@@ -22,5 +26,6 @@ export function addBoundariesToPositionManager(
 			positionManager.setPosition(boundPosition);
 		}
 	};
+
 }
 

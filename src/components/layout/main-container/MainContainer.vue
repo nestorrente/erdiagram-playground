@@ -1,6 +1,6 @@
 <template>
-    <div class="columns is-desktop is-full-height">
-        <div class="column is-half-desktop">
+    <VerticalSplitPanel>
+        <template #left>
             <div class="vertical-full-container">
                 <div class="vfc-item pb-5">
                     <div class="columns is-mobile">
@@ -30,8 +30,9 @@
                     />
                 </div>
             </div>
-        </div>
-        <div class="column is-half-desktop">
+        </template>
+
+        <template #right>
             <div class="vertical-full-container">
                 <div class="vfc-item pb-5">
                     <div class="columns is-mobile">
@@ -85,8 +86,8 @@
                     />
                 </div>
             </div>
-        </div>
-    </div>
+        </template>
+    </VerticalSplitPanel>
 </template>
 
 <script lang="ts">
@@ -114,11 +115,13 @@
     } from '@/common/outputFormats';
     import {Ace} from 'ace-builds';
     import SvgDiagramViewer from '@/components/diagram-viewer/SvgDiagramViewer.vue';
+    import VerticalSplitPanel from '@/components/generic/VerticalSplitPanel.vue';
 
     export default defineComponent({
         name: 'MainContainer',
         emits: ['showSettingsModal'],
         components: {
+            VerticalSplitPanel,
             SvgDiagramViewer,
             Icon,
             OpenInputCodeButton,
@@ -135,7 +138,7 @@
                 requried: true
             }
         },
-        setup: function () {
+        setup() {
 
             const {
                 liveRef: inputCodeLive,

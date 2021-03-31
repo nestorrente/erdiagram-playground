@@ -65,7 +65,6 @@
     import useDiagramViewerZoom from '@/components/diagram-viewer/useDiagramViewerZoom';
     import useSvgDimension from '@/components/diagram-viewer/useSvgDimension';
     import useElementSize from '@/composition/dom/size/useElementSize';
-    import {StandardResizeListenerStrategies} from '@/composition/dom/size/ResizeListenerStrategy';
     import {Dimension, Point, Rectangle, scaleDimension} from '@/util/geometric-types';
     import {addBoundariesToPositionManager} from '@/util/positioning-strategy/PositionManager';
 
@@ -82,7 +81,7 @@
                 required: true
             }
         },
-        setup: function (uncastedProps) {
+        setup(uncastedProps) {
 
             // Workaround for an issue with TS types
             const props = uncastedProps as unknown as Props;
@@ -116,9 +115,7 @@
                 return scaleDimension(svgDimension.value, zoomScale.value);
             });
 
-            const viewportSize = useElementSize(diagramViewportRef, {
-                resizeListenerStrategy: StandardResizeListenerStrategies.WINDOW_RESIZE_EVENT
-            });
+            const viewportSize = useElementSize(diagramViewportRef);
 
             const viewportDimension = computed((): Dimension | undefined => {
 
@@ -187,7 +184,7 @@
                             svgPosition.value = newPosition;
                         }
                     },
-                    () => dragBoundaries.value
+                    dragBoundaries
             );
 
             watch(dragBoundaries, () => nextTick(() => {
