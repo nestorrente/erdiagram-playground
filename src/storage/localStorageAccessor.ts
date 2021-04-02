@@ -8,7 +8,8 @@ import erdiagramPlaygroundConfigManager, {LAST_CONFIG_VERSION} from '@/config/ER
 const ItemKeys = {
 	INPUT_CODE: 'inputCode',
 	OUTPUT_FORMAT_ID: 'outputFormatId',
-	CONFIG: 'erdiagramConfig'
+	CONFIG: 'erdiagramConfig',
+	VERTICAL_SPLIT_PANEL_LEFT_COLUMN_WIDTH_PERCENT: 'verticalSplitPanelLeftColumnWidthPercent'
 };
 
 export default {
@@ -56,6 +57,15 @@ export default {
 			const serializableConfig = erdiagramPlaygroundConfigManager.convertToSerializableObject(value);
 			localJsonStorage.setItem(ItemKeys.CONFIG, serializableConfig);
 		}
+	},
+
+	getVerticalSplitPanelLeftColumnWidthPercent(): number {
+		const value = localStorage.getItem(ItemKeys.VERTICAL_SPLIT_PANEL_LEFT_COLUMN_WIDTH_PERCENT);
+		return value ? parseFloat(value) : 50;
+	},
+
+	setVerticalSplitPanelLeftColumnWidthPercent(value: number): void {
+		localStorage.setItem(ItemKeys.VERTICAL_SPLIT_PANEL_LEFT_COLUMN_WIDTH_PERCENT, String(value));
 	}
 
 };

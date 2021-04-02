@@ -12,23 +12,21 @@ export default function useDragElement(positionManager: PositionManager) {
 	let state: DragState | null = null;
 
 	function onDragStart(event: Event, dragPositionProvider: () => Point) {
-
 		state = {
 			dragStartPoint: dragPositionProvider(),
 			elementStartPosition: positionManager.getPosition()
 		};
-
 	}
 
 	useDocumentEventListener('pointermove', event => {
-		onDragMove(event, () => getCurrentDragPointFromPointer(event));
+		onDragMove(event, getCurrentDragPointFromPointer);
 	});
 
 	useDocumentEventListener('touchmove', (event: TouchEvent) => {
-		onDragMove(event, () => getCurrentDragPointFromTouch(event));
+		onDragMove(event, getCurrentDragPointFromTouch);
 	});
 
-	function onDragMove(event: Event, dragPositionProvider: () => Point) {
+	function onDragMove<E extends Event>(event: E, dragPositionProvider: (event: E) => Point) {
 
 		if (state == null) {
 			return;
@@ -41,7 +39,7 @@ export default function useDragElement(positionManager: PositionManager) {
 			elementStartPosition
 		} = state;
 
-		const currentDragPoint = dragPositionProvider();
+		const currentDragPoint = dragPositionProvider(event);
 
 		const dragDelta = substractPoints(currentDragPoint, dragStartPoint);
 		const newPosition = addPoints(elementStartPosition, dragDelta);

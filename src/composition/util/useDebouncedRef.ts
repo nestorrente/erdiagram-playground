@@ -1,5 +1,5 @@
 import {nextTick, ref, watch} from 'vue';
-import {debounce} from '@/util/function-utils';
+import debounce from 'lodash.debounce';
 
 export default function useDebouncedRef<T>(initialValue: T, delayInMilliseconds: number) {
 

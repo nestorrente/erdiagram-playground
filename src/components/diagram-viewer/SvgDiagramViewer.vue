@@ -187,11 +187,13 @@
                     dragBoundaries
             );
 
-            watch(dragBoundaries, () => nextTick(() => {
+            watch(dragBoundaries, () => nextTick(forcePositionRecomputing));
+
+            function forcePositionRecomputing() {
                 // Force position recomputing
                 const previousPosition = boundariesAwarePositionManager.getPosition();
                 boundariesAwarePositionManager.setPosition(previousPosition);
-            }));
+            }
 
             // END
 

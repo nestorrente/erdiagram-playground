@@ -1,6 +1,6 @@
 import {computed, ComputedRef, nextTick, ref, Ref} from 'vue';
 import {Nullable} from '@/util/util-types';
-import {debounce} from '@/util/function-utils';
+import debounce from 'lodash.debounce';
 import {ResizeListenerStrategy, StandardResizeListenerStrategies} from '@/composition/dom/size/ResizeListenerStrategy';
 
 export default function useElementSize(

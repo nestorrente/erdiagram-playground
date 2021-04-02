@@ -1,5 +1,9 @@
 <template>
-    <VerticalSplitPanel>
+    <VerticalSplitPanel
+            left-column-min-width="410px"
+            right-column-min-width="410px"
+            v-model:left-column-width-percent="leftColumnWidthPercent"
+    >
         <template #left>
             <div class="vertical-full-container">
                 <div class="vfc-item pb-5">
@@ -135,10 +139,13 @@
         props: {
             showingSettingsModal: {
                 type: Boolean,
-                requried: true
+                required: true
             }
         },
         setup() {
+
+            const leftColumnWidthPercent = ref(localStorageAccessor.getVerticalSplitPanelLeftColumnWidthPercent());
+            watch(leftColumnWidthPercent, newValue => localStorageAccessor.setVerticalSplitPanelLeftColumnWidthPercent(newValue));
 
             const {
                 liveRef: inputCodeLive,
@@ -263,6 +270,7 @@
             }
 
             return {
+                leftColumnWidthPercent,
                 inputCodeLive,
                 inputCodeDebounced,
                 inputCodeSynced,
