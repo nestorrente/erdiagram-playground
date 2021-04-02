@@ -1,5 +1,5 @@
 User
-    username text(30)
+    username! text(30)
     active bool
 
 Vendor
