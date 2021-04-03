@@ -1,5 +1,7 @@
 <template>
-    <div class="vertical-full-container">
+    <div class="vertical-full-container" :style="{
+        // 'overflow': mainSectionOverflow
+    }">
         <div class="vfc-item">
             <NavBar/>
         </div>
@@ -53,11 +55,16 @@
                 showingSettingsModal.value = true;
             }
 
+            // const mainSectionOverflow = computed(() => {
+            //     return openModalsStore.isAnyModalOpen ? 'hidden' : undefined;
+            // });
+
             return {
                 configStore,
                 showingSettingsModal,
                 settingsModalSelectedTabName,
-                showSettingsModal
+                showSettingsModal,
+                // mainSectionOverflow
             };
 
         }

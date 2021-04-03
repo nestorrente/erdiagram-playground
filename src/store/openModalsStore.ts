@@ -5,10 +5,6 @@ const openModalsStore = createStore(() => {
 
 	const openModalUidStack = ref<number[]>([]);
 
-	const frontModalUid = computed((): number | undefined => {
-		return openModalUidStack.value[openModalUidStack.value.length - 1];
-	});
-
 	function registerModalOpen(modalUID: number) {
 		openModalUidStack.value.push(modalUID);
 	}
@@ -23,10 +19,19 @@ const openModalsStore = createStore(() => {
 
 	}
 
+	const frontModalUid = computed((): number | undefined => {
+		return openModalUidStack.value[openModalUidStack.value.length - 1];
+	});
+
+	const isAnyModalOpen = computed((): boolean => {
+		return openModalUidStack.value.length > 0;
+	});
+
 	return {
 		registerModalOpen,
 		registerModalClose,
-		frontModalUid
+		frontModalUid,
+		isAnyModalOpen
 	};
 
 });
