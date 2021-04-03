@@ -7,6 +7,7 @@ import {
 	NomnomlEntityRelationshipModelToDiagramCodeConverter,
 	OracleDatabaseModelToCodeConverter,
 	PlantUmlEntityRelationshipModelToDiagramCodeConverter,
+	PostgresqlDatabaseModelToCodeConverter,
 	SqlServerDatabaseModelToCodeConverter,
 	TypeScriptClassModelToCodeConverter
 } from '@nestorrente/erdiagram';
@@ -19,14 +20,19 @@ const mysqlConverter = useEntityRelationshipModelToDatabaseCodeConverter(
 		() => new MysqlDatabaseModelToCodeConverter(configStore.config.mysql.databaseModelToCodeConverterConfig)
 );
 
-const sqlserverConverter = useEntityRelationshipModelToDatabaseCodeConverter(
-		() => configStore.config.sqlserver.databaseModelGeneratorConfig,
-		() => new SqlServerDatabaseModelToCodeConverter(configStore.config.sqlserver.databaseModelToCodeConverterConfig)
-);
-
 const oracleConverter = useEntityRelationshipModelToDatabaseCodeConverter(
 		() => configStore.config.oracle.databaseModelGeneratorConfig,
 		() => new OracleDatabaseModelToCodeConverter(configStore.config.oracle.databaseModelToCodeConverterConfig)
+);
+
+const postgresqlConverter = useEntityRelationshipModelToDatabaseCodeConverter(
+		() => configStore.config.postgresql.databaseModelGeneratorConfig,
+		() => new PostgresqlDatabaseModelToCodeConverter(configStore.config.postgresql.databaseModelToCodeConverterConfig)
+);
+
+const sqlserverConverter = useEntityRelationshipModelToDatabaseCodeConverter(
+		() => configStore.config.sqlserver.databaseModelGeneratorConfig,
+		() => new SqlServerDatabaseModelToCodeConverter(configStore.config.sqlserver.databaseModelToCodeConverterConfig)
 );
 
 const javaConverter = useEntityRelationshipModelToClassCodeConverter(
@@ -50,6 +56,7 @@ const nomnomlConverter = computed(() => {
 export default {
 	mysqlConverter,
 	sqlserverConverter,
+	postgresqlConverter,
 	oracleConverter,
 	javaConverter,
 	typescriptConverter,

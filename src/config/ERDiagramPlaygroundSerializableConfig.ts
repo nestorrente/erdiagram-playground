@@ -9,6 +9,7 @@ import {
 	NomnomlEntityRelationshipModelToDiagramCodeConverterSerializableConfig,
 	OracleDatabaseModelToCodeConverterSerializableConfig,
 	PlantUmlEntityRelationshipModelToDiagramCodeConverterSerializableConfig,
+	PostgresqlDatabaseModelToCodeConverterSerializableConfig,
 	SqlServerDatabaseModelToCodeConverterSerializableConfig,
 	TypeScriptClassModelToCodeConverterSerializableConfig
 } from '@nestorrente/erdiagram';
@@ -17,8 +18,9 @@ export default interface ERDiagramPlaygroundSerializableConfig {
 	_version: string;
 	erModelParser: EntityRelationshipModelParserSerializableConfig;
 	mysql: DatabaseDialectSerializableConfig<MysqlDatabaseModelToCodeConverterSerializableConfig>;
-	sqlserver: DatabaseDialectSerializableConfig<SqlServerDatabaseModelToCodeConverterSerializableConfig>;
 	oracle: DatabaseDialectSerializableConfig<OracleDatabaseModelToCodeConverterSerializableConfig>;
+	postgresql: DatabaseDialectSerializableConfig<PostgresqlDatabaseModelToCodeConverterSerializableConfig>;
+	sqlserver: DatabaseDialectSerializableConfig<SqlServerDatabaseModelToCodeConverterSerializableConfig>;
 	java: ClassLanguageSerializableConfig<JavaClassModelToCodeConverterSerializableConfig>;
 	typescript: ClassLanguageSerializableConfig<TypeScriptClassModelToCodeConverterSerializableConfig>;
 	plantuml: PlantUmlEntityRelationshipModelToDiagramCodeConverterSerializableConfig;

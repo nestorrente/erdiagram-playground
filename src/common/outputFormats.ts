@@ -47,6 +47,14 @@ const oracleCodeOutputFormat: CodeOutputFormat = reactive({
 	erModelToCodeConverter: erModelToCodeConverters.oracleConverter
 });
 
+const postgresqlCodeOutputFormat: CodeOutputFormat = reactive({
+	id: 'postgresql',
+	name: 'PostgreSQL',
+	type: 'code',
+	codeBlockLang: 'sql_more',
+	erModelToCodeConverter: erModelToCodeConverters.postgresqlConverter
+});
+
 const sqlserverCodeOutputFormat: CodeOutputFormat = reactive({
 	id: 'sqlserver',
 	name: 'SQL Server',
@@ -104,6 +112,7 @@ const nomnomlDiagramOutputFormat: DiagramOutputFormat = reactive({
 export default {
 	[mysqlCodeOutputFormat.id]: mysqlCodeOutputFormat,
 	[oracleCodeOutputFormat.id]: oracleCodeOutputFormat,
+	[postgresqlCodeOutputFormat.id]: postgresqlCodeOutputFormat,
 	[sqlserverCodeOutputFormat.id]: sqlserverCodeOutputFormat,
 	[javaCodeOutputFormat.id]: javaCodeOutputFormat,
 	[typescriptCodeOutputFormat.id]: typescriptCodeOutputFormat,

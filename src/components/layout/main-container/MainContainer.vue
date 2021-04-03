@@ -214,6 +214,7 @@
                 'Database': [
                     outputFormats.mysql,
                     outputFormats.oracle,
+                    outputFormats.postgresql,
                     outputFormats.sqlserver
                 ],
                 'OOP': [

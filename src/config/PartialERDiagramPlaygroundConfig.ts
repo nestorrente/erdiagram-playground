@@ -5,6 +5,7 @@ import {
 	NomnomlEntityRelationshipModelToDiagramCodeConverterConfig,
 	OracleDatabaseModelToCodeConverterConfig,
 	PlantUmlEntityRelationshipModelToDiagramCodeConverterConfig,
+	PostgresqlDatabaseModelToCodeConverterConfig,
 	SqlServerDatabaseModelToCodeConverterConfig,
 	TypeScriptClassModelToCodeConverterConfig
 } from '@nestorrente/erdiagram';
@@ -14,8 +15,9 @@ type PartialERDiagramPlaygroundConfig = Partial<{
 	_version: string;
 	erModelParser: EntityRelationshipModelParserConfig;
 	mysql: Partial<DatabaseDialectConfig<MysqlDatabaseModelToCodeConverterConfig>>;
-	sqlserver: Partial<DatabaseDialectConfig<SqlServerDatabaseModelToCodeConverterConfig>>;
 	oracle: Partial<DatabaseDialectConfig<OracleDatabaseModelToCodeConverterConfig>>;
+	postgresql: Partial<DatabaseDialectConfig<PostgresqlDatabaseModelToCodeConverterConfig>>;
+	sqlserver: Partial<DatabaseDialectConfig<SqlServerDatabaseModelToCodeConverterConfig>>;
 	java: Partial<ClassLanguageConfig<JavaClassModelToCodeConverterConfig>>;
 	typescript: Partial<ClassLanguageConfig<TypeScriptClassModelToCodeConverterConfig>>;
 	plantuml: Partial<PlantUmlEntityRelationshipModelToDiagramCodeConverterConfig>;

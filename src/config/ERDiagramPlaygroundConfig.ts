@@ -9,6 +9,7 @@ import {
 	NomnomlEntityRelationshipModelToDiagramCodeConverterConfig,
 	OracleDatabaseModelToCodeConverterConfig,
 	PlantUmlEntityRelationshipModelToDiagramCodeConverterConfig,
+	PostgresqlDatabaseModelToCodeConverterConfig,
 	SqlServerDatabaseModelToCodeConverterConfig,
 	TypeScriptClassModelToCodeConverterConfig
 } from '@nestorrente/erdiagram';
@@ -17,8 +18,9 @@ export default interface ERDiagramPlaygroundConfig {
 	_version: string;
 	erModelParser: EntityRelationshipModelParserConfig;
 	mysql: DatabaseDialectConfig<MysqlDatabaseModelToCodeConverterConfig>;
-	sqlserver: DatabaseDialectConfig<SqlServerDatabaseModelToCodeConverterConfig>;
 	oracle: DatabaseDialectConfig<OracleDatabaseModelToCodeConverterConfig>;
+	postgresql: DatabaseDialectConfig<PostgresqlDatabaseModelToCodeConverterConfig>;
+	sqlserver: DatabaseDialectConfig<SqlServerDatabaseModelToCodeConverterConfig>;
 	java: ClassLanguageConfig<JavaClassModelToCodeConverterConfig>;
 	typescript: ClassLanguageConfig<TypeScriptClassModelToCodeConverterConfig>;
 	plantuml: PlantUmlEntityRelationshipModelToDiagramCodeConverterConfig;

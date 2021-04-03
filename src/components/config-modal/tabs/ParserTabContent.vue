@@ -1,7 +1,5 @@
 <template>
-    <SettingsTabSection title="Other settings">
-        <h3 class="is-size-5 mb-5 has-text-weight-bold">Input code</h3>
-
+    <SettingsTabSection title="Parser settings">
         <table class="table is-fullwidth is-striped is-hoverable settings-table">
             <tbody>
                 <tr>

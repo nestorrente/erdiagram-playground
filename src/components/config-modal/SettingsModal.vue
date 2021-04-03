@@ -28,11 +28,17 @@
                         append-tabs-content-class="vfc-item vfc-grow"
                         append-tabs-content-style="overflow-y: auto"
                 >
+                    <Tab name="parser" title="Parser">
+                        <OtherTabContent :config="internalConfig"/>
+                    </Tab>
                     <Tab name="mysql" title="MySQL">
                         <MysqlTabContent :config="internalConfig"/>
                     </Tab>
                     <Tab name="oracle" title="Oracle DB">
                         <OracleTabContent :config="internalConfig"/>
+                    </Tab>
+                    <Tab name="postgresql" title="PostgreSQL">
+                        <PostgresqlTabContent :config="internalConfig"/>
                     </Tab>
                     <Tab name="sqlserver" title="SQL Server">
                         <SqlServerTabContent :config="internalConfig"/>
@@ -48,9 +54,6 @@
                     </Tab>
                     <Tab name="plantuml" title="PlantUML">
                         <PlantUmlTabContent :config="internalConfig"/>
-                    </Tab>
-                    <Tab name="other" title="Other">
-                        <OtherTabContent :config="internalConfig"/>
                     </Tab>
                 </Tabs>
             </div>
@@ -78,7 +81,7 @@
     import Tabs from '@/components/tabs/Tabs.vue';
     import erdiagramPlaygroundConfigManager, {LAST_CONFIG_VERSION} from '@/config/ERDiagramPlaygroundConfigManager';
     import Tab from '@/components/tabs/Tab.vue';
-    import OtherTabContent from '@/components/config-modal/tabs/OtherTabContent.vue';
+    import OtherTabContent from '@/components/config-modal/tabs/ParserTabContent.vue';
     import MysqlTabContent from '@/components/config-modal/tabs/database/MysqlTabContent.vue';
     import OracleTabContent from '@/components/config-modal/tabs/database/OracleTabContent.vue';
     import SqlServerTabContent from '@/components/config-modal/tabs/database/SqlServerTabContent.vue';
@@ -89,6 +92,7 @@
     import configStore from '@/store/configStore';
     import NomnomlTabContent from '@/components/config-modal/tabs/NomnomlTabContent.vue';
     import PlantUmlTabContent from '@/components/config-modal/tabs/PlantUmlTabContent.vue';
+    import PostgresqlTabContent from '@/components/config-modal/tabs/database/PostgresqlTabContent.vue';
 
     interface Props {
         showing: boolean;
@@ -106,6 +110,7 @@
             'update:selectedTabName'
         ],
         components: {
+            PostgresqlTabContent,
             PlantUmlTabContent,
             NomnomlTabContent,
             SettingsModalFooter,
