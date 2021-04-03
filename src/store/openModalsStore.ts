@@ -23,15 +23,10 @@ const openModalsStore = createStore(() => {
 		return openModalUidStack.value[openModalUidStack.value.length - 1];
 	});
 
-	const isAnyModalOpen = computed((): boolean => {
-		return openModalUidStack.value.length > 0;
-	});
-
 	return {
 		registerModalOpen,
 		registerModalClose,
-		frontModalUid,
-		isAnyModalOpen
+		frontModalUid
 	};
 
 });
