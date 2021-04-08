@@ -222,7 +222,7 @@
                     outputFormats.java,
                     outputFormats.typescript
                 ],
-                'Diagram (experimental)': [
+                'Diagram': [
                     outputFormats.plantumlCode,
                     outputFormats.plantumlDiagram,
                     outputFormats.nomnomlCode,

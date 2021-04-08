@@ -89,7 +89,7 @@ const typescriptCodeOutputFormat: CodeOutputFormat = reactive({
 
 const plantumlCodeOutputFormat: CodeOutputFormat = reactive({
 	id: 'plantumlCode',
-	name: 'PlantUML (code)',
+	name: 'PlantUML code',
 	type: 'code',
 	codeBlockLang: 'plaintext',
 	erModelToCodeConverter: erModelToCodeConverters.plantumlConverter
@@ -97,14 +97,14 @@ const plantumlCodeOutputFormat: CodeOutputFormat = reactive({
 
 const plantumlDiagramOutputFormat: DiagramOutputFormat = reactive({
 	id: 'plantumlDiagram',
-	name: 'PlantUML (SVG)',
+	name: 'PlantUML image',
 	type: 'diagram',
 	erModelToDiagramConverter: erModelToDiagramConverters.plantumlConverter
 });
 
 const nomnomlCodeOutputFormat: CodeOutputFormat = reactive({
 	id: 'nomnomlCode',
-	name: 'Nomnoml (code)',
+	name: 'Nomnoml code',
 	type: 'code',
 	codeBlockLang: 'plaintext',
 	erModelToCodeConverter: erModelToCodeConverters.nomnomlConverter
@@ -112,7 +112,7 @@ const nomnomlCodeOutputFormat: CodeOutputFormat = reactive({
 
 const nomnomlDiagramOutputFormat: DiagramOutputFormat = reactive({
 	id: 'nomnomlDiagram',
-	name: 'Nomnoml (SVG)',
+	name: 'Nomnoml image',
 	type: 'diagram',
 	erModelToDiagramConverter: erModelToDiagramConverters.nomnomlConverter
 });
