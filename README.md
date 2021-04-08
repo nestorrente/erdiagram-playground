@@ -1,6 +1,6 @@
 # ERDiagram playground
 
-This is the playground application of the [ERDiagram project](https://github.com/nestorrente/erdiagram).
+This application is a playground for the [ERDiagram library](https://github.com/nestorrente/erdiagram).
 
 ## Live demo
 
