@@ -14,7 +14,7 @@ module.exports = {
     rules: {
         'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
         'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-        // FIXME wait for this to be implemented in order to enable this rule again:
+        // FIXME wait for this to be implemented before enabling this rule again:
         //  https://github.com/vuejs/eslint-plugin-vue/issues/1371
         'vue/no-mutating-props': 'off',
         'vue/no-async-in-computed-properties': 'off',

@@ -4,19 +4,20 @@ import {
 	databaseModelGeneratorConfigManager,
 	entityRelationshipModelParserConfigManager,
 	javaClassModelToCodeConverterConfigManager,
-	mysqlDatabaseModelToCodeConverterConfigManager,
+	mysqlDialectConfigManager,
 	nomnomlEntityRelationshipModelToDiagramCodeConverterConfigManager,
-	oracleDatabaseModelToCodeConverterConfigManager,
+	oracleDialectConfigManager,
 	plantumlEntityRelationshipModelToDiagramCodeConverterConfigManager,
-	postgresqlDatabaseModelToCodeConverterConfigManager,
-	sqlServerDatabaseModelToCodeConverterConfigManager,
+	postgresqlDialectConfigManager,
+	sqliteDialectConfigManager,
+	sqlServerDialectConfigManager,
 	typescriptClassModelToCodeConverterConfigManager
 } from '@nestorrente/erdiagram';
 import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
 import ERDiagramPlaygroundSerializableConfig from '@/config/ERDiagramPlaygroundSerializableConfig';
 import PartialERDiagramPlaygroundConfig from '@/config/PartialERDiagramPlaygroundConfig';
 
-export const LAST_CONFIG_VERSION = '0.1.0-alpha.2-1615063137254';
+export const LAST_CONFIG_VERSION = '0.1.0-beta.0-1617909401187';
 
 export class ERDiagramPlaygroundConfigManager
 		extends AbstractComponentConfigManager<ERDiagramPlaygroundConfig, PartialERDiagramPlaygroundConfig, ERDiagramPlaygroundSerializableConfig> {
@@ -27,19 +28,23 @@ export class ERDiagramPlaygroundConfigManager
 			erModelParser: entityRelationshipModelParserConfigManager.getDefaultConfig(),
 			mysql: {
 				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.getDefaultConfig(),
-				databaseModelToCodeConverterConfig: mysqlDatabaseModelToCodeConverterConfigManager.getDefaultConfig()
+				dialectConfig: mysqlDialectConfigManager.getDefaultConfig()
 			},
 			oracle: {
 				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.getDefaultConfig(),
-				databaseModelToCodeConverterConfig: oracleDatabaseModelToCodeConverterConfigManager.getDefaultConfig()
+				dialectConfig: oracleDialectConfigManager.getDefaultConfig()
 			},
 			postgresql: {
 				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.getDefaultConfig(),
-				databaseModelToCodeConverterConfig: postgresqlDatabaseModelToCodeConverterConfigManager.getDefaultConfig()
+				dialectConfig: postgresqlDialectConfigManager.getDefaultConfig()
+			},
+			sqlite: {
+				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.getDefaultConfig(),
+				dialectConfig: sqliteDialectConfigManager.getDefaultConfig()
 			},
 			sqlserver: {
 				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.getDefaultConfig(),
-				databaseModelToCodeConverterConfig: sqlServerDatabaseModelToCodeConverterConfigManager.getDefaultConfig()
+				dialectConfig: sqlServerDialectConfigManager.getDefaultConfig()
 			},
 			java: {
 				classModelGeneratorConfig: classModelGeneratorConfigManager.getDefaultConfig(),
@@ -66,9 +71,9 @@ export class ERDiagramPlaygroundConfigManager
 						fullConfig.mysql.databaseModelGeneratorConfig,
 						partialConfig?.mysql?.databaseModelGeneratorConfig
 				),
-				databaseModelToCodeConverterConfig: mysqlDatabaseModelToCodeConverterConfigManager.mergeConfigs(
-						fullConfig.mysql.databaseModelToCodeConverterConfig,
-						partialConfig?.mysql?.databaseModelToCodeConverterConfig
+				dialectConfig: mysqlDialectConfigManager.mergeConfigs(
+						fullConfig.mysql.dialectConfig,
+						partialConfig?.mysql?.dialectConfig
 				)
 			},
 			oracle: {
@@ -76,9 +81,9 @@ export class ERDiagramPlaygroundConfigManager
 						fullConfig.oracle.databaseModelGeneratorConfig,
 						partialConfig?.oracle?.databaseModelGeneratorConfig
 				),
-				databaseModelToCodeConverterConfig: oracleDatabaseModelToCodeConverterConfigManager.mergeConfigs(
-						fullConfig.oracle.databaseModelToCodeConverterConfig,
-						partialConfig?.oracle?.databaseModelToCodeConverterConfig
+				dialectConfig: oracleDialectConfigManager.mergeConfigs(
+						fullConfig.oracle.dialectConfig,
+						partialConfig?.oracle?.dialectConfig
 				),
 			},
 			postgresql: {
@@ -86,9 +91,19 @@ export class ERDiagramPlaygroundConfigManager
 						fullConfig.postgresql.databaseModelGeneratorConfig,
 						partialConfig?.postgresql?.databaseModelGeneratorConfig
 				),
-				databaseModelToCodeConverterConfig: postgresqlDatabaseModelToCodeConverterConfigManager.mergeConfigs(
-						fullConfig.postgresql.databaseModelToCodeConverterConfig,
-						partialConfig?.postgresql?.databaseModelToCodeConverterConfig
+				dialectConfig: postgresqlDialectConfigManager.mergeConfigs(
+						fullConfig.postgresql.dialectConfig,
+						partialConfig?.postgresql?.dialectConfig
+				),
+			},
+			sqlite: {
+				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.mergeConfigs(
+						fullConfig.sqlite.databaseModelGeneratorConfig,
+						partialConfig?.sqlite?.databaseModelGeneratorConfig
+				),
+				dialectConfig: sqliteDialectConfigManager.mergeConfigs(
+						fullConfig.sqlite.dialectConfig,
+						partialConfig?.sqlite?.dialectConfig
 				),
 			},
 			sqlserver: {
@@ -96,9 +111,9 @@ export class ERDiagramPlaygroundConfigManager
 						fullConfig.sqlserver.databaseModelGeneratorConfig,
 						partialConfig?.sqlserver?.databaseModelGeneratorConfig
 				),
-				databaseModelToCodeConverterConfig: sqlServerDatabaseModelToCodeConverterConfigManager.mergeConfigs(
-						fullConfig.sqlserver.databaseModelToCodeConverterConfig,
-						partialConfig?.sqlserver?.databaseModelToCodeConverterConfig
+				dialectConfig: sqlServerDialectConfigManager.mergeConfigs(
+						fullConfig.sqlserver.dialectConfig,
+						partialConfig?.sqlserver?.dialectConfig
 				),
 			},
 			java: {
@@ -138,19 +153,23 @@ export class ERDiagramPlaygroundConfigManager
 			erModelParser: entityRelationshipModelParserConfigManager.convertToSerializableObject(fullConfig.erModelParser),
 			mysql: {
 				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.convertToSerializableObject(fullConfig.mysql.databaseModelGeneratorConfig),
-				databaseModelToCodeConverterConfig: mysqlDatabaseModelToCodeConverterConfigManager.convertToSerializableObject(fullConfig.mysql.databaseModelToCodeConverterConfig)
+				databaseModelToCodeConverterConfig: mysqlDialectConfigManager.convertToSerializableObject(fullConfig.mysql.dialectConfig)
 			},
 			oracle: {
 				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.convertToSerializableObject(fullConfig.oracle.databaseModelGeneratorConfig),
-				databaseModelToCodeConverterConfig: oracleDatabaseModelToCodeConverterConfigManager.convertToSerializableObject(fullConfig.oracle.databaseModelToCodeConverterConfig),
+				databaseModelToCodeConverterConfig: oracleDialectConfigManager.convertToSerializableObject(fullConfig.oracle.dialectConfig),
 			},
 			postgresql: {
 				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.convertToSerializableObject(fullConfig.postgresql.databaseModelGeneratorConfig),
-				databaseModelToCodeConverterConfig: postgresqlDatabaseModelToCodeConverterConfigManager.convertToSerializableObject(fullConfig.postgresql.databaseModelToCodeConverterConfig),
+				databaseModelToCodeConverterConfig: postgresqlDialectConfigManager.convertToSerializableObject(fullConfig.postgresql.dialectConfig),
+			},
+			sqlite: {
+				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.convertToSerializableObject(fullConfig.sqlite.databaseModelGeneratorConfig),
+				databaseModelToCodeConverterConfig: sqliteDialectConfigManager.convertToSerializableObject(fullConfig.sqlite.dialectConfig),
 			},
 			sqlserver: {
 				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.convertToSerializableObject(fullConfig.sqlserver.databaseModelGeneratorConfig),
-				databaseModelToCodeConverterConfig: sqlServerDatabaseModelToCodeConverterConfigManager.convertToSerializableObject(fullConfig.sqlserver.databaseModelToCodeConverterConfig),
+				databaseModelToCodeConverterConfig: sqlServerDialectConfigManager.convertToSerializableObject(fullConfig.sqlserver.dialectConfig),
 			},
 			java: {
 				classModelGeneratorConfig: classModelGeneratorConfigManager.convertToSerializableObject(fullConfig.java.classModelGeneratorConfig),
@@ -171,19 +190,23 @@ export class ERDiagramPlaygroundConfigManager
 			erModelParser: entityRelationshipModelParserConfigManager.convertFromSerializableObject(serializableConfig.erModelParser),
 			mysql: {
 				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.convertFromSerializableObject(serializableConfig.mysql.databaseModelGeneratorConfig),
-				databaseModelToCodeConverterConfig: mysqlDatabaseModelToCodeConverterConfigManager.convertFromSerializableObject(serializableConfig.mysql.databaseModelToCodeConverterConfig)
+				dialectConfig: mysqlDialectConfigManager.convertFromSerializableObject(serializableConfig.mysql.databaseModelToCodeConverterConfig)
 			},
 			oracle: {
 				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.convertFromSerializableObject(serializableConfig.oracle.databaseModelGeneratorConfig),
-				databaseModelToCodeConverterConfig: oracleDatabaseModelToCodeConverterConfigManager.convertFromSerializableObject(serializableConfig.oracle.databaseModelToCodeConverterConfig),
+				dialectConfig: oracleDialectConfigManager.convertFromSerializableObject(serializableConfig.oracle.databaseModelToCodeConverterConfig),
 			},
 			postgresql: {
 				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.convertFromSerializableObject(serializableConfig.postgresql.databaseModelGeneratorConfig),
-				databaseModelToCodeConverterConfig: postgresqlDatabaseModelToCodeConverterConfigManager.convertFromSerializableObject(serializableConfig.postgresql.databaseModelToCodeConverterConfig),
+				dialectConfig: postgresqlDialectConfigManager.convertFromSerializableObject(serializableConfig.postgresql.databaseModelToCodeConverterConfig),
+			},
+			sqlite: {
+				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.convertFromSerializableObject(serializableConfig.sqlite.databaseModelGeneratorConfig),
+				dialectConfig: sqliteDialectConfigManager.convertFromSerializableObject(serializableConfig.sqlite.databaseModelToCodeConverterConfig),
 			},
 			sqlserver: {
 				databaseModelGeneratorConfig: databaseModelGeneratorConfigManager.convertFromSerializableObject(serializableConfig.sqlserver.databaseModelGeneratorConfig),
-				databaseModelToCodeConverterConfig: sqlServerDatabaseModelToCodeConverterConfigManager.convertFromSerializableObject(serializableConfig.sqlserver.databaseModelToCodeConverterConfig),
+				dialectConfig: sqlServerDialectConfigManager.convertFromSerializableObject(serializableConfig.sqlserver.databaseModelToCodeConverterConfig),
 			},
 			java: {
 				classModelGeneratorConfig: classModelGeneratorConfigManager.convertFromSerializableObject(serializableConfig.java.classModelGeneratorConfig),

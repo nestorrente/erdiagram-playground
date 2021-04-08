@@ -2,14 +2,14 @@
     <SettingsTabSection title="Oracle settings">
         <CommonDatabaseSettingsTable
                 :database-model-generator-config="config.oracle.databaseModelGeneratorConfig"
-                :database-model-to-code-converter-config="config.oracle.databaseModelToCodeConverterConfig"
-                :default-database-model-to-code-converter-config="defaultDatabaseModelToCodeConverterConfig"
+                :database-model-to-code-converter-config="config.oracle.dialectConfig"
+                :default-sql-dialect-config="defaultSqlDialectConfig"
         />
 
         <TypeBindingsTable
                 target-lang="Oracle"
-                :type-bindings="config.oracle.databaseModelToCodeConverterConfig.typeBindings"
-                :default-type-bindings="defaultDatabaseModelToCodeConverterConfig.typeBindings"
+                :type-bindings="config.oracle.dialectConfig.typeBindings"
+                :default-type-bindings="defaultSqlDialectConfig.typeBindings"
         />
     </SettingsTabSection>
 </template>
@@ -19,7 +19,7 @@
     import TypeBindingsTable from '@/components/config-modal/tabs/TypeBindingsTable.vue';
     import CommonDatabaseSettingsTable from '@/components/config-modal/tabs/database/CommonDatabaseSettingsTable.vue';
     import SettingsTabSection from '@/components/config-modal/tabs/SettingsTabSection.vue';
-    import {oracleDatabaseModelToCodeConverterConfigManager} from '@nestorrente/erdiagram';
+    import {oracleDialectConfigManager} from '@nestorrente/erdiagram';
 
     export default defineComponent({
         name: 'OracleTabContent',
@@ -36,7 +36,7 @@
         },
         setup() {
             return {
-                defaultDatabaseModelToCodeConverterConfig: oracleDatabaseModelToCodeConverterConfigManager.getDefaultConfig()
+                defaultSqlDialectConfig: oracleDialectConfigManager.getDefaultConfig()
             };
         }
     });

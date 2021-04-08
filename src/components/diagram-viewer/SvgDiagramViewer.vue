@@ -304,7 +304,7 @@
                 border: 1px solid #999;
                 box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, 0.3);
 
-                // We use important in order to override inline style of the <svg> tag (if present)
+                // We use important to override inline style of the <svg> tag (if present)
                 width: calc(v-bind('svgCssVariables.width') * v-bind(zoomScale)) !important;
                 height: calc(v-bind('svgCssVariables.height') * v-bind(zoomScale)) !important;
                 transform: translate(v-bind('svgCssVariables.translateX'), v-bind('svgCssVariables.translateY'));

@@ -16,7 +16,7 @@
             <IdNamingStrategySettingRow :config="databaseModelGeneratorConfig"/>
             <SettingRow
                     description="Table name case format"
-                    @restore-default="databaseModelToCodeConverterConfig.tableNameCaseFormat = defaultDatabaseModelToCodeConverterConfig.tableNameCaseFormat"
+                    @restore-default="databaseModelToCodeConverterConfig.tableNameCaseFormat = defaultSqlDialectConfig.tableNameCaseFormat"
             >
                 <SelectInput
                         :items="caseFormatOptions"
@@ -28,7 +28,7 @@
             </SettingRow>
             <SettingRow
                     description="Column name case format"
-                    @restore-default="databaseModelToCodeConverterConfig.columnNameCaseFormat = defaultDatabaseModelToCodeConverterConfig.columnNameCaseFormat"
+                    @restore-default="databaseModelToCodeConverterConfig.columnNameCaseFormat = defaultSqlDialectConfig.columnNameCaseFormat"
             >
                 <SelectInput
                         :items="caseFormatOptions"
@@ -49,8 +49,8 @@
         CaseFormat,
         DatabaseModelGeneratorConfig,
         databaseModelGeneratorConfigManager,
-        DatabaseModelToCodeConverterConfig,
         IdNamingStrategy,
+        SqlDialectConfig,
         StandardCaseFormats,
         StandardIdNamingStrategies
     } from '@nestorrente/erdiagram';
@@ -60,8 +60,8 @@
 
     interface Props {
         databaseModelGeneratorConfig: DatabaseModelGeneratorConfig;
-        databaseModelToCodeConverterConfig: DatabaseModelToCodeConverterConfig;
-        defaultDatabaseModelToCodeConverterConfig: DatabaseModelToCodeConverterConfig;
+        databaseModelToCodeConverterConfig: SqlDialectConfig;
+        defaultSqlDialectConfig: SqlDialectConfig;
     }
 
     export default defineComponent({
@@ -80,7 +80,7 @@
                 type: Object,
                 required: true
             },
-            defaultDatabaseModelToCodeConverterConfig: {
+            defaultSqlDialectConfig: {
                 type: Object,
                 required: true
             }

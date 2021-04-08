@@ -1,12 +1,13 @@
 import {
 	EntityRelationshipModelParserConfig,
 	JavaClassModelToCodeConverterConfig,
-	MysqlDatabaseModelToCodeConverterConfig,
+	MysqlDialectConfig,
 	NomnomlEntityRelationshipModelToDiagramCodeConverterConfig,
-	OracleDatabaseModelToCodeConverterConfig,
+	OracleDialectConfig,
 	PlantUmlEntityRelationshipModelToDiagramCodeConverterConfig,
-	PostgresqlDatabaseModelToCodeConverterConfig,
-	SqlServerDatabaseModelToCodeConverterConfig,
+	PostgresqlDialectConfig,
+	SqliteDialectConfig,
+	SqlServerDialectConfig,
 	TypeScriptClassModelToCodeConverterConfig
 } from '@nestorrente/erdiagram';
 import {ClassLanguageConfig, DatabaseDialectConfig} from '@/config/ERDiagramPlaygroundConfig';
@@ -14,10 +15,11 @@ import {ClassLanguageConfig, DatabaseDialectConfig} from '@/config/ERDiagramPlay
 type PartialERDiagramPlaygroundConfig = Partial<{
 	_version: string;
 	erModelParser: EntityRelationshipModelParserConfig;
-	mysql: Partial<DatabaseDialectConfig<MysqlDatabaseModelToCodeConverterConfig>>;
-	oracle: Partial<DatabaseDialectConfig<OracleDatabaseModelToCodeConverterConfig>>;
-	postgresql: Partial<DatabaseDialectConfig<PostgresqlDatabaseModelToCodeConverterConfig>>;
-	sqlserver: Partial<DatabaseDialectConfig<SqlServerDatabaseModelToCodeConverterConfig>>;
+	mysql: Partial<DatabaseDialectConfig<MysqlDialectConfig>>;
+	oracle: Partial<DatabaseDialectConfig<OracleDialectConfig>>;
+	postgresql: Partial<DatabaseDialectConfig<PostgresqlDialectConfig>>;
+	sqlite: Partial<DatabaseDialectConfig<SqliteDialectConfig>>;
+	sqlserver: Partial<DatabaseDialectConfig<SqlServerDialectConfig>>;
 	java: Partial<ClassLanguageConfig<JavaClassModelToCodeConverterConfig>>;
 	typescript: Partial<ClassLanguageConfig<TypeScriptClassModelToCodeConverterConfig>>;
 	plantuml: Partial<PlantUmlEntityRelationshipModelToDiagramCodeConverterConfig>;

@@ -1,14 +1,14 @@
 <template>
-    <SettingsTabSection title="PostgreSQL settings">
+    <SettingsTabSection title="SQLite settings">
         <CommonDatabaseSettingsTable
-                :database-model-generator-config="config.postgresql.databaseModelGeneratorConfig"
-                :database-model-to-code-converter-config="config.postgresql.dialectConfig"
+                :database-model-generator-config="config.sqlite.databaseModelGeneratorConfig"
+                :database-model-to-code-converter-config="config.sqlite.dialectConfig"
                 :default-sql-dialect-config="defaultSqlDialectConfig"
         />
 
         <TypeBindingsTable
-                target-lang="PostgreSQL"
-                :type-bindings="config.postgresql.dialectConfig.typeBindings"
+                target-lang="SQLite"
+                :type-bindings="config.sqlite.dialectConfig.typeBindings"
                 :default-type-bindings="defaultSqlDialectConfig.typeBindings"
         />
     </SettingsTabSection>
@@ -19,10 +19,10 @@
     import TypeBindingsTable from '@/components/config-modal/tabs/TypeBindingsTable.vue';
     import CommonDatabaseSettingsTable from '@/components/config-modal/tabs/database/CommonDatabaseSettingsTable.vue';
     import SettingsTabSection from '@/components/config-modal/tabs/SettingsTabSection.vue';
-    import {postgresqlDialectConfigManager} from '@nestorrente/erdiagram';
+    import {sqliteDialectConfigManager} from '@nestorrente/erdiagram';
 
     export default defineComponent({
-        name: 'PostgresqlTabContent',
+        name: 'SqliteTabContent',
         components: {
             SettingsTabSection,
             CommonDatabaseSettingsTable,
@@ -36,7 +36,7 @@
         },
         setup() {
             return {
-                defaultSqlDialectConfig: postgresqlDialectConfigManager.getDefaultConfig()
+                defaultSqlDialectConfig: sqliteDialectConfigManager.getDefaultConfig()
             };
         }
     });

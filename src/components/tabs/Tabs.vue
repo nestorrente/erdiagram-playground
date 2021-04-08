@@ -25,6 +25,7 @@
         <slot name="afterTabs"></slot>
     </div>
     <div
+            ref="tabsContentsContainer"
             :class="appendTabsContentClass"
             :style="appendTabsContentStyle"
     >
@@ -50,6 +51,7 @@
     interface Props {
         boxed: boolean;
         toggle: boolean;
+        resetScrollOnTabChange: boolean;
         appendTabsClass?: CssClass;
         appendTabsStyle?: CssStyle;
         appendTabsContentClass?: CssClass;
@@ -70,6 +72,7 @@
         props: {
             boxed: Boolean,
             toggle: Boolean,
+            resetScrollOnTabChange: Boolean,
             appendTabsClass: {
                 type: [String, Array, Object],
                 required: false
@@ -113,11 +116,20 @@
             }
 
             const internalSelectedTabName = ref(tabsData.value[0]?.name);
+
             watch(() => props.selectedTabName, newValue => {
                 if (newValue != null) {
                     internalSelectedTabName.value = newValue;
                 }
             }, {immediate: true});
+
+            const tabsContentsContainer = ref<HTMLElement>();
+
+            watch(internalSelectedTabName, () => {
+                if (props.resetScrollOnTabChange) {
+                    tabsContentsContainer.value?.scrollTo(0, 0);
+                }
+            });
 
             function selectTab(event: Event, tabName: string) {
 
@@ -140,6 +152,7 @@
             return {
                 tabsData,
                 internalSelectedTabName,
+                tabsContentsContainer,
                 selectTab,
                 scrollHorizontally
             };

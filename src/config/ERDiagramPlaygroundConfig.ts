@@ -2,34 +2,36 @@ import {
 	ClassModelGeneratorConfig,
 	ClassModelToCodeConverterConfig,
 	DatabaseModelGeneratorConfig,
-	DatabaseModelToCodeConverterConfig,
 	EntityRelationshipModelParserConfig,
 	JavaClassModelToCodeConverterConfig,
-	MysqlDatabaseModelToCodeConverterConfig,
+	MysqlDialectConfig,
 	NomnomlEntityRelationshipModelToDiagramCodeConverterConfig,
-	OracleDatabaseModelToCodeConverterConfig,
+	OracleDialectConfig,
 	PlantUmlEntityRelationshipModelToDiagramCodeConverterConfig,
-	PostgresqlDatabaseModelToCodeConverterConfig,
-	SqlServerDatabaseModelToCodeConverterConfig,
+	PostgresqlDialectConfig,
+	SqlDialectConfig,
+	SqliteDialectConfig,
+	SqlServerDialectConfig,
 	TypeScriptClassModelToCodeConverterConfig
 } from '@nestorrente/erdiagram';
 
 export default interface ERDiagramPlaygroundConfig {
 	_version: string;
 	erModelParser: EntityRelationshipModelParserConfig;
-	mysql: DatabaseDialectConfig<MysqlDatabaseModelToCodeConverterConfig>;
-	oracle: DatabaseDialectConfig<OracleDatabaseModelToCodeConverterConfig>;
-	postgresql: DatabaseDialectConfig<PostgresqlDatabaseModelToCodeConverterConfig>;
-	sqlserver: DatabaseDialectConfig<SqlServerDatabaseModelToCodeConverterConfig>;
+	mysql: DatabaseDialectConfig<MysqlDialectConfig>;
+	oracle: DatabaseDialectConfig<OracleDialectConfig>;
+	postgresql: DatabaseDialectConfig<PostgresqlDialectConfig>;
+	sqlite: DatabaseDialectConfig<SqliteDialectConfig>;
+	sqlserver: DatabaseDialectConfig<SqlServerDialectConfig>;
 	java: ClassLanguageConfig<JavaClassModelToCodeConverterConfig>;
 	typescript: ClassLanguageConfig<TypeScriptClassModelToCodeConverterConfig>;
 	plantuml: PlantUmlEntityRelationshipModelToDiagramCodeConverterConfig;
 	nomnoml: NomnomlEntityRelationshipModelToDiagramCodeConverterConfig;
 }
 
-export interface DatabaseDialectConfig<T extends DatabaseModelToCodeConverterConfig> {
+export interface DatabaseDialectConfig<T extends SqlDialectConfig> {
 	databaseModelGeneratorConfig: DatabaseModelGeneratorConfig;
-	databaseModelToCodeConverterConfig: T;
+	dialectConfig: T;
 }
 
 export interface ClassLanguageConfig<T extends ClassModelToCodeConverterConfig<any>> {

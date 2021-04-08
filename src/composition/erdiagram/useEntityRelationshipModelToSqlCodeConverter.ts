@@ -2,13 +2,14 @@ import {computed} from 'vue';
 import {
 	DatabaseModelGenerator,
 	DatabaseModelGeneratorConfig,
-	DatabaseModelToCodeConverter,
-	EntityRelationshipModelToDatabaseCodeConverter
+	DatabaseModelToSqlCodeConverter,
+	EntityRelationshipModelToDatabaseCodeConverter,
+	SqlDialect
 } from '@nestorrente/erdiagram';
 
-export default function useEntityRelationshipModelToDatabaseCodeConverter(
+export default function useEntityRelationshipModelToSqlCodeConverter(
 		databaseModelGeneratorConfigSupplier: () => DatabaseModelGeneratorConfig,
-		databaseModelToCodeConverterSupplier: () => DatabaseModelToCodeConverter
+		databaseModelToCodeConverterSupplier: () => SqlDialect
 ) {
 
 	const databaseModelGeneratorConfig = computed(databaseModelGeneratorConfigSupplier);
@@ -19,7 +20,7 @@ export default function useEntityRelationshipModelToDatabaseCodeConverter(
 	return computed(() => {
 		return new EntityRelationshipModelToDatabaseCodeConverter(
 				databaseModelGenerator.value,
-				databaseModelToCodeConverter.value
+				new DatabaseModelToSqlCodeConverter(databaseModelToCodeConverter.value)
 		);
 	});
 

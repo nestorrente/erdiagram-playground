@@ -119,7 +119,7 @@
                         maxWidth: 800
                     });
 
-                    // Force a re-render in order to recover the previous value
+                    // Force a re-render to recover the previous value
                     forceUpdate();
 
                 }

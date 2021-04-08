@@ -3,17 +3,15 @@ User
     username! text(30)
     # Optional property (?)
     realName? text(50)
-    # Auto-incremental property (+)
-    order+ int
 
 Product
     name text(30)
-    # You can also combine those modifiers in order to define
-    # an optional, unique, auto-incremental property:
-    order!?+ int
+    # You can also combine those modifiers
+    # to define an optional unique property:
+    order!? int
 
 Repeating
     # Repeated modifiers are ignored, so this:
-    several++++ short
+    several!!!! short
     # ... is the same as this:
-    once+ short
+    once! short

@@ -27,6 +27,7 @@
                         append-tabs-class="vfc-item mb-0"
                         append-tabs-content-class="vfc-item vfc-grow"
                         append-tabs-content-style="overflow-y: auto"
+                        reset-scroll-on-tab-change
                 >
                     <Tab name="parser" title="Parser">
                         <OtherTabContent :config="internalConfig"/>
@@ -39,6 +40,9 @@
                     </Tab>
                     <Tab name="postgresql" title="PostgreSQL">
                         <PostgresqlTabContent :config="internalConfig"/>
+                    </Tab>
+                    <Tab name="sqlite" title="SQLite">
+                        <SqliteTabContent :config="internalConfig"/>
                     </Tab>
                     <Tab name="sqlserver" title="SQL Server">
                         <SqlServerTabContent :config="internalConfig"/>
@@ -93,6 +97,7 @@
     import NomnomlTabContent from '@/components/config-modal/tabs/NomnomlTabContent.vue';
     import PlantUmlTabContent from '@/components/config-modal/tabs/PlantUmlTabContent.vue';
     import PostgresqlTabContent from '@/components/config-modal/tabs/database/PostgresqlTabContent.vue';
+    import SqliteTabContent from '@/components/config-modal/tabs/database/SqliteTabContent.vue';
 
     interface Props {
         showing: boolean;
@@ -110,6 +115,7 @@
             'update:selectedTabName'
         ],
         components: {
+            SqliteTabContent,
             PostgresqlTabContent,
             PlantUmlTabContent,
             NomnomlTabContent,

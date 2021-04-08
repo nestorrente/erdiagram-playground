@@ -215,6 +215,7 @@
                     outputFormats.mysql,
                     outputFormats.oracle,
                     outputFormats.postgresql,
+                    outputFormats.sqlite,
                     outputFormats.sqlserver
                 ],
                 'OOP': [

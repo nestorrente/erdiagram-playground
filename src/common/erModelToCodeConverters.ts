@@ -1,38 +1,44 @@
-import useEntityRelationshipModelToDatabaseCodeConverter
-	from '@/composition/erdiagram/useEntityRelationshipModelToDatabaseCodeConverter';
+import useEntityRelationshipModelToSqlCodeConverter
+	from '@/composition/erdiagram/useEntityRelationshipModelToSqlCodeConverter';
 import configStore from '@/store/configStore';
 import {
 	JavaClassModelToCodeConverter,
-	MysqlDatabaseModelToCodeConverter,
+	MysqlDialect,
 	NomnomlEntityRelationshipModelToDiagramCodeConverter,
-	OracleDatabaseModelToCodeConverter,
+	OracleDialect,
 	PlantUmlEntityRelationshipModelToDiagramCodeConverter,
-	PostgresqlDatabaseModelToCodeConverter,
-	SqlServerDatabaseModelToCodeConverter,
+	PostgresqlDialect,
+	SqliteDialect,
+	SqlServerDialect,
 	TypeScriptClassModelToCodeConverter
 } from '@nestorrente/erdiagram';
 import useEntityRelationshipModelToClassCodeConverter
 	from '@/composition/erdiagram/useEntityRelationshipModelToClassCodeConverter';
 import {computed} from 'vue';
 
-const mysqlConverter = useEntityRelationshipModelToDatabaseCodeConverter(
+const mysqlConverter = useEntityRelationshipModelToSqlCodeConverter(
 		() => configStore.config.mysql.databaseModelGeneratorConfig,
-		() => new MysqlDatabaseModelToCodeConverter(configStore.config.mysql.databaseModelToCodeConverterConfig)
+		() => new MysqlDialect(configStore.config.mysql.dialectConfig)
 );
 
-const oracleConverter = useEntityRelationshipModelToDatabaseCodeConverter(
+const oracleConverter = useEntityRelationshipModelToSqlCodeConverter(
 		() => configStore.config.oracle.databaseModelGeneratorConfig,
-		() => new OracleDatabaseModelToCodeConverter(configStore.config.oracle.databaseModelToCodeConverterConfig)
+		() => new OracleDialect(configStore.config.oracle.dialectConfig)
 );
 
-const postgresqlConverter = useEntityRelationshipModelToDatabaseCodeConverter(
+const postgresqlConverter = useEntityRelationshipModelToSqlCodeConverter(
 		() => configStore.config.postgresql.databaseModelGeneratorConfig,
-		() => new PostgresqlDatabaseModelToCodeConverter(configStore.config.postgresql.databaseModelToCodeConverterConfig)
+		() => new PostgresqlDialect(configStore.config.postgresql.dialectConfig)
 );
 
-const sqlserverConverter = useEntityRelationshipModelToDatabaseCodeConverter(
+const sqliteConverter = useEntityRelationshipModelToSqlCodeConverter(
+		() => configStore.config.sqlite.databaseModelGeneratorConfig,
+		() => new SqliteDialect(configStore.config.sqlite.dialectConfig)
+);
+
+const sqlserverConverter = useEntityRelationshipModelToSqlCodeConverter(
 		() => configStore.config.sqlserver.databaseModelGeneratorConfig,
-		() => new SqlServerDatabaseModelToCodeConverter(configStore.config.sqlserver.databaseModelToCodeConverterConfig)
+		() => new SqlServerDialect(configStore.config.sqlserver.dialectConfig)
 );
 
 const javaConverter = useEntityRelationshipModelToClassCodeConverter(
@@ -55,6 +61,7 @@ const nomnomlConverter = computed(() => {
 
 export default {
 	mysqlConverter,
+	sqliteConverter,
 	sqlserverConverter,
 	postgresqlConverter,
 	oracleConverter,

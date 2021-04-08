@@ -55,6 +55,14 @@ const postgresqlCodeOutputFormat: CodeOutputFormat = reactive({
 	erModelToCodeConverter: erModelToCodeConverters.postgresqlConverter
 });
 
+const sqliteCodeOutputFormat: CodeOutputFormat = reactive({
+	id: 'sqlite',
+	name: 'SQLite',
+	type: 'code',
+	codeBlockLang: 'sql_more',
+	erModelToCodeConverter: erModelToCodeConverters.sqliteConverter
+});
+
 const sqlserverCodeOutputFormat: CodeOutputFormat = reactive({
 	id: 'sqlserver',
 	name: 'SQL Server',
@@ -113,6 +121,7 @@ export default {
 	[mysqlCodeOutputFormat.id]: mysqlCodeOutputFormat,
 	[oracleCodeOutputFormat.id]: oracleCodeOutputFormat,
 	[postgresqlCodeOutputFormat.id]: postgresqlCodeOutputFormat,
+	[sqliteCodeOutputFormat.id]: sqliteCodeOutputFormat,
 	[sqlserverCodeOutputFormat.id]: sqlserverCodeOutputFormat,
 	[javaCodeOutputFormat.id]: javaCodeOutputFormat,
 	[typescriptCodeOutputFormat.id]: typescriptCodeOutputFormat,
