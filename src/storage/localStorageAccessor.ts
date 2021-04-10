@@ -1,6 +1,6 @@
 import {localJsonStorage} from '@/storage/JsonStorage';
 import ERDiagramPlaygroundSerializableConfig from '@/config/ERDiagramPlaygroundSerializableConfig';
-import outputFormats, {OutputFormat} from '@/common/outputFormats';
+import outputFormats, {OutputFormat} from '@/common/output/outputFormats';
 import pokemonSampleCode from '!!raw-loader!@/sample-erd-files/Pokemon.erd';
 import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
 import erdiagramPlaygroundConfigManager, {LAST_CONFIG_VERSION} from '@/config/ERDiagramPlaygroundConfigManager';

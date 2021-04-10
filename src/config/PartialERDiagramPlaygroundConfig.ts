@@ -4,7 +4,6 @@ import {
 	MysqlDialectConfig,
 	NomnomlEntityRelationshipModelToDiagramCodeConverterConfig,
 	OracleDialectConfig,
-	PlantUmlEntityRelationshipModelToDiagramCodeConverterConfig,
 	PostgresqlDialectConfig,
 	SqliteDialectConfig,
 	SqlServerDialectConfig,
@@ -22,7 +21,6 @@ type PartialERDiagramPlaygroundConfig = Partial<{
 	sqlserver: Partial<DatabaseDialectConfig<SqlServerDialectConfig>>;
 	java: Partial<ClassLanguageConfig<JavaClassModelToCodeConverterConfig>>;
 	typescript: Partial<ClassLanguageConfig<TypeScriptClassModelToCodeConverterConfig>>;
-	plantuml: Partial<PlantUmlEntityRelationshipModelToDiagramCodeConverterConfig>;
 	nomnoml: Partial<NomnomlEntityRelationshipModelToDiagramCodeConverterConfig>;
 }>;
 

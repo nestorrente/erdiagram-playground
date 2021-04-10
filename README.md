@@ -4,4 +4,4 @@ This application is a playground for the [ERDiagram library](https://github.com/
 
 ## Live demo
 
-You can try this application here: [http://erdiagram.nestorrente.com/](http://erdiagram.nestorrente.com/).
+You can try this application here: [erdiagram.nestorrente.com](http://erdiagram.nestorrente.com/).

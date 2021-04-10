@@ -17,15 +17,15 @@ WishList
 WishList *<-> User
 WishList *->* Product
 
-DiscountCode
-    code text(20)
-    startDate date
-    endDate? date
-    amount int
-
 Order
     date datetime
 
 Order *->* Product (OrderLine)
 Order *->* DiscountCode
 Order *-> User
+
+DiscountCode
+    code text(20)
+    startDate date
+    endDate? date
+    amount int

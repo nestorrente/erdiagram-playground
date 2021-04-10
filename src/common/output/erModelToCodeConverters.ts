@@ -52,7 +52,7 @@ const typescriptConverter = useEntityRelationshipModelToClassCodeConverter(
 );
 
 const plantumlConverter = computed(() => {
-	return new PlantUmlEntityRelationshipModelToDiagramCodeConverter(configStore.config.plantuml);
+	return new PlantUmlEntityRelationshipModelToDiagramCodeConverter();
 });
 
 const nomnomlConverter = computed(() => {

@@ -5,7 +5,8 @@
             v-model:left-column-width-percent="leftColumnWidthPercent"
     >
         <template #left>
-            <div class="vertical-full-container">
+            <!-- We use overflow:hidden because Ace Editor was producing a horizontal overflow -->
+            <div class="vertical-full-container" style="overflow: hidden">
                 <div class="vfc-item pb-5">
                     <div class="columns is-mobile">
                         <div class="column">
@@ -112,11 +113,11 @@
     import configStore from '@/store/configStore';
     import outputFormats, {
         CodeOutputFormat,
-        DiagramOutputFormat,
+        ImageOutputFormat,
         isCodeOutputFormat,
-        isDiagramOutputFormat,
+        isImageOutputFormat,
         OutputFormat
-    } from '@/common/outputFormats';
+    } from '@/common/output/outputFormats';
     import {Ace} from 'ace-builds';
     import SvgDiagramViewer from '@/components/diagram-viewer/SvgDiagramViewer.vue';
     import VerticalSplitPanel from '@/components/generic/split-panel/VerticalSplitPanel.vue';
@@ -233,7 +234,7 @@
             const selectedOutputFormat = ref(localStorageAccessor.getOutputFormat());
 
             const isCodeOutput = computed(() => isCodeOutputFormat(selectedOutputFormat.value));
-            const isDiagramOutput = computed(() => isDiagramOutputFormat(selectedOutputFormat.value));
+            const isDiagramOutput = computed(() => isImageOutputFormat(selectedOutputFormat.value));
 
             watch(selectedOutputFormat, newValue => localStorageAccessor.setOutputFormat(newValue));
 
@@ -255,7 +256,7 @@
                     return Promise.resolve('');
                 }
 
-                const erModelToDiagramConverter = (selectedOutputFormat.value as DiagramOutputFormat).erModelToDiagramConverter;
+                const erModelToDiagramConverter = (selectedOutputFormat.value as ImageOutputFormat).erModelToImageConverter;
 
                 return erModelToDiagramConverter.convertToDiagram(entityRelationshipModel.value) ?? '';
 

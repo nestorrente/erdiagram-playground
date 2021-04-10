@@ -5,8 +5,8 @@ Trainer
 Trainer <->* Pokemon
 
 Pokemon
-    name text(20)
-    pokedexNumber int
+    name! text(20)
+    pokedexNumber! int
     legendary bool
 
 Pokemon *->* Move

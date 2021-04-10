@@ -7,7 +7,6 @@ import {
 	MysqlDialectSerializableConfig,
 	NomnomlEntityRelationshipModelToDiagramCodeConverterSerializableConfig,
 	OracleDialectSerializableConfig,
-	PlantUmlEntityRelationshipModelToDiagramCodeConverterSerializableConfig,
 	PostgresqlDialectSerializableConfig,
 	SqlDialectSerializableConfig,
 	SqliteDialectSerializableConfig,
@@ -25,7 +24,6 @@ export default interface ERDiagramPlaygroundSerializableConfig {
 	sqlserver: DatabaseDialectSerializableConfig<SqlServerDialectSerializableConfig>;
 	java: ClassLanguageSerializableConfig<JavaClassModelToCodeConverterSerializableConfig>;
 	typescript: ClassLanguageSerializableConfig<TypeScriptClassModelToCodeConverterSerializableConfig>;
-	plantuml: PlantUmlEntityRelationshipModelToDiagramCodeConverterSerializableConfig;
 	nomnoml: NomnomlEntityRelationshipModelToDiagramCodeConverterSerializableConfig;
 }
 

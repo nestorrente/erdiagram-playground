@@ -7,7 +7,6 @@ import {
 	mysqlDialectConfigManager,
 	nomnomlEntityRelationshipModelToDiagramCodeConverterConfigManager,
 	oracleDialectConfigManager,
-	plantumlEntityRelationshipModelToDiagramCodeConverterConfigManager,
 	postgresqlDialectConfigManager,
 	sqliteDialectConfigManager,
 	sqlServerDialectConfigManager,
@@ -54,7 +53,6 @@ export class ERDiagramPlaygroundConfigManager
 				classModelGeneratorConfig: classModelGeneratorConfigManager.getDefaultConfig(),
 				classModelToCodeConverterConfig: typescriptClassModelToCodeConverterConfigManager.getDefaultConfig()
 			},
-			plantuml: plantumlEntityRelationshipModelToDiagramCodeConverterConfigManager.getDefaultConfig(),
 			nomnoml: nomnomlEntityRelationshipModelToDiagramCodeConverterConfigManager.getDefaultConfig(),
 		};
 	}
@@ -136,10 +134,6 @@ export class ERDiagramPlaygroundConfigManager
 						partialConfig?.typescript?.classModelToCodeConverterConfig
 				)
 			},
-			plantuml: plantumlEntityRelationshipModelToDiagramCodeConverterConfigManager.mergeConfigs(
-					fullConfig.plantuml,
-					partialConfig?.plantuml
-			),
 			nomnoml: nomnomlEntityRelationshipModelToDiagramCodeConverterConfigManager.mergeConfigs(
 					fullConfig.nomnoml,
 					partialConfig?.nomnoml
@@ -179,7 +173,6 @@ export class ERDiagramPlaygroundConfigManager
 				classModelGeneratorConfig: classModelGeneratorConfigManager.convertToSerializableObject(fullConfig.typescript.classModelGeneratorConfig),
 				classModelToCodeConverterConfig: typescriptClassModelToCodeConverterConfigManager.convertToSerializableObject(fullConfig.typescript.classModelToCodeConverterConfig)
 			},
-			plantuml: plantumlEntityRelationshipModelToDiagramCodeConverterConfigManager.convertToSerializableObject(fullConfig.plantuml),
 			nomnoml: nomnomlEntityRelationshipModelToDiagramCodeConverterConfigManager.convertToSerializableObject(fullConfig.nomnoml)
 		};
 	}
@@ -216,7 +209,6 @@ export class ERDiagramPlaygroundConfigManager
 				classModelGeneratorConfig: classModelGeneratorConfigManager.convertFromSerializableObject(serializableConfig.typescript.classModelGeneratorConfig),
 				classModelToCodeConverterConfig: typescriptClassModelToCodeConverterConfigManager.convertFromSerializableObject(serializableConfig.typescript.classModelToCodeConverterConfig)
 			},
-			plantuml: plantumlEntityRelationshipModelToDiagramCodeConverterConfigManager.convertFromSerializableObject(serializableConfig.plantuml),
 			nomnoml: nomnomlEntityRelationshipModelToDiagramCodeConverterConfigManager.convertFromSerializableObject(serializableConfig.nomnoml)
 		};
 	}

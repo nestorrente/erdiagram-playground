@@ -1,10 +1,8 @@
 import {reactive} from 'vue';
-import {
-	EntityRelationshipModelToCodeConverter,
-	EntityRelationshipModelToDiagramConverter
-} from '@nestorrente/erdiagram';
-import erModelToCodeConverters from '@/common/erModelToCodeConverters';
-import erModelToDiagramConverters from '@/common/erModelToDiagramConverters';
+import {EntityRelationshipModelToCodeConverter} from '@nestorrente/erdiagram';
+import erModelToCodeConverters from '@/common/output/erModelToCodeConverters';
+import erModelToDiagramConverters from '@/common/output/erModelToImageConverters';
+import EntityRelationshipModelToImageConverter from '@/common/output/image/EntityRelationshipModelToImageConverter';
 
 export interface OutputFormat {
 	id: string;
@@ -22,13 +20,13 @@ export function isCodeOutputFormat(outputFormat: OutputFormat): outputFormat is 
 	return outputFormat.type === 'code';
 }
 
-export interface DiagramOutputFormat extends OutputFormat {
-	type: 'diagram';
-	erModelToDiagramConverter: EntityRelationshipModelToDiagramConverter;
+export interface ImageOutputFormat extends OutputFormat {
+	type: 'image';
+	erModelToImageConverter: EntityRelationshipModelToImageConverter;
 }
 
-export function isDiagramOutputFormat(outputFormat: OutputFormat): outputFormat is DiagramOutputFormat {
-	return outputFormat.type === 'diagram';
+export function isImageOutputFormat(outputFormat: OutputFormat): outputFormat is ImageOutputFormat {
+	return outputFormat.type === 'image';
 }
 
 const mysqlCodeOutputFormat: CodeOutputFormat = reactive({
@@ -95,11 +93,11 @@ const plantumlCodeOutputFormat: CodeOutputFormat = reactive({
 	erModelToCodeConverter: erModelToCodeConverters.plantumlConverter
 });
 
-const plantumlDiagramOutputFormat: DiagramOutputFormat = reactive({
+const plantumlDiagramOutputFormat: ImageOutputFormat = reactive({
 	id: 'plantumlDiagram',
 	name: 'PlantUML image',
-	type: 'diagram',
-	erModelToDiagramConverter: erModelToDiagramConverters.plantumlConverter
+	type: 'image',
+	erModelToImageConverter: erModelToDiagramConverters.plantumlConverter
 });
 
 const nomnomlCodeOutputFormat: CodeOutputFormat = reactive({
@@ -110,11 +108,11 @@ const nomnomlCodeOutputFormat: CodeOutputFormat = reactive({
 	erModelToCodeConverter: erModelToCodeConverters.nomnomlConverter
 });
 
-const nomnomlDiagramOutputFormat: DiagramOutputFormat = reactive({
+const nomnomlDiagramOutputFormat: ImageOutputFormat = reactive({
 	id: 'nomnomlDiagram',
 	name: 'Nomnoml image',
-	type: 'diagram',
-	erModelToDiagramConverter: erModelToDiagramConverters.nomnomlConverter
+	type: 'image',
+	erModelToImageConverter: erModelToDiagramConverters.nomnomlConverter
 });
 
 export default {
