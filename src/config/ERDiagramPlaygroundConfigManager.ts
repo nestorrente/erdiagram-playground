@@ -16,7 +16,7 @@ import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
 import ERDiagramPlaygroundSerializableConfig from '@/config/ERDiagramPlaygroundSerializableConfig';
 import PartialERDiagramPlaygroundConfig from '@/config/PartialERDiagramPlaygroundConfig';
 
-export const LAST_CONFIG_VERSION = '0.1.0-beta.0-1617909401187';
+export const LAST_CONFIG_VERSION = '0.1.0-beta.0-1618049776004';
 
 export class ERDiagramPlaygroundConfigManager
 		extends AbstractComponentConfigManager<ERDiagramPlaygroundConfig, PartialERDiagramPlaygroundConfig, ERDiagramPlaygroundSerializableConfig> {
