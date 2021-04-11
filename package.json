@@ -10,7 +10,7 @@
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.15.2",
-        "@nestorrente/erdiagram": "^1.0.0-beta.2",
+        "@nestorrente/erdiagram": "file:./erdiagram-lib.tgz",
         "ace-builds": "^1.4.12",
         "bulma": "^0.9.2",
         "core-js": "^3.6.5",

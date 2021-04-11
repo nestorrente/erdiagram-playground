@@ -16,13 +16,13 @@
                 </SettingRow>
                 <IdNamingStrategySettingRow :config="config.java.classModelGeneratorConfig"/>
                 <SettingRow
-                        description="Use Spring @Nullable and @NotNull annotations"
-                        @restore-default="config.java.classModelToCodeConverterConfig.useSpringNullabilityAnnotations = defaultClassModelToCodeConverterConfig.useSpringNullabilityAnnotations"
+                        description="Use Java Validation API (JSR-303) annotations"
+                        @restore-default="config.java.classModelToCodeConverterConfig.useValidationAnnotations = defaultClassModelToCodeConverterConfig.useValidationAnnotations"
                 >
                     <label class="checkbox">
                         <input
                                 type="checkbox"
-                                v-model="config.java.classModelToCodeConverterConfig.useSpringNullabilityAnnotations"
+                                v-model="config.java.classModelToCodeConverterConfig.useValidationAnnotations"
                                 class="mr-1"
                         >
                     </label>
