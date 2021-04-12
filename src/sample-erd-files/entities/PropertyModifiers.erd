@@ -1,3 +1,5 @@
+# Example: Property modifiers
+
 User
     # Unique property (!)
     username! text(30)

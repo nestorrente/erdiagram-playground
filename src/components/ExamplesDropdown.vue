@@ -42,7 +42,7 @@
 
             <DropdownItem @click="$emit('loadExample', pokemonExampleCode)">
                 <Icon icon="fas fa-gamepad"/>
-                Pokemon
+                Pokémon
             </DropdownItem>
             <DropdownItem @click="$emit('loadExample', virtualShopExampleCode)">
                 <Icon icon="fas fa-shopping-cart"/>

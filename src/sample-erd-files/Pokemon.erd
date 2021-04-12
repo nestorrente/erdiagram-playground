@@ -1,3 +1,5 @@
+# Example: Pokémon
+
 Trainer
     name text(30)
     birthdate? date

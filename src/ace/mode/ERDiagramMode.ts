@@ -158,7 +158,7 @@ ace.define('ace/mode/erdiagram_highlight_rules', ['require', 'exports'], functio
 					{
 						// Type without length
 						token: ['text', 'keyword.other', 'text', 'comment.line.number-sign'],
-						regex: /(\s+)\b(bool|short|int|long|decimal|text|date|time|datetime|blob|identifier)\b(\s*)(#.*)?$/,
+						regex: /(\s+)\b(bool|short|int|long|decimal|text|date|time|datetime|blob|identity)\b(\s*)(#.*)?$/,
 						next: 'start'
 					},
 					{
@@ -170,7 +170,7 @@ ace.define('ace/mode/erdiagram_highlight_rules', ['require', 'exports'], functio
 					{
 						// Type with length
 						token: ['text', 'keyword.other'],
-						regex: /(\s+)\b(bool|short|int|long|decimal|text|date|time|datetime|blob|identifier)\b/,
+						regex: /(\s+)\b(bool|short|int|long|decimal|text|date|time|datetime|blob|identity)\b/,
 						next: 'entityPropertyTypeLengthStart'
 					},
 					{

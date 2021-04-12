@@ -1,3 +1,5 @@
+# Example: Relationship's direction
+
 # The direction of the relationship affects the class model (Java, TypeScript),
 # but it has no effect on the database model (MySQL, Oracle, SQL Server).
 

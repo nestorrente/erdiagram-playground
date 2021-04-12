@@ -1,3 +1,5 @@
+# Example: Supported data types
+
 # Numeric types
 Number
 	# Integer types (42, 73)
@@ -18,8 +20,8 @@ DateTime
 
 # Other types
 File
-    # Special identifier type (see "Basic entities" example)
-    fileId identifier
+    # Special identity type (see "Basic entities" example)
+    fileId identity
 	# String (a.k.a. varchar, "hello world")
     name text(50)
     # Binary object (a.k.a. byte array)

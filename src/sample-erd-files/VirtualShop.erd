@@ -1,3 +1,5 @@
+# Example: Virtual shop
+
 User
     username! text(30)
     active bool
