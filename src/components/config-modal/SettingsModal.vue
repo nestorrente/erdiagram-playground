@@ -152,7 +152,8 @@
 
             watch(() => props.showing, showing => {
                 if (showing) {
-                    internalConfig.value = erdiagramPlaygroundConfigManager.cloneConfig(configStore.config);
+                    // Clone the config
+                    internalConfig.value = erdiagramPlaygroundConfigManager.mergeConfigs(configStore.config, {});
                     nextTick(() => configChanged.value = false);
                 }
             });

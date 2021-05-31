@@ -4,7 +4,7 @@
     <article class="message is-warning">
         <div class="message-body">
             <strong>Be careful editing these types.</strong>
-            Any mistake can make your code uncompilable.
+            Any mistake can break your code.
         </div>
     </article>
 

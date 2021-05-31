@@ -157,7 +157,7 @@
             useBeforeUnload(() => !inputCodeSynced.value);
 
             const entityRelationshipModelParser = computed(() => {
-                return new EntityRelationshipModelParser(configStore.config.erModelParser);
+                return new EntityRelationshipModelParser(configStore.config.parser);
             });
 
             const parseResult = computed(() => {
@@ -244,9 +244,9 @@
                     return '';
                 }
 
-                const erModelToCodeConverter = (selectedOutputFormat.value as CodeOutputFormat).erModelToCodeConverter;
+                const {erModelSourceCodeGenerator} = (selectedOutputFormat.value as CodeOutputFormat);
 
-                return erModelToCodeConverter.convertToCode(entityRelationshipModel.value);
+                return erModelSourceCodeGenerator.generateSourceCode(entityRelationshipModel.value);
 
             });
 

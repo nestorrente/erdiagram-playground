@@ -1,8 +1,8 @@
 <template>
     <SettingsTabSection title="PostgreSQL settings">
         <CommonDatabaseSettingsTable
-                :database-model-generator-config="config.postgresql.databaseModelGeneratorConfig"
-                :database-model-to-code-converter-config="config.postgresql.dialectConfig"
+                :database-model-config="config.postgresql.databaseModel"
+                :sql-dialect-config="config.postgresql.dialectConfig"
                 :default-sql-dialect-config="defaultSqlDialectConfig"
         />
 

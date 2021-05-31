@@ -1,8 +1,8 @@
 import {reactive} from 'vue';
-import {EntityRelationshipModelToCodeConverter} from '@nestorrente/erdiagram';
-import erModelToCodeConverters from '@/common/output/erModelToCodeConverters';
+import erModelSourceCodeGenerators from '@/common/output/erModelSourceCodeGenerators';
 import erModelToDiagramConverters from '@/common/output/erModelToImageConverters';
 import EntityRelationshipModelToImageConverter from '@/common/output/image/EntityRelationshipModelToImageConverter';
+import {EntityRelationshipModelSourceCodeGenerator} from '@nestorrente/erdiagram';
 
 export interface OutputFormat {
 	id: string;
@@ -13,7 +13,7 @@ export interface OutputFormat {
 export interface CodeOutputFormat extends OutputFormat {
 	type: 'code';
 	codeBlockLang: string;
-	erModelToCodeConverter: EntityRelationshipModelToCodeConverter;
+	erModelSourceCodeGenerator: EntityRelationshipModelSourceCodeGenerator;
 }
 
 export function isCodeOutputFormat(outputFormat: OutputFormat): outputFormat is CodeOutputFormat {
@@ -34,7 +34,7 @@ const mysqlCodeOutputFormat: CodeOutputFormat = reactive({
 	name: 'MySQL',
 	type: 'code',
 	codeBlockLang: 'sql_more',
-	erModelToCodeConverter: erModelToCodeConverters.mysqlConverter
+	erModelSourceCodeGenerator: erModelSourceCodeGenerators.mysqlConverter
 });
 
 const oracleCodeOutputFormat: CodeOutputFormat = reactive({
@@ -42,7 +42,7 @@ const oracleCodeOutputFormat: CodeOutputFormat = reactive({
 	name: 'Oracle DB',
 	type: 'code',
 	codeBlockLang: 'sql_more',
-	erModelToCodeConverter: erModelToCodeConverters.oracleConverter
+	erModelSourceCodeGenerator: erModelSourceCodeGenerators.oracleConverter
 });
 
 const postgresqlCodeOutputFormat: CodeOutputFormat = reactive({
@@ -50,7 +50,7 @@ const postgresqlCodeOutputFormat: CodeOutputFormat = reactive({
 	name: 'PostgreSQL',
 	type: 'code',
 	codeBlockLang: 'sql_more',
-	erModelToCodeConverter: erModelToCodeConverters.postgresqlConverter
+	erModelSourceCodeGenerator: erModelSourceCodeGenerators.postgresqlConverter
 });
 
 const sqliteCodeOutputFormat: CodeOutputFormat = reactive({
@@ -58,7 +58,7 @@ const sqliteCodeOutputFormat: CodeOutputFormat = reactive({
 	name: 'SQLite',
 	type: 'code',
 	codeBlockLang: 'sql_more',
-	erModelToCodeConverter: erModelToCodeConverters.sqliteConverter
+	erModelSourceCodeGenerator: erModelSourceCodeGenerators.sqliteConverter
 });
 
 const sqlserverCodeOutputFormat: CodeOutputFormat = reactive({
@@ -66,7 +66,7 @@ const sqlserverCodeOutputFormat: CodeOutputFormat = reactive({
 	name: 'SQL Server',
 	type: 'code',
 	codeBlockLang: 'sql_more',
-	erModelToCodeConverter: erModelToCodeConverters.sqlserverConverter
+	erModelSourceCodeGenerator: erModelSourceCodeGenerators.sqlserverConverter
 });
 
 const javaCodeOutputFormat: CodeOutputFormat = reactive({
@@ -74,7 +74,7 @@ const javaCodeOutputFormat: CodeOutputFormat = reactive({
 	name: 'Java POJO',
 	type: 'code',
 	codeBlockLang: 'java',
-	erModelToCodeConverter: erModelToCodeConverters.javaConverter
+	erModelSourceCodeGenerator: erModelSourceCodeGenerators.javaConverter
 });
 
 const typescriptCodeOutputFormat: CodeOutputFormat = reactive({
@@ -82,7 +82,7 @@ const typescriptCodeOutputFormat: CodeOutputFormat = reactive({
 	name: 'TypeScript',
 	type: 'code',
 	codeBlockLang: 'typescript',
-	erModelToCodeConverter: erModelToCodeConverters.typescriptConverter
+	erModelSourceCodeGenerator: erModelSourceCodeGenerators.typescriptConverter
 });
 
 const plantumlCodeOutputFormat: CodeOutputFormat = reactive({
@@ -90,7 +90,7 @@ const plantumlCodeOutputFormat: CodeOutputFormat = reactive({
 	name: 'PlantUML code',
 	type: 'code',
 	codeBlockLang: 'plaintext',
-	erModelToCodeConverter: erModelToCodeConverters.plantumlConverter
+	erModelSourceCodeGenerator: erModelSourceCodeGenerators.plantumlConverter
 });
 
 const plantumlDiagramOutputFormat: ImageOutputFormat = reactive({
@@ -105,7 +105,7 @@ const nomnomlCodeOutputFormat: CodeOutputFormat = reactive({
 	name: 'Nomnoml code',
 	type: 'code',
 	codeBlockLang: 'plaintext',
-	erModelToCodeConverter: erModelToCodeConverters.nomnomlConverter
+	erModelSourceCodeGenerator: erModelSourceCodeGenerators.nomnomlConverter
 });
 
 const nomnomlDiagramOutputFormat: ImageOutputFormat = reactive({

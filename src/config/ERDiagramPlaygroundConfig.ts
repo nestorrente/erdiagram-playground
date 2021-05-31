@@ -1,11 +1,12 @@
 import {
 	ClassModelGeneratorConfig,
-	ClassModelToCodeConverterConfig,
 	DatabaseModelGeneratorConfig,
 	EntityRelationshipModelParserConfig,
-	JavaClassModelToCodeConverterConfig,
+	JavaClassModelGeneratorConfig,
+	JavaxValidationTransformerConfig,
+	JpaTransformerConfig,
 	MysqlDialectConfig,
-	NomnomlEntityRelationshipModelToDiagramCodeConverterConfig,
+	NomnomlEntityRelationshipModelSourceCodeGeneratorConfig,
 	OracleDialectConfig,
 	PostgresqlDialectConfig,
 	SqlDialectConfig,
@@ -16,23 +17,35 @@ import {
 
 export default interface ERDiagramPlaygroundConfig {
 	_version: string;
-	erModelParser: EntityRelationshipModelParserConfig;
+	parser: EntityRelationshipModelParserConfig;
 	mysql: DatabaseDialectConfig<MysqlDialectConfig>;
 	oracle: DatabaseDialectConfig<OracleDialectConfig>;
 	postgresql: DatabaseDialectConfig<PostgresqlDialectConfig>;
 	sqlite: DatabaseDialectConfig<SqliteDialectConfig>;
 	sqlserver: DatabaseDialectConfig<SqlServerDialectConfig>;
-	java: ClassLanguageConfig<JavaClassModelToCodeConverterConfig>;
-	typescript: ClassLanguageConfig<TypeScriptClassModelToCodeConverterConfig>;
-	nomnoml: NomnomlEntityRelationshipModelToDiagramCodeConverterConfig;
+	java: {
+		classModel: ClassModelGeneratorConfig;
+		code: JavaClassModelGeneratorConfig;
+		transformers: {
+			validation: {
+				enabled: boolean;
+				config: JavaxValidationTransformerConfig;
+			};
+			jpa: {
+				enabled: boolean;
+				databaseModel: DatabaseModelGeneratorConfig;
+				config: JpaTransformerConfig;
+			};
+		};
+	};
+	typescript: {
+		classModel: ClassModelGeneratorConfig;
+		code: TypeScriptClassModelToCodeConverterConfig;
+	};
+	nomnoml: NomnomlEntityRelationshipModelSourceCodeGeneratorConfig;
 }
 
 export interface DatabaseDialectConfig<T extends SqlDialectConfig> {
-	databaseModelGeneratorConfig: DatabaseModelGeneratorConfig;
+	databaseModel: DatabaseModelGeneratorConfig;
 	dialectConfig: T;
-}
-
-export interface ClassLanguageConfig<T extends ClassModelToCodeConverterConfig<any>> {
-	classModelGeneratorConfig: ClassModelGeneratorConfig;
-	classModelToCodeConverterConfig: T;
 }

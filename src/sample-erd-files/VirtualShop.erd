@@ -2,6 +2,7 @@
 
 User
     username! text(30)
+    registrationDate datetime
     active bool
 
 Vendor

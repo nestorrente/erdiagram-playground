@@ -1,7 +1,7 @@
 <template>
     <SettingRow
             description="ID naming strategy"
-            @restore-default="config.idNamingStrategy = defaultClassModelGeneratorConfig.idNamingStrategy"
+            @restore-default="config.idNamingStrategy = defaultIdNamingStrategy"
     >
         <SelectInput
                 :items="idNamingStrategyOptions"
@@ -15,11 +15,7 @@
 
 <script lang="ts">
     import {defineComponent} from 'vue';
-    import {
-        classModelGeneratorConfigManager,
-        IdNamingStrategy,
-        StandardIdNamingStrategies
-    } from '@nestorrente/erdiagram';
+    import {IdNamingStrategy, StandardIdNamingStrategies} from '@nestorrente/erdiagram';
     import useSelectInputOptions, {SelectInputOption} from '@/composition/form/useSelectInputOptions';
     import SelectInput from '@/components/generic/form/SelectInput.vue';
     import SettingRow from '@/components/config-modal/tabs/SettingRow.vue';
@@ -65,12 +61,12 @@
                     newValue => props.config.idNamingStrategy = newValue
             );
 
-            const defaultClassModelGeneratorConfig = classModelGeneratorConfigManager.getDefaultConfig();
+            const defaultIdNamingStrategy = StandardIdNamingStrategies.DEFAULT;
 
             return {
                 idNamingStrategyOptions,
                 selectedIdNamingStrategyOption,
-                defaultClassModelGeneratorConfig
+                defaultIdNamingStrategy
             };
 
         }

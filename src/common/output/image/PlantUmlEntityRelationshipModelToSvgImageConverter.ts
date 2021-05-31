@@ -1,4 +1,4 @@
-import {EntityRelationshipModel, PlantUmlEntityRelationshipModelToDiagramCodeConverter} from '@nestorrente/erdiagram';
+import {EntityRelationshipModel, PlantUmlEntityRelationshipModelSourceCodeGenerator} from '@nestorrente/erdiagram';
 import AbstractEntityRelationshipModelToSvgImageConverter
 	from '@/common/output/image/AbstractEntityRelationshipModelToSvgImageConverter';
 
@@ -7,13 +7,13 @@ const PLANTUML_IMAGE_BASE_URL = `https://www.plantuml.com/plantuml/svg/~h`;
 export default class PlantUmlEntityRelationshipModelToSvgImageConverter extends AbstractEntityRelationshipModelToSvgImageConverter {
 
 	constructor(
-			private readonly erModelToDiagramCodeConverter: PlantUmlEntityRelationshipModelToDiagramCodeConverter
+			private readonly plantUmlEntityRelationshipModelSourceCodeGenerator: PlantUmlEntityRelationshipModelSourceCodeGenerator
 	) {
 		super();
 	}
 
 	protected convertNonEmptyModelToDiagram(model: EntityRelationshipModel): Promise<string> {
-		const diagramCode = this.erModelToDiagramCodeConverter.convertToCode(model);
+		const diagramCode = this.plantUmlEntityRelationshipModelSourceCodeGenerator.generateSourceCode(model);
 		const diagramUrl = this.getDiagramUrl(diagramCode);
 		return this.fetchDiagram(diagramUrl);
 	}

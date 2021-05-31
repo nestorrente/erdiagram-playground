@@ -1,8 +1,8 @@
 <template>
     <SettingsTabSection title="Oracle settings">
         <CommonDatabaseSettingsTable
-                :database-model-generator-config="config.oracle.databaseModelGeneratorConfig"
-                :database-model-to-code-converter-config="config.oracle.dialectConfig"
+                :database-model-config="config.oracle.databaseModel"
+                :sql-dialect-config="config.oracle.dialectConfig"
                 :default-sql-dialect-config="defaultSqlDialectConfig"
         />
 

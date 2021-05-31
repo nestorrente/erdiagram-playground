@@ -1,8 +1,8 @@
 <template>
     <SettingsTabSection title="SQL Server settings">
         <CommonDatabaseSettingsTable
-                :database-model-generator-config="config.sqlserver.databaseModelGeneratorConfig"
-                :database-model-to-code-converter-config="config.sqlserver.dialectConfig"
+                :database-model-config="config.sqlserver.databaseModel"
+                :sql-dialect-config="config.sqlserver.dialectConfig"
                 :default-sql-dialect-config="defaultSqlDialectConfig"
         />
 

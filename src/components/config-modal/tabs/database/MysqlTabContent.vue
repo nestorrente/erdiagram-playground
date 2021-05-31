@@ -1,8 +1,8 @@
 <template>
     <SettingsTabSection title="MySQL settings">
         <CommonDatabaseSettingsTable
-                :database-model-generator-config="config.mysql.databaseModelGeneratorConfig"
-                :database-model-to-code-converter-config="config.mysql.dialectConfig"
+                :database-model-config="config.mysql.databaseModel"
+                :sql-dialect-config="config.mysql.dialectConfig"
                 :default-sql-dialect-config="defaultSqlDialectConfig"
         />
 

@@ -3,14 +3,14 @@ import NomnomlEntityRelationshipModelToSvgImageConverter
 	from '@/common/output/image/NomnomlEntityRelationshipModelToSvgImageConverter';
 import PlantUmlEntityRelationshipModelToSvgImageConverter
 	from '@/common/output/image/PlantUmlEntityRelationshipModelToSvgImageConverter';
-import erModelToCodeConverters from '@/common/output/erModelToCodeConverters';
+import erModelSourceCodeGenerators from '@/common/output/erModelSourceCodeGenerators';
 
 const nomnomlConverter = computed(() => {
-	return new NomnomlEntityRelationshipModelToSvgImageConverter(erModelToCodeConverters.nomnomlConverter.value);
+	return new NomnomlEntityRelationshipModelToSvgImageConverter(erModelSourceCodeGenerators.nomnomlConverter.value);
 });
 
 const plantumlConverter = computed(() => {
-	return new PlantUmlEntityRelationshipModelToSvgImageConverter(erModelToCodeConverters.plantumlConverter.value);
+	return new PlantUmlEntityRelationshipModelToSvgImageConverter(erModelSourceCodeGenerators.plantumlConverter.value);
 });
 
 export default {

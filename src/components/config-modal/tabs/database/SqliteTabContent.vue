@@ -1,8 +1,8 @@
 <template>
     <SettingsTabSection title="SQLite settings">
         <CommonDatabaseSettingsTable
-                :database-model-generator-config="config.sqlite.databaseModelGeneratorConfig"
-                :database-model-to-code-converter-config="config.sqlite.dialectConfig"
+                :database-model-config="config.sqlite.databaseModel"
+                :sql-dialect-config="config.sqlite.dialectConfig"
                 :default-sql-dialect-config="defaultSqlDialectConfig"
         />
 

@@ -1,9 +1,9 @@
 import {localJsonStorage} from '@/storage/JsonStorage';
-import ERDiagramPlaygroundSerializableConfig from '@/config/ERDiagramPlaygroundSerializableConfig';
 import outputFormats, {OutputFormat} from '@/common/output/outputFormats';
 import pokemonSampleCode from '!!raw-loader!@/sample-erd-files/Pokemon.erd';
 import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
 import erdiagramPlaygroundConfigManager, {LAST_CONFIG_VERSION} from '@/config/ERDiagramPlaygroundConfigManager';
+import {JsonObject} from 'true-json';
 
 const ItemKeys = {
 	INPUT_CODE: 'inputCode',
@@ -33,7 +33,7 @@ export default {
 
 	getConfig(): ERDiagramPlaygroundConfig {
 
-		const serializableConfig = localJsonStorage.getItem<ERDiagramPlaygroundSerializableConfig>(ItemKeys.CONFIG);
+		const serializableConfig = localJsonStorage.getItem<JsonObject>(ItemKeys.CONFIG);
 
 		if (serializableConfig) {
 
