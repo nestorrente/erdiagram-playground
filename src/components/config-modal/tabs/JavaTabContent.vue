@@ -105,6 +105,30 @@
                     </label>
                 </SettingRow>
                 <IdNamingStrategySettingRow :config="config.java.transformers.jpa.databaseModel"/>
+                <SettingRow
+                        description="Use explicit table names"
+                        @restore-default="config.java.transformers.jpa.config.useExplicitTableName = false"
+                >
+                    <label class="checkbox">
+                        <input
+                                type="checkbox"
+                                v-model="config.java.transformers.jpa.config.useExplicitTableName"
+                                class="mr-1"
+                        >
+                    </label>
+                </SettingRow>
+                <SettingRow
+                        description="Use explicit column names"
+                        @restore-default="config.java.transformers.jpa.config.useExplicitColumnName = false"
+                >
+                    <label class="checkbox">
+                        <input
+                                type="checkbox"
+                                v-model="config.java.transformers.jpa.config.useExplicitColumnName"
+                                class="mr-1"
+                        >
+                    </label>
+                </SettingRow>
                 <!-- TODO extract this to a component that represents the table and column case format selectors -->
                 <SettingRow
                         description="Table name case format"
