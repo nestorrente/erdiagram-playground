@@ -13,7 +13,7 @@ steps:
       repo: registry.nestorrente.com/v2/erdiagram/erdiagram-playground
       registry: registry.nestorrente.com/v2
       tags:
-        - 0.1.0.${CI_BUILD_NUMBER}-SNAPSHOT
+        - 1.0.0.${CI_BUILD_NUMBER}-SNAPSHOT
     when:
       branch:
         - develop
@@ -28,7 +28,7 @@ steps:
       registry: registry.nestorrente.com/v2
       tags:
         - latest
-        - 0.1.0.${CI_BUILD_NUMBER}
+        - 1.0.0.${CI_BUILD_NUMBER}
     when:
       branch:
         - master
@@ -45,7 +45,7 @@ steps:
       K8S_PASSWORD:
         from_secret: K8S_PASSWORD
       NAMESPACE: development
-      IMAGE_TAG: 0.1.0.${CI_BUILD_NUMBER}-SNAPSHOT
+      IMAGE_TAG: 1.0.0.${CI_BUILD_NUMBER}-SNAPSHOT
     when:
       branch:
         - develop
@@ -61,7 +61,7 @@ steps:
       K8S_PASSWORD:
         from_secret: K8S_PASSWORD
       NAMESPACE: production
-      IMAGE_TAG: 0.1.0.${CI_BUILD_NUMBER}
+      IMAGE_TAG: 1.0.0.${CI_BUILD_NUMBER}
     when:
       branch:
         - master
