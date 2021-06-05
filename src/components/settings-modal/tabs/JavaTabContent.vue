@@ -5,7 +5,7 @@
             <tbody>
                 <SettingRow
                         description="Generated classes package"
-                        @restore-default="config.java.code.generatedClassesPackage = defaultJavaClassModelGeneratorConfig.generatedClassesPackage"
+                        @restore-default="config.java.code.generatedClassesPackage = defaultJavaClassModelConfig.generatedClassesPackage"
                 >
                     <input
                             type="text"
@@ -33,7 +33,7 @@
                 <SettingRow
                         description="Not-null text validation strategy"
                         :disabled="!config.java.transformers.validation.enabled"
-                        @restore-default="config.java.transformers.validation.config.notNullTextValidationStrategy = defaultBeanValidationTransformerConfig.notNullTextValidationStrategy"
+                        @restore-default="config.java.transformers.validation.config.notNullTextValidationStrategy = defaultBeanValidationConfig.notNullTextValidationStrategy"
                 >
                     <SelectInput
                             :items="notNullTextValidationStrategyOptions"
@@ -47,7 +47,7 @@
                 <SettingRow
                         description="Not-null blob validation strategy"
                         :disabled="!config.java.transformers.validation.enabled"
-                        @restore-default="config.java.transformers.validation.config.notNullBlobValidationStrategy = defaultBeanValidationTransformerConfig.notNullBlobValidationStrategy"
+                        @restore-default="config.java.transformers.validation.config.notNullBlobValidationStrategy = defaultBeanValidationConfig.notNullBlobValidationStrategy"
                 >
                     <SelectInput
                             :items="notNullBlobValidationStrategyOptions"
@@ -61,7 +61,7 @@
                 <SettingRow
                         description="Move annotations to getter methods"
                         :disabled="!config.java.transformers.validation.enabled"
-                        @restore-default="config.java.transformers.validation.config.annotateGetters = defaultBeanValidationTransformerConfig.annotateGetters"
+                        @restore-default="config.java.transformers.validation.config.annotateGetters = defaultBeanValidationConfig.annotateGetters"
                 >
                     <BlockCheckbox
                             v-model="config.java.transformers.validation.config.annotateGetters"
@@ -86,7 +86,7 @@
                 <SettingRow
                         description="Table name case format"
                         :disabled="!config.java.transformers.jpa.enabled"
-                        @restore-default="config.java.transformers.jpa.config.tableNameCaseFormat = defaultJpaTransformerConfig.tableNameCaseFormat"
+                        @restore-default="config.java.transformers.jpa.config.tableNameCaseFormat = defaultJpaConfig.tableNameCaseFormat"
                 >
                     <SelectInput
                             :items="caseFormatOptions"
@@ -100,7 +100,7 @@
                 <SettingRow
                         description="Column name case format"
                         :disabled="!config.java.transformers.jpa.enabled"
-                        @restore-default="config.java.transformers.jpa.config.columnNameCaseFormat = defaultJpaTransformerConfig.columnNameCaseFormat"
+                        @restore-default="config.java.transformers.jpa.config.columnNameCaseFormat = defaultJpaConfig.columnNameCaseFormat"
                 >
                     <SelectInput
                             :items="caseFormatOptions"
@@ -149,7 +149,7 @@
                 <SettingRow
                         description="Move annotations to getter methods"
                         :disabled="!config.java.transformers.jpa.enabled"
-                        @restore-default="config.java.transformers.jpa.config.annotateGetters = defaultBeanValidationTransformerConfig.annotateGetters"
+                        @restore-default="config.java.transformers.jpa.config.annotateGetters = defaultBeanValidationConfig.annotateGetters"
                 >
                     <BlockCheckbox
                             v-model="config.java.transformers.jpa.config.annotateGetters"
@@ -162,7 +162,7 @@
         <TypeBindingsTable
                 target-lang="Java"
                 :type-bindings="config.java.code.typeBindings"
-                :default-type-bindings="defaultJavaClassModelGeneratorConfig.typeBindings"
+                :default-type-bindings="defaultJavaClassModelConfig.typeBindings"
                 :display-function="formatJavaType"
                 :parse-function="parseJavaType"
         />
@@ -173,13 +173,13 @@
 <script lang="ts">
     import {defineComponent} from 'vue';
     import {
-        beanValidationTransformerConfigManager,
+        beanValidationConfigManager,
         CaseFormat,
-        classModelGeneratorConfigManager,
-        databaseModelGeneratorConfigManager,
-        javaClassModelGeneratorConfigManager,
+        classModelConfigManager,
+        databaseModelConfigManager,
+        javaClassModelConfigManager,
         JavaType,
-        jpaTransformerConfigManager,
+        jpaConfigManager,
         NotNullBlobValidationStrategy,
         NotNullTextValidationStrategy,
         parseJavaType,
@@ -222,10 +222,10 @@
 
             const formatJavaType = (javaType: JavaType) => javaType.formatCanonical();
 
-            const defaultClassModelGeneratorConfig = classModelGeneratorConfigManager.getDefaultConfig();
-            const defaultJavaClassModelGeneratorConfig = javaClassModelGeneratorConfigManager.getDefaultConfig();
-            const defaultBeanValidationTransformerConfig = beanValidationTransformerConfigManager.getDefaultConfig();
-            const defaultJpaTransformerConfig = jpaTransformerConfigManager.getDefaultConfig();
+            const defaultClassModelConfig = classModelConfigManager.getDefaultConfig();
+            const defaultJavaClassModelConfig = javaClassModelConfigManager.getDefaultConfig();
+            const defaultBeanValidationConfig = beanValidationConfigManager.getDefaultConfig();
+            const defaultJpaConfig = jpaConfigManager.getDefaultConfig();
 
             const notNullTextValidationStrategyOptions: SelectInputOption<NotNullTextValidationStrategy>[] = [
                 {
@@ -301,7 +301,7 @@
                     newValue => props.config.java.transformers.jpa.config.columnNameCaseFormat = newValue
             );
 
-            const defaultDatabaseModelConfig = databaseModelGeneratorConfigManager.getDefaultConfig();
+            const defaultDatabaseModelConfig = databaseModelConfigManager.getDefaultConfig();
 
             return {
                 parseJavaType,
@@ -310,10 +310,10 @@
                 selectedNotNullTextValidationStrategyOption,
                 notNullBlobValidationStrategyOptions,
                 selectedNotNullBlobValidationStrategyOption,
-                defaultClassModelGeneratorConfig,
-                defaultJavaClassModelGeneratorConfig,
-                defaultBeanValidationTransformerConfig,
-                defaultJpaTransformerConfig,
+                defaultClassModelConfig,
+                defaultJavaClassModelConfig,
+                defaultBeanValidationConfig,
+                defaultJpaConfig,
                 caseFormatOptions,
                 selectedTableNameCaseFormatOption,
                 selectedColumnNameCaseFormatOption,

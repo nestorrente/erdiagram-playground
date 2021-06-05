@@ -1,17 +1,18 @@
 import {
-	BeanValidationTransformerConfig,
-	ClassModelGeneratorConfig,
-	DatabaseModelGeneratorConfig,
+	BeanValidationConfig,
+	ClassModelConfig,
+	DatabaseModelConfig,
 	EntityRelationshipModelParserConfig,
-	JavaClassModelGeneratorConfig,
-	JpaTransformerConfig,
+	JavaClassModelConfig,
+	JpaConfig,
 	MysqlDialectConfig,
+	NomnomlConfig,
 	OracleDialectConfig,
 	PostgresqlDialectConfig,
 	SqlDialectConfig,
 	SqliteDialectConfig,
 	SqlServerDialectConfig,
-	TypeScriptClassModelToCodeConverterConfig
+	TypeScriptConfig
 } from '@nestorrente/erdiagram';
 
 export default interface ERDiagramPlaygroundConfig {
@@ -23,28 +24,28 @@ export default interface ERDiagramPlaygroundConfig {
 	sqlite: DatabaseDialectConfig<SqliteDialectConfig>;
 	sqlserver: DatabaseDialectConfig<SqlServerDialectConfig>;
 	java: {
-		classModel: ClassModelGeneratorConfig;
-		code: JavaClassModelGeneratorConfig;
+		classModel: ClassModelConfig;
+		code: JavaClassModelConfig;
 		transformers: {
 			validation: {
 				enabled: boolean;
-				config: BeanValidationTransformerConfig;
+				config: BeanValidationConfig;
 			};
 			jpa: {
 				enabled: boolean;
-				databaseModel: DatabaseModelGeneratorConfig;
-				config: JpaTransformerConfig;
+				databaseModel: DatabaseModelConfig;
+				config: JpaConfig;
 			};
 		};
 	};
 	typescript: {
-		classModel: ClassModelGeneratorConfig;
-		code: TypeScriptClassModelToCodeConverterConfig;
+		classModel: ClassModelConfig;
+		code: TypeScriptConfig;
 	};
-	nomnoml: NomnomlSourceCodeGeneratorConfig;
+	nomnoml: NomnomlConfig;
 }
 
 export interface DatabaseDialectConfig<T extends SqlDialectConfig> {
-	databaseModel: DatabaseModelGeneratorConfig;
+	databaseModel: DatabaseModelConfig;
 	dialectConfig: T;
 }

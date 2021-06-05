@@ -47,16 +47,16 @@ const javaConverter = (() => {
 
 	const jpaTransformer = computed((): JpaTransformer | null => {
 
-		const jpaTransformerConfig = configStore.config.java.transformers.jpa;
+		const jpaConfig = configStore.config.java.transformers.jpa;
 
-		if (!jpaTransformerConfig.enabled) {
+		if (!jpaConfig.enabled) {
 			return null;
 		}
 
 		return markRaw(
 				JpaTransformer.builder()
-						.configureDatabaseModel(jpaTransformerConfig.databaseModel)
-						.configureJpa(jpaTransformerConfig.config)
+						.configureDatabaseModel(jpaConfig.databaseModel)
+						.configureJpa(jpaConfig.config)
 						.build()
 		);
 
@@ -64,14 +64,14 @@ const javaConverter = (() => {
 
 	const validationTransformer = computed((): BeanValidationTransformer | null => {
 
-		const validationTransformerConfig = configStore.config.java.transformers.validation;
+		const validationConfig = configStore.config.java.transformers.validation;
 
-		if (!validationTransformerConfig.enabled) {
+		if (!validationConfig.enabled) {
 			return null;
 		}
 
 		return markRaw(
-				new BeanValidationTransformer(validationTransformerConfig.config)
+				new BeanValidationTransformer(validationConfig.config)
 		);
 
 	});
@@ -99,7 +99,7 @@ const javaConverter = (() => {
 		return markRaw(
 				JavaSourceCodeGenerator.builder()
 						.configureClassModel(javaConfig.classModel)
-						.configureJavaCode(javaConfig.code)
+						.configureJavaClassModel(javaConfig.code)
 						.addTransformers(...javaTransformers.value)
 						.build()
 		);
@@ -114,7 +114,7 @@ const typescriptConverter = computed(() => {
 
 	return TypeScriptSourceCodeGenerator.builder()
 			.configureClassModel(typescriptConfig.classModel)
-			.configureTypeScriptCode(typescriptConfig.code)
+			.configureTypeScript(typescriptConfig.code)
 			.build();
 
 });

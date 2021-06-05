@@ -10,7 +10,7 @@
         <TypeBindingsTable
                 target-lang="TypeScript"
                 :type-bindings="config.typescript.code.typeBindings"
-                :default-type-bindings="defaultTypeScriptClassModelToCodeConverterConfig.typeBindings"
+                :default-type-bindings="defaultTypeScriptConfig.typeBindings"
                 :display-function="formatTypeScriptType"
                 :parse-function="parseTypeScriptType"
         />
@@ -20,11 +20,7 @@
 
 <script lang="ts">
     import {defineComponent} from 'vue';
-    import {
-        parseTypeScriptType,
-        typescriptClassModelToCodeConverterConfigManager,
-        TypeScriptType
-    } from '@nestorrente/erdiagram';
+    import {parseTypeScriptType, typescriptConfigManager, TypeScriptType} from '@nestorrente/erdiagram';
     import TypeBindingsTable from '@/components/settings-modal/tabs/TypeBindingsTable.vue';
     import SettingsTabSection from '@/components/settings-modal/tabs/SettingsTabSection.vue';
     import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
@@ -52,12 +48,12 @@
 
             const formatTypeScriptType = (typeScriptType: TypeScriptType) => typeScriptType.format();
 
-            const defaultTypeScriptClassModelToCodeConverterConfig = typescriptClassModelToCodeConverterConfigManager.getDefaultConfig();
+            const defaultTypeScriptConfig = typescriptConfigManager.getDefaultConfig();
 
             return {
                 parseTypeScriptType,
                 formatTypeScriptType,
-                defaultTypeScriptClassModelToCodeConverterConfig
+                defaultTypeScriptConfig
             };
 
         }

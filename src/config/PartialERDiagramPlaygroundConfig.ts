@@ -1,14 +1,14 @@
 import {
-	DatabaseModelGeneratorConfig,
+	DatabaseModelConfig,
 	EntityRelationshipModelParserConfig,
 	MysqlDialectConfig,
-	NomnomlSourceCodeGeneratorConfig,
+	NomnomlConfig,
 	OracleDialectConfig,
-	PartialBeanValidationTransformerConfig,
-	PartialClassModelGeneratorConfig,
-	PartialJavaClassModelGeneratorConfig,
-	PartialJpaTransformerConfig,
-	PartialTypeScriptClassModelToCodeConverterConfig,
+	PartialBeanValidationConfig,
+	PartialClassModelConfig,
+	PartialJavaClassModelConfig,
+	PartialJpaConfig,
+	PartialTypeScriptConfig,
 	PostgresqlDialectConfig,
 	SqliteDialectConfig,
 	SqlServerDialectConfig
@@ -24,25 +24,25 @@ type PartialERDiagramPlaygroundConfig = Partial<{
 	sqlite: Partial<DatabaseDialectConfig<SqliteDialectConfig>>;
 	sqlserver: Partial<DatabaseDialectConfig<SqlServerDialectConfig>>;
 	java: Partial<{
-		classModel: PartialClassModelGeneratorConfig;
-		code: PartialJavaClassModelGeneratorConfig;
+		classModel: PartialClassModelConfig;
+		code: PartialJavaClassModelConfig;
 		transformers: Partial<{
 			validation: Partial<{
 				enabled: boolean;
-				config: PartialBeanValidationTransformerConfig;
+				config: PartialBeanValidationConfig;
 			}>;
 			jpa: Partial<{
 				enabled: boolean;
-				databaseModel: DatabaseModelGeneratorConfig;
-				config: PartialJpaTransformerConfig;
+				databaseModel: DatabaseModelConfig;
+				config: PartialJpaConfig;
 			}>;
 		}>;
 	}>;
 	typescript: Partial<{
-		classModel: PartialClassModelGeneratorConfig;
-		code: PartialTypeScriptClassModelToCodeConverterConfig;
+		classModel: PartialClassModelConfig;
+		code: PartialTypeScriptConfig;
 	}>;
-	nomnoml: Partial<NomnomlSourceCodeGeneratorConfig>;
+	nomnoml: Partial<NomnomlConfig>;
 }>;
 
 export default PartialERDiagramPlaygroundConfig;

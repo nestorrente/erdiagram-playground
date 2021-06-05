@@ -49,7 +49,7 @@
 
 <script lang="ts">
     import {defineComponent} from 'vue';
-    import {nomnomlEntityRelationshipModelToDiagramCodeConverterConfigManager} from '@nestorrente/erdiagram';
+    import {nomnomlConfigManager} from '@nestorrente/erdiagram';
     import SettingsTabSection from '@/components/settings-modal/tabs/SettingsTabSection.vue';
     import SettingRow from '@/components/settings-modal/tabs/SettingRow.vue';
     import SelectInput from '@/components/generic/form/SelectInput.vue';
@@ -105,7 +105,7 @@
                 },
             ];
 
-            const defaultERModelToCodeConverterConfig = nomnomlEntityRelationshipModelToDiagramCodeConverterConfigManager.getDefaultConfig();
+            const defaultERModelToCodeConverterConfig = nomnomlConfigManager.getDefaultConfig();
 
             return {
                 settingsDescription,

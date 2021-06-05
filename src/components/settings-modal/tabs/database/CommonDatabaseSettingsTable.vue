@@ -49,8 +49,8 @@
     import SelectInput from '@/components/generic/form/SelectInput.vue';
     import {
         CaseFormat,
-        DatabaseModelGeneratorConfig,
-        databaseModelGeneratorConfigManager,
+        DatabaseModelConfig,
+        databaseModelConfigManager,
         SqlDialectConfig,
         StandardCaseFormats
     } from '@nestorrente/erdiagram';
@@ -60,7 +60,7 @@
         from '@/components/settings-modal/tabs/common-rows/IdNamingStrategySettingRow.vue';
 
     interface Props {
-        databaseModelConfig: DatabaseModelGeneratorConfig;
+        databaseModelConfig: DatabaseModelConfig;
         sqlDialectConfig: SqlDialectConfig;
         defaultSqlDialectConfig: SqlDialectConfig;
     }
@@ -126,7 +126,7 @@
                     newValue => props.sqlDialectConfig.columnNameCaseFormat = newValue
             );
 
-            const defaultDatabaseModelConfig = databaseModelGeneratorConfigManager.getDefaultConfig();
+            const defaultDatabaseModelConfig = databaseModelConfigManager.getDefaultConfig();
 
             return {
                 caseFormatOptions,
