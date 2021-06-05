@@ -75,6 +75,7 @@
                             v-if="parseError"
                             lang="plaintext"
                             :code="parseErrorDisplayText"
+                            download-filename="erdiagram_error.txt"
                             wrap
                             custom-code-class="has-text-danger"
                             full-height
@@ -83,6 +84,8 @@
                             v-else-if="isCodeOutput"
                             :lang="selectedOutputFormat.codeBlockLang"
                             :code="outputCode"
+                            :download-filename="selectedOutputFormat.downloadFilename"
+                            :download-callback="getFileContentsToDownloadOutputCode"
                             full-height
                     />
                     <SvgDiagramViewer
@@ -98,7 +101,12 @@
 <script lang="ts">
     import {computed, defineComponent, ref, watch} from 'vue';
     import CodeBlock from '@/components/generic/code/CodeBlock.vue';
-    import {EntityRelationshipModelParser, ERDiagramParseLineError} from '@nestorrente/erdiagram';
+    import {
+        EntityRelationshipModelParser,
+        ERDiagramParseLineError,
+        isMultipleFileSourceCodeGenerator,
+        SourceFileInfo
+    } from '@nestorrente/erdiagram';
     import CodeEditor from '@/components/generic/code/CodeEditor.vue';
     import Button from '@/components/generic/form/Button.vue';
     import SelectInput from '@/components/generic/form/SelectInput.vue';
@@ -121,6 +129,8 @@
     import {Ace} from 'ace-builds';
     import SvgDiagramViewer from '@/components/diagram-viewer/SvgDiagramViewer.vue';
     import VerticalSplitPanel from '@/components/generic/split-panel/VerticalSplitPanel.vue';
+    import JSZip from 'jszip';
+    import {FileContentsOrPromise} from '@/components/generic/file/types';
 
     export default defineComponent({
         name: 'MainContainer',
@@ -272,6 +282,36 @@
                 return showConfirmModalDialog('Any unsaved changes will be lost. Do you want to continue?');
             }
 
+            function getFileContentsToDownloadOutputCode(): FileContentsOrPromise {
+
+                const {erModelSourceCodeGenerator} = (selectedOutputFormat.value as CodeOutputFormat);
+
+                if (entityRelationshipModel.value && isMultipleFileSourceCodeGenerator(erModelSourceCodeGenerator)) {
+                    const sourceFilesInfo = erModelSourceCodeGenerator.generateSourceFiles(entityRelationshipModel.value);
+                    return prepareZipFileToDownload(sourceFilesInfo);
+                }
+
+                return outputCode.value;
+
+            }
+
+            function prepareZipFileToDownload(sourceFilesInfo: SourceFileInfo[]): Promise<Blob> {
+
+                const zip = new JSZip();
+
+                for (const sourceFileInfo of sourceFilesInfo) {
+
+                    const {folder, filename, contents} = sourceFileInfo;
+                    const filepath = folder.length > 0 ? folder.join('/') + '/' + filename : filename;
+
+                    zip.file(filepath, contents);
+
+                }
+
+                return zip.generateAsync({type: 'blob'});
+
+            }
+
             return {
                 leftColumnWidthPercent,
                 inputCodeLive,
@@ -287,7 +327,8 @@
                 outputCode,
                 outputDiagramPromise,
                 loadExampleCode,
-                entityRelationshipModel
+                entityRelationshipModel,
+                getFileContentsToDownloadOutputCode
             };
 
         }

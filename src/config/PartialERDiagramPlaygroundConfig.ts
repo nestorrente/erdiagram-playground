@@ -2,11 +2,11 @@ import {
 	DatabaseModelGeneratorConfig,
 	EntityRelationshipModelParserConfig,
 	MysqlDialectConfig,
-	NomnomlEntityRelationshipModelSourceCodeGeneratorConfig,
+	NomnomlSourceCodeGeneratorConfig,
 	OracleDialectConfig,
+	PartialBeanValidationTransformerConfig,
 	PartialClassModelGeneratorConfig,
 	PartialJavaClassModelGeneratorConfig,
-	PartialJavaxValidationTransformerConfig,
 	PartialJpaTransformerConfig,
 	PartialTypeScriptClassModelToCodeConverterConfig,
 	PostgresqlDialectConfig,
@@ -29,7 +29,7 @@ type PartialERDiagramPlaygroundConfig = Partial<{
 		transformers: Partial<{
 			validation: Partial<{
 				enabled: boolean;
-				config: PartialJavaxValidationTransformerConfig;
+				config: PartialBeanValidationTransformerConfig;
 			}>;
 			jpa: Partial<{
 				enabled: boolean;
@@ -42,7 +42,7 @@ type PartialERDiagramPlaygroundConfig = Partial<{
 		classModel: PartialClassModelGeneratorConfig;
 		code: PartialTypeScriptClassModelToCodeConverterConfig;
 	}>;
-	nomnoml: Partial<NomnomlEntityRelationshipModelSourceCodeGeneratorConfig>;
+	nomnoml: Partial<NomnomlSourceCodeGeneratorConfig>;
 }>;
 
 export default PartialERDiagramPlaygroundConfig;

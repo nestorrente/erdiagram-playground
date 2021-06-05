@@ -24,7 +24,7 @@
 <script lang="ts">
     import {defineComponent} from 'vue';
     import {EntityPropertyType, parseJavaType, parseTypeScriptType} from '@nestorrente/erdiagram';
-    import SettingsTabSection from '@/components/config-modal/tabs/SettingsTabSection.vue';
+    import SettingsTabSection from '@/components/settings-modal/tabs/SettingsTabSection.vue';
 
     export default defineComponent({
         name: 'OtherTabContent',

@@ -1,4 +1,4 @@
-import {EntityRelationshipModel, NomnomlEntityRelationshipModelSourceCodeGenerator} from '@nestorrente/erdiagram';
+import {EntityRelationshipModel, NomnomlSourceCodeGenerator} from '@nestorrente/erdiagram';
 import AbstractEntityRelationshipModelToSvgImageConverter
 	from '@/common/output/image/AbstractEntityRelationshipModelToSvgImageConverter';
 import {renderSvg} from 'nomnoml';
@@ -6,13 +6,13 @@ import {renderSvg} from 'nomnoml';
 export default class NomnomlEntityRelationshipModelToSvgImageConverter extends AbstractEntityRelationshipModelToSvgImageConverter {
 
 	constructor(
-			private readonly nomnomlEntityRelationshipModelSourceCodeGenerator: NomnomlEntityRelationshipModelSourceCodeGenerator
+			private readonly nomnomlSourceCodeGenerator: NomnomlSourceCodeGenerator
 	) {
 		super();
 	}
 
 	protected convertNonEmptyModelToDiagram(model: EntityRelationshipModel): Promise<string> {
-		const diagramCode = this.nomnomlEntityRelationshipModelSourceCodeGenerator.generateSourceCode(model);
+		const diagramCode = this.nomnomlSourceCodeGenerator.generateSourceCode(model);
 		return Promise.resolve(renderSvg(diagramCode));
 	}
 

@@ -85,19 +85,19 @@
     import Tabs from '@/components/tabs/Tabs.vue';
     import erdiagramPlaygroundConfigManager, {LAST_CONFIG_VERSION} from '@/config/ERDiagramPlaygroundConfigManager';
     import Tab from '@/components/tabs/Tab.vue';
-    import OtherTabContent from '@/components/config-modal/tabs/ParserTabContent.vue';
-    import MysqlTabContent from '@/components/config-modal/tabs/database/MysqlTabContent.vue';
-    import OracleTabContent from '@/components/config-modal/tabs/database/OracleTabContent.vue';
-    import SqlServerTabContent from '@/components/config-modal/tabs/database/SqlServerTabContent.vue';
-    import JavaTabContent from '@/components/config-modal/tabs/JavaTabContent.vue';
-    import TypeScriptTabContent from '@/components/config-modal/tabs/TypeScriptTabContent.vue';
-    import SettingsModalFooter from '@/components/config-modal/SettingsModalFooter.vue';
+    import OtherTabContent from '@/components/settings-modal/tabs/ParserTabContent.vue';
+    import MysqlTabContent from '@/components/settings-modal/tabs/database/MysqlTabContent.vue';
+    import OracleTabContent from '@/components/settings-modal/tabs/database/OracleTabContent.vue';
+    import SqlServerTabContent from '@/components/settings-modal/tabs/database/SqlServerTabContent.vue';
+    import JavaTabContent from '@/components/settings-modal/tabs/JavaTabContent.vue';
+    import TypeScriptTabContent from '@/components/settings-modal/tabs/TypeScriptTabContent.vue';
+    import SettingsModalFooter from '@/components/settings-modal/SettingsModalFooter.vue';
     import {showErrorToastMessage, showSuccessToastMessage} from '@/store/globalToastMessageStore';
     import configStore from '@/store/configStore';
-    import NomnomlTabContent from '@/components/config-modal/tabs/NomnomlTabContent.vue';
-    import PlantUmlTabContent from '@/components/config-modal/tabs/PlantUmlTabContent.vue';
-    import PostgresqlTabContent from '@/components/config-modal/tabs/database/PostgresqlTabContent.vue';
-    import SqliteTabContent from '@/components/config-modal/tabs/database/SqliteTabContent.vue';
+    import NomnomlTabContent from '@/components/settings-modal/tabs/NomnomlTabContent.vue';
+    import PlantUmlTabContent from '@/components/settings-modal/tabs/PlantUmlTabContent.vue';
+    import PostgresqlTabContent from '@/components/settings-modal/tabs/database/PostgresqlTabContent.vue';
+    import SqliteTabContent from '@/components/settings-modal/tabs/database/SqliteTabContent.vue';
 
     interface Props {
         showing: boolean;

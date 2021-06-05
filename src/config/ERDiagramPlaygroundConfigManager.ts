@@ -1,11 +1,11 @@
 import {
 	AbstractComponentConfigManager,
+	beanValidationTransformerConfigManager,
 	classModelGeneratorConfigManager,
 	ComponentConfigManager,
 	databaseModelGeneratorConfigManager,
 	entityRelationshipModelParserConfigManager,
 	javaClassModelGeneratorConfigManager,
-	javaxValidationTransformerConfigManager,
 	jpaTransformerConfigManager,
 	mysqlDialectConfigManager,
 	nomnomlEntityRelationshipModelToDiagramCodeConverterConfigManager,
@@ -54,7 +54,7 @@ export class ERDiagramPlaygroundConfigManager
 				transformers: {
 					validation: {
 						enabled: false,
-						config: javaxValidationTransformerConfigManager.getDefaultConfig()
+						config: beanValidationTransformerConfigManager.getDefaultConfig()
 					},
 					jpa: {
 						enabled: false,
@@ -140,7 +140,7 @@ export class ERDiagramPlaygroundConfigManager
 				transformers: {
 					validation: {
 						enabled: partialConfig?.java?.transformers?.validation?.enabled ?? fullConfig.java.transformers.validation.enabled,
-						config: javaxValidationTransformerConfigManager.mergeConfigs(
+						config: beanValidationTransformerConfigManager.mergeConfigs(
 								fullConfig.java.transformers.validation.config,
 								partialConfig?.java?.transformers?.validation?.config
 						)
@@ -205,7 +205,7 @@ export class ERDiagramPlaygroundConfigManager
 				transformers: JsonAdapters.object({
 					validation: JsonAdapters.object({
 						enabled: JsonAdapters.identity<boolean>(),
-						config: useConfigManagerAsJsonAdapter(javaxValidationTransformerConfigManager)
+						config: useConfigManagerAsJsonAdapter(beanValidationTransformerConfigManager)
 					}),
 					jpa: JsonAdapters.object({
 						enabled: JsonAdapters.identity<boolean>(),

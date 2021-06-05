@@ -2,7 +2,7 @@ import {reactive} from 'vue';
 import erModelSourceCodeGenerators from '@/common/output/erModelSourceCodeGenerators';
 import erModelToDiagramConverters from '@/common/output/erModelToImageConverters';
 import EntityRelationshipModelToImageConverter from '@/common/output/image/EntityRelationshipModelToImageConverter';
-import {EntityRelationshipModelSourceCodeGenerator} from '@nestorrente/erdiagram';
+import {SourceCodeGenerator} from '@nestorrente/erdiagram';
 
 export interface OutputFormat {
 	id: string;
@@ -13,7 +13,8 @@ export interface OutputFormat {
 export interface CodeOutputFormat extends OutputFormat {
 	type: 'code';
 	codeBlockLang: string;
-	erModelSourceCodeGenerator: EntityRelationshipModelSourceCodeGenerator;
+	erModelSourceCodeGenerator: SourceCodeGenerator;
+	downloadFilename: string;
 }
 
 export function isCodeOutputFormat(outputFormat: OutputFormat): outputFormat is CodeOutputFormat {
@@ -34,7 +35,8 @@ const mysqlCodeOutputFormat: CodeOutputFormat = reactive({
 	name: 'MySQL',
 	type: 'code',
 	codeBlockLang: 'sql_more',
-	erModelSourceCodeGenerator: erModelSourceCodeGenerators.mysqlConverter
+	erModelSourceCodeGenerator: erModelSourceCodeGenerators.mysqlConverter,
+	downloadFilename: 'creation_script.sql'
 });
 
 const oracleCodeOutputFormat: CodeOutputFormat = reactive({
@@ -42,7 +44,8 @@ const oracleCodeOutputFormat: CodeOutputFormat = reactive({
 	name: 'Oracle DB',
 	type: 'code',
 	codeBlockLang: 'sql_more',
-	erModelSourceCodeGenerator: erModelSourceCodeGenerators.oracleConverter
+	erModelSourceCodeGenerator: erModelSourceCodeGenerators.oracleConverter,
+	downloadFilename: 'creation_script.sql'
 });
 
 const postgresqlCodeOutputFormat: CodeOutputFormat = reactive({
@@ -50,7 +53,8 @@ const postgresqlCodeOutputFormat: CodeOutputFormat = reactive({
 	name: 'PostgreSQL',
 	type: 'code',
 	codeBlockLang: 'sql_more',
-	erModelSourceCodeGenerator: erModelSourceCodeGenerators.postgresqlConverter
+	erModelSourceCodeGenerator: erModelSourceCodeGenerators.postgresqlConverter,
+	downloadFilename: 'creation_script.sql'
 });
 
 const sqliteCodeOutputFormat: CodeOutputFormat = reactive({
@@ -58,7 +62,8 @@ const sqliteCodeOutputFormat: CodeOutputFormat = reactive({
 	name: 'SQLite',
 	type: 'code',
 	codeBlockLang: 'sql_more',
-	erModelSourceCodeGenerator: erModelSourceCodeGenerators.sqliteConverter
+	erModelSourceCodeGenerator: erModelSourceCodeGenerators.sqliteConverter,
+	downloadFilename: 'creation_script.sql'
 });
 
 const sqlserverCodeOutputFormat: CodeOutputFormat = reactive({
@@ -66,15 +71,17 @@ const sqlserverCodeOutputFormat: CodeOutputFormat = reactive({
 	name: 'SQL Server',
 	type: 'code',
 	codeBlockLang: 'sql_more',
-	erModelSourceCodeGenerator: erModelSourceCodeGenerators.sqlserverConverter
+	erModelSourceCodeGenerator: erModelSourceCodeGenerators.sqlserverConverter,
+	downloadFilename: 'creation_script.sql'
 });
 
 const javaCodeOutputFormat: CodeOutputFormat = reactive({
 	id: 'java',
-	name: 'Java POJO',
+	name: 'Java',
 	type: 'code',
 	codeBlockLang: 'java',
-	erModelSourceCodeGenerator: erModelSourceCodeGenerators.javaConverter
+	erModelSourceCodeGenerator: erModelSourceCodeGenerators.javaConverter,
+	downloadFilename: 'model.zip'
 });
 
 const typescriptCodeOutputFormat: CodeOutputFormat = reactive({
@@ -82,7 +89,8 @@ const typescriptCodeOutputFormat: CodeOutputFormat = reactive({
 	name: 'TypeScript',
 	type: 'code',
 	codeBlockLang: 'typescript',
-	erModelSourceCodeGenerator: erModelSourceCodeGenerators.typescriptConverter
+	erModelSourceCodeGenerator: erModelSourceCodeGenerators.typescriptConverter,
+	downloadFilename: 'model.ts'
 });
 
 const plantumlCodeOutputFormat: CodeOutputFormat = reactive({
@@ -90,7 +98,8 @@ const plantumlCodeOutputFormat: CodeOutputFormat = reactive({
 	name: 'PlantUML code',
 	type: 'code',
 	codeBlockLang: 'plaintext',
-	erModelSourceCodeGenerator: erModelSourceCodeGenerators.plantumlConverter
+	erModelSourceCodeGenerator: erModelSourceCodeGenerators.plantumlConverter,
+	downloadFilename: 'diagram.puml'
 });
 
 const plantumlDiagramOutputFormat: ImageOutputFormat = reactive({
@@ -105,7 +114,8 @@ const nomnomlCodeOutputFormat: CodeOutputFormat = reactive({
 	name: 'Nomnoml code',
 	type: 'code',
 	codeBlockLang: 'plaintext',
-	erModelSourceCodeGenerator: erModelSourceCodeGenerators.nomnomlConverter
+	erModelSourceCodeGenerator: erModelSourceCodeGenerators.nomnomlConverter,
+	downloadFilename: 'diagram.txt'
 });
 
 const nomnomlDiagramOutputFormat: ImageOutputFormat = reactive({

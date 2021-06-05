@@ -1,6 +1,7 @@
 <template>
     <SettingRow
-            description="ID naming strategy"
+            :description="description"
+            :disabled="disabled"
             @restore-default="config.idNamingStrategy = defaultIdNamingStrategy"
     >
         <SelectInput
@@ -9,6 +10,7 @@
                 text-field="text"
                 id-field="value"
                 block
+                :disabled="disabled"
         ></SelectInput>
     </SettingRow>
 </template>
@@ -18,12 +20,14 @@
     import {IdNamingStrategy, StandardIdNamingStrategies} from '@nestorrente/erdiagram';
     import useSelectInputOptions, {SelectInputOption} from '@/composition/form/useSelectInputOptions';
     import SelectInput from '@/components/generic/form/SelectInput.vue';
-    import SettingRow from '@/components/config-modal/tabs/SettingRow.vue';
+    import SettingRow from '@/components/settings-modal/tabs/SettingRow.vue';
 
     interface Props {
         config: {
             idNamingStrategy: IdNamingStrategy;
         };
+        description: string;
+        disabled: boolean;
     }
 
     export default defineComponent({
@@ -37,6 +41,14 @@
             config: {
                 type: Object,
                 required: true
+            },
+            description: {
+                type: String,
+                default: 'ID naming strategy'
+            },
+            disabled: {
+                type: Boolean,
+                default: false
             }
         },
         setup(uncastedProps) {

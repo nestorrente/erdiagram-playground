@@ -4,19 +4,41 @@
             :class="{'is-full-height': fullHeight}"
     >
 
-        <Button
-                color="warning"
-                small
-                :icon="copiedState ? 'fas fa-clipboard-check' : 'fas fa-clipboard'"
-                class="copy-button"
+        <div
+                class="buttons-toolbar"
                 :style="{
                     '--scrollbar-size': `${codeBlockScrollbarsSize.vertical}px`
                 }"
-                @click="copyCode"
-                @mouseleave="copiedState = false"
         >
-            {{ copiedState ? 'Copied!' : 'Copy' }}
-        </Button>
+            <Button
+                    color="warning"
+                    small
+                    :icon="copiedState ? 'fas fa-clipboard-check' : 'fas fa-clipboard'"
+                    class="copy-button"
+                    :disabled="!code"
+                    @click="copyCode"
+                    @mouseleave="copiedState = false"
+            >
+                {{ copiedState ? 'Copied!' : 'Copy' }}
+            </Button>
+
+            <FileDownloadWrapper
+                    v-if="downloadFilename"
+                    :file-name="downloadFilename"
+                    :file-contents="getFileContentsToDownload"
+                    #default="{downloadFile}"
+            >
+                <Button
+                        color="default"
+                        small
+                        icon="fas fa-download"
+                        class="download-button"
+                        :disabled="!code"
+                        @click="downloadFile"
+                >
+                </Button>
+            </FileDownloadWrapper>
+        </div>
 
         <pre
                 class="code-container"
@@ -38,10 +60,11 @@
     import hljs from 'highlight.js';
     import useElementScrollbarsSize from '@/composition/dom/size/useElementScrollbarsSize';
     import Button from '@/components/generic/form/Button.vue';
+    import FileDownloadWrapper from '@/components/generic/file/FileDownloadWrapper.vue';
 
     export default defineComponent({
         name: 'CodeBlock',
-        components: {Button},
+        components: {FileDownloadWrapper, Button},
         props: {
             lang: {
                 type: String,
@@ -61,6 +84,14 @@
             },
             customCodeClass: {
                 type: String,
+                required: false
+            },
+            downloadFilename: {
+                type: String,
+                required: false
+            },
+            downloadCallback: {
+                type: Function,
                 required: false
             }
         },
@@ -84,18 +115,26 @@
 
             const codeBlockScrollbarsSize = useElementScrollbarsSize(codeBlock);
 
+            function getFileContentsToDownload(): string {
+                if (props.downloadCallback) {
+                    return props.downloadCallback();
+                }
+                return props.code;
+            }
+
             return {
                 codeBlock,
                 copyCode,
                 copiedState,
-                codeBlockScrollbarsSize
+                codeBlockScrollbarsSize,
+                getFileContentsToDownload
             };
 
         }
     });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
     .code-container {
         border-radius: 4px;
         overflow: hidden;
@@ -106,21 +145,29 @@
         }
     }
 
-    .copy-button {
+    .buttons-toolbar {
 
         position: absolute;
 
         top: 1em;
         right: calc(1em + var(--scrollbar-size));
 
-        > .button-text {
-            width: 3em;
+        button + button {
+            margin-left: 1em;
         }
 
-        transition: opacity ease-in-out 0.15s;
+        > button {
 
-        &:not(:hover) {
-            opacity: 0.5;
+            transition: opacity ease-in-out 0.15s;
+
+            &:not(:hover) {
+                opacity: 0.5;
+            }
+
+        }
+
+        > .copy-button > .button-text {
+            width: 3em;
         }
 
     }

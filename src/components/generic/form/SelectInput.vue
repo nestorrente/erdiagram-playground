@@ -1,6 +1,10 @@
 <template>
     <div class="select" :class="{'is-block': block}">
-        <select v-model="selectedValue" :class="{'has-empty-value': selectedValue === ''}">
+        <select
+                v-model="selectedValue"
+                :class="{'has-empty-value': selectedValue === ''}"
+                :disabled="disabled"
+        >
             <template v-if="hasOptionGroups">
                 <option
                         v-for="item in items"
@@ -72,6 +76,10 @@
             emptyValueText: {
                 type: String,
                 default: ''
+            },
+            disabled: {
+                type: Boolean,
+                default: false
             }
         },
         setup(uncastedProps, context) {

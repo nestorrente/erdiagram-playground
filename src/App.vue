@@ -23,7 +23,7 @@
 <script lang="ts">
     import {defineComponent, ref} from 'vue';
     import NavBar from '@/components/layout/NavBar.vue';
-    import SettingsModal from '@/components/config-modal/SettingsModal.vue';
+    import SettingsModal from '@/components/settings-modal/SettingsModal.vue';
     import GlobalModalDialog from '@/components/generic/modal/GlobalModalDialog.vue';
     import GlobalToastMessage from '@/components/generic/modal/GlobalToastMessage.vue';
     import MainContainer from '@/components/layout/main-container/MainContainer.vue';

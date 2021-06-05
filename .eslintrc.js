@@ -14,6 +14,7 @@ module.exports = {
     rules: {
         'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
         'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+        'no-prototype-builtins': 'off',
         // FIXME wait for this to be implemented before enabling this rule again:
         //  https://github.com/vuejs/eslint-plugin-vue/issues/1371
         'vue/no-mutating-props': 'off',

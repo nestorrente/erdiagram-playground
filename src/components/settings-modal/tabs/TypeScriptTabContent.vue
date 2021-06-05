@@ -25,10 +25,11 @@
         typescriptClassModelToCodeConverterConfigManager,
         TypeScriptType
     } from '@nestorrente/erdiagram';
-    import TypeBindingsTable from '@/components/config-modal/tabs/TypeBindingsTable.vue';
-    import SettingsTabSection from '@/components/config-modal/tabs/SettingsTabSection.vue';
+    import TypeBindingsTable from '@/components/settings-modal/tabs/TypeBindingsTable.vue';
+    import SettingsTabSection from '@/components/settings-modal/tabs/SettingsTabSection.vue';
     import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
-    import IdNamingStrategySettingRow from '@/components/config-modal/tabs/common-rows/IdNamingStrategySettingRow.vue';
+    import IdNamingStrategySettingRow
+        from '@/components/settings-modal/tabs/common-rows/IdNamingStrategySettingRow.vue';
 
     interface Props {
         config: ERDiagramPlaygroundConfig;

@@ -2,7 +2,7 @@ import {computed} from 'vue';
 import {
 	DatabaseModelGeneratorConfig,
 	SqlDialect,
-	SqlEntityRelationshipModelSourceCodeGenerator
+	SqlSourceCodeGenerator
 } from '@nestorrente/erdiagram';
 
 export default function useEntityRelationshipModelToSqlCodeConverter(
@@ -10,7 +10,7 @@ export default function useEntityRelationshipModelToSqlCodeConverter(
 		sqlDialectSupplier: () => SqlDialect
 ) {
 	return computed(() => {
-		return SqlEntityRelationshipModelSourceCodeGenerator.builder()
+		return SqlSourceCodeGenerator.builder()
 				.useDialect(sqlDialectSupplier())
 				.configureDatabaseModel(databaseModelGeneratorConfigSupplier())
 				.build();

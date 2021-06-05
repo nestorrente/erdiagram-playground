@@ -55,8 +55,9 @@
         StandardCaseFormats
     } from '@nestorrente/erdiagram';
     import useSelectInputOptions, {SelectInputOption} from '@/composition/form/useSelectInputOptions';
-    import SettingRow from '@/components/config-modal/tabs/SettingRow.vue';
-    import IdNamingStrategySettingRow from '@/components/config-modal/tabs/common-rows/IdNamingStrategySettingRow.vue';
+    import SettingRow from '@/components/settings-modal/tabs/SettingRow.vue';
+    import IdNamingStrategySettingRow
+        from '@/components/settings-modal/tabs/common-rows/IdNamingStrategySettingRow.vue';
 
     interface Props {
         databaseModelConfig: DatabaseModelGeneratorConfig;

@@ -1,6 +1,6 @@
 <template>
     <tr>
-        <td class="setting-description">
+        <td class="setting-description" :class="{'disabled-setting': disabled}">
             {{ description }}:
         </td>
         <td class="setting-value">
@@ -13,6 +13,7 @@
                     small
                     icon="fas fa-undo-alt"
                     @click="$emit('restoreDefault')"
+                    :disabled="disabled"
             ></Button>
         </td>
     </tr>
@@ -35,7 +36,17 @@
             description: {
                 type: String,
                 required: true
+            },
+            disabled: {
+                type: Boolean,
+                default: false
             }
         }
     });
 </script>
+
+<style scoped>
+    .disabled-setting {
+        color: gray;
+    }
+</style>

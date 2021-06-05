@@ -1,12 +1,11 @@
 import {
+	BeanValidationTransformerConfig,
 	ClassModelGeneratorConfig,
 	DatabaseModelGeneratorConfig,
 	EntityRelationshipModelParserConfig,
 	JavaClassModelGeneratorConfig,
-	JavaxValidationTransformerConfig,
 	JpaTransformerConfig,
 	MysqlDialectConfig,
-	NomnomlEntityRelationshipModelSourceCodeGeneratorConfig,
 	OracleDialectConfig,
 	PostgresqlDialectConfig,
 	SqlDialectConfig,
@@ -29,7 +28,7 @@ export default interface ERDiagramPlaygroundConfig {
 		transformers: {
 			validation: {
 				enabled: boolean;
-				config: JavaxValidationTransformerConfig;
+				config: BeanValidationTransformerConfig;
 			};
 			jpa: {
 				enabled: boolean;
@@ -42,7 +41,7 @@ export default interface ERDiagramPlaygroundConfig {
 		classModel: ClassModelGeneratorConfig;
 		code: TypeScriptClassModelToCodeConverterConfig;
 	};
-	nomnoml: NomnomlEntityRelationshipModelSourceCodeGeneratorConfig;
+	nomnoml: NomnomlSourceCodeGeneratorConfig;
 }
 
 export interface DatabaseDialectConfig<T extends SqlDialectConfig> {

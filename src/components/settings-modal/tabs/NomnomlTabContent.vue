@@ -50,8 +50,8 @@
 <script lang="ts">
     import {defineComponent} from 'vue';
     import {nomnomlEntityRelationshipModelToDiagramCodeConverterConfigManager} from '@nestorrente/erdiagram';
-    import SettingsTabSection from '@/components/config-modal/tabs/SettingsTabSection.vue';
-    import SettingRow from '@/components/config-modal/tabs/SettingRow.vue';
+    import SettingsTabSection from '@/components/settings-modal/tabs/SettingsTabSection.vue';
+    import SettingRow from '@/components/settings-modal/tabs/SettingRow.vue';
     import SelectInput from '@/components/generic/form/SelectInput.vue';
 
     interface SettingDescription {
@@ -97,7 +97,12 @@
                 {name: 'title', description: 'Title', type: 'string'},
                 {name: 'zoom', description: 'Zoom', type: 'number'},
                 {name: 'acyclicer', description: 'Acyclicer', type: 'enum', values: ['greedy']},
-                {name: 'ranker', description: 'Ranker', type: 'enum', values: ['network-simplex', 'tight-tree', 'longest-path']},
+                {
+                    name: 'ranker',
+                    description: 'Ranker',
+                    type: 'enum',
+                    values: ['network-simplex', 'tight-tree', 'longest-path']
+                },
             ];
 
             const defaultERModelToCodeConverterConfig = nomnomlEntityRelationshipModelToDiagramCodeConverterConfigManager.getDefaultConfig();

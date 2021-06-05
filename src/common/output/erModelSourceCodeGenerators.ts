@@ -2,18 +2,18 @@ import useEntityRelationshipModelToSqlCodeConverter
 	from '@/composition/erdiagram/useEntityRelationshipModelToSqlCodeConverter';
 import configStore from '@/store/configStore';
 import {
+	BeanValidationTransformer,
 	JavaClassModelTransformer,
-	JavaEntityRelationshipModelSourceCodeGenerator,
-	JavaxValidationTransformer,
+	JavaSourceCodeGenerator,
 	JpaTransformer,
 	MysqlDialect,
-	NomnomlEntityRelationshipModelSourceCodeGenerator,
+	NomnomlSourceCodeGenerator,
 	OracleDialect,
-	PlantUmlEntityRelationshipModelSourceCodeGenerator,
+	PlantUmlSourceCodeGenerator,
 	PostgresqlDialect,
 	SqliteDialect,
 	SqlServerDialect,
-	TypeScriptEntityRelationshipModelSourceCodeGenerator
+	TypeScriptSourceCodeGenerator
 } from '@nestorrente/erdiagram';
 import {computed, markRaw} from 'vue';
 
@@ -62,7 +62,7 @@ const javaConverter = (() => {
 
 	});
 
-	const validationTransformer = computed((): JavaxValidationTransformer | null => {
+	const validationTransformer = computed((): BeanValidationTransformer | null => {
 
 		const validationTransformerConfig = configStore.config.java.transformers.validation;
 
@@ -71,7 +71,7 @@ const javaConverter = (() => {
 		}
 
 		return markRaw(
-				new JavaxValidationTransformer(validationTransformerConfig.config)
+				new BeanValidationTransformer(validationTransformerConfig.config)
 		);
 
 	});
@@ -97,7 +97,7 @@ const javaConverter = (() => {
 		const javaConfig = configStore.config.java;
 
 		return markRaw(
-				JavaEntityRelationshipModelSourceCodeGenerator.builder()
+				JavaSourceCodeGenerator.builder()
 						.configureClassModel(javaConfig.classModel)
 						.configureJavaCode(javaConfig.code)
 						.addTransformers(...javaTransformers.value)
@@ -112,7 +112,7 @@ const typescriptConverter = computed(() => {
 
 	const typescriptConfig = configStore.config.typescript;
 
-	return TypeScriptEntityRelationshipModelSourceCodeGenerator.builder()
+	return TypeScriptSourceCodeGenerator.builder()
 			.configureClassModel(typescriptConfig.classModel)
 			.configureTypeScriptCode(typescriptConfig.code)
 			.build();
@@ -120,11 +120,11 @@ const typescriptConverter = computed(() => {
 });
 
 const plantumlConverter = computed(() => {
-	return new PlantUmlEntityRelationshipModelSourceCodeGenerator();
+	return new PlantUmlSourceCodeGenerator();
 });
 
 const nomnomlConverter = computed(() => {
-	return new NomnomlEntityRelationshipModelSourceCodeGenerator(configStore.config.nomnoml);
+	return new NomnomlSourceCodeGenerator(configStore.config.nomnoml);
 });
 
 // FIXME rename all to "{format}Generator"
