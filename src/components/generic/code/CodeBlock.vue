@@ -1,174 +1,190 @@
 <template>
-    <div
-            class="is-relative"
-            :class="{'is-full-height': fullHeight}"
-    >
+	<div
+			class="is-relative"
+			:class="{'is-full-height': fullHeight}"
+	>
 
-        <div
-                class="buttons-toolbar"
-                :style="{
+		<div
+				class="buttons-toolbar"
+				:style="{
                     '--scrollbar-size': `${codeBlockScrollbarsSize.vertical}px`
                 }"
-        >
-            <Button
-                    color="warning"
-                    small
-                    :icon="copiedState ? 'fas fa-clipboard-check' : 'fas fa-clipboard'"
-                    class="copy-button"
-                    :disabled="!code"
-                    @click="copyCode"
-                    @mouseleave="copiedState = false"
-            >
-                {{ copiedState ? 'Copied!' : 'Copy' }}
-            </Button>
+		>
+			<Button
+					color="warning"
+					small
+					:icon="copiedState ? 'fas fa-clipboard-check' : 'fas fa-clipboard'"
+					class="copy-button"
+					:disabled="!code"
+					@click="copyCode"
+					@mouseleave="copiedState = false"
+			>
+				{{ copiedState ? 'Copied!' : 'Copy' }}
+			</Button>
 
-            <FileDownloadWrapper
-                    v-if="downloadFilename"
-                    :file-name="downloadFilename"
-                    :file-contents="getFileContentsToDownload"
-                    #default="{downloadFile}"
-            >
-                <Button
-                        color="default"
-                        small
-                        icon="fas fa-download"
-                        class="download-button"
-                        :disabled="!code"
-                        @click="downloadFile"
-                >
-                </Button>
-            </FileDownloadWrapper>
-        </div>
+			<FileDownloadWrapper
+					v-if="downloadFilename"
+					:file-name="downloadFilename"
+					:file-contents="getFileContentsToDownload"
+					#default="{downloadFile}"
+			>
+				<Button
+						color="default"
+						small
+						icon="fas fa-download"
+						class="download-button"
+						:disabled="!code"
+						@click="downloadFile"
+				>
+				</Button>
+			</FileDownloadWrapper>
+		</div>
 
-        <pre
-                class="code-container"
-                :class="{
-                    'has-white-space-pre-wrap': wrap,
-                    'is-full-height': fullHeight
-                }"
-        ><code
-                ref="codeBlock"
-                :class="[lang, customCodeClass, {'is-full-height': fullHeight}]"
-                v-text="code"
-        ></code></pre>
+		<pre
+				class="code-container"
+				:class="[
+					{
+						'has-white-space-pre-wrap': wrap,
+						'is-full-height': fullHeight
+					}
+				]"
+		><code
+				ref="codeBlock"
+				:class="['language-' + lang, customCodeClass, {'is-full-height': fullHeight}]"
+				v-text="code"
+		></code></pre>
 
-    </div>
+	</div>
 </template>
 
 <script lang="ts">
-    import {defineComponent, onMounted, onUpdated, ref} from 'vue';
-    import hljs from 'highlight.js';
-    import useElementScrollbarsSize from '@/composition/dom/size/useElementScrollbarsSize';
-    import Button from '@/components/generic/form/Button.vue';
-    import FileDownloadWrapper from '@/components/generic/file/FileDownloadWrapper.vue';
+	import {defineComponent, onMounted, onUpdated, ref} from 'vue';
+	import useElementScrollbarsSize from '@/composition/dom/size/useElementScrollbarsSize';
+	import Button from '@/components/generic/form/Button.vue';
+	import FileDownloadWrapper from '@/components/generic/file/FileDownloadWrapper.vue';
+	import Prism from 'prismjs';
+	import 'prismjs/components/prism-java.min';
+	import 'prismjs/components/prism-sql.min';
+	import 'prismjs/components/prism-typescript.min';
+	import 'prismjs/plugins/custom-class/prism-custom-class.min';
 
-    export default defineComponent({
-        name: 'CodeBlock',
-        components: {FileDownloadWrapper, Button},
-        props: {
-            lang: {
-                type: String,
-                default: 'plaintext'
-            },
-            code: {
-                type: String,
-                required: true
-            },
-            wrap: {
-                type: Boolean,
-                default: false
-            },
-            fullHeight: {
-                type: Boolean,
-                default: false
-            },
-            customCodeClass: {
-                type: String,
-                required: false
-            },
-            downloadFilename: {
-                type: String,
-                required: false
-            },
-            downloadCallback: {
-                type: Function,
-                required: false
-            }
-        },
-        setup(props) {
+	Prism.plugins.customClass.prefix('prism--');
 
-            const codeBlock = ref<HTMLElement>();
+	export default defineComponent({
+		name: 'CodeBlock',
+		components: {FileDownloadWrapper, Button},
+		props: {
+			lang: {
+				type: String,
+				default: 'text'
+			},
+			code: {
+				type: String,
+				required: true
+			},
+			wrap: {
+				type: Boolean,
+				default: false
+			},
+			fullHeight: {
+				type: Boolean,
+				default: false
+			},
+			customCodeClass: {
+				type: String,
+				required: false
+			},
+			downloadFilename: {
+				type: String,
+				required: false
+			},
+			downloadCallback: {
+				type: Function,
+				required: false
+			}
+		},
+		setup(props) {
 
-            onMounted(applyHighlights);
-            onUpdated(applyHighlights);
+			const codeBlock = ref<HTMLElement>();
 
-            function applyHighlights() {
-                hljs.highlightElement(codeBlock.value!);
-            }
+			onMounted(highlightCode);
+			onUpdated(highlightCode);
 
-            const copiedState = ref(false);
+			function highlightCode() {
+				Prism.highlightElement(codeBlock.value!);
+			}
 
-            function copyCode() {
-                navigator.clipboard.writeText(props.code);
-                copiedState.value = true;
-            }
+			const copiedState = ref(false);
 
-            const codeBlockScrollbarsSize = useElementScrollbarsSize(codeBlock);
+			function copyCode() {
+				navigator.clipboard.writeText(props.code);
+				copiedState.value = true;
+			}
 
-            function getFileContentsToDownload(): string {
-                if (props.downloadCallback) {
-                    return props.downloadCallback();
-                }
-                return props.code;
-            }
+			const codeBlockScrollbarsSize = useElementScrollbarsSize(codeBlock);
 
-            return {
-                codeBlock,
-                copyCode,
-                copiedState,
-                codeBlockScrollbarsSize,
-                getFileContentsToDownload
-            };
+			function getFileContentsToDownload(): string {
+				if (props.downloadCallback) {
+					return props.downloadCallback();
+				}
+				return props.code;
+			}
 
-        }
-    });
+			return {
+				codeBlock,
+				copyCode,
+				copiedState,
+				codeBlockScrollbarsSize,
+				getFileContentsToDownload
+			};
+
+		}
+	});
 </script>
 
 <style lang="scss">
-    .code-container {
-        border-radius: 4px;
-        overflow: hidden;
-        padding: 0;
+	pre[class*="language-"] {
+		padding: 0;
+		margin: 0;
+	}
 
-        > code {
-            padding: 1.25em;
-        }
-    }
+	.code-container {
+		border-radius: 4px;
+		overflow: hidden !important;
+		padding: 0 !important;
 
-    .buttons-toolbar {
+		> code {
+			display: block;
+			overflow: auto !important;
+			//width: 100% !important;
+			padding: 1.25em !important;
+		}
+	}
 
-        position: absolute;
+	.buttons-toolbar {
 
-        top: 1em;
-        right: calc(1em + var(--scrollbar-size));
+		position: absolute;
 
-        button + button {
-            margin-left: 1em;
-        }
+		top: 1em;
+		right: calc(1em + var(--scrollbar-size));
 
-        > button {
+		button + button {
+			margin-left: 1em;
+		}
 
-            transition: opacity ease-in-out 0.15s;
+		> button {
 
-            &:not(:hover) {
-                opacity: 0.5;
-            }
+			transition: opacity ease-in-out 0.15s;
 
-        }
+			&:not(:hover) {
+				opacity: 0.5;
+			}
 
-        > .copy-button > .button-text {
-            width: 3em;
-        }
+		}
 
-    }
+		> .copy-button > .button-text {
+			width: 3em;
+		}
+
+	}
 </style>

@@ -34,7 +34,7 @@ const mysqlCodeOutputFormat: CodeOutputFormat = reactive({
 	id: 'mysql',
 	name: 'MySQL',
 	type: 'code',
-	codeBlockLang: 'sql_more',
+	codeBlockLang: 'sql',
 	erModelSourceCodeGenerator: erModelSourceCodeGenerators.mysqlConverter,
 	downloadFilename: 'creation_script.sql'
 });
@@ -43,7 +43,7 @@ const oracleCodeOutputFormat: CodeOutputFormat = reactive({
 	id: 'oracle',
 	name: 'Oracle DB',
 	type: 'code',
-	codeBlockLang: 'sql_more',
+	codeBlockLang: 'sql',
 	erModelSourceCodeGenerator: erModelSourceCodeGenerators.oracleConverter,
 	downloadFilename: 'creation_script.sql'
 });
@@ -52,7 +52,7 @@ const postgresqlCodeOutputFormat: CodeOutputFormat = reactive({
 	id: 'postgresql',
 	name: 'PostgreSQL',
 	type: 'code',
-	codeBlockLang: 'sql_more',
+	codeBlockLang: 'sql',
 	erModelSourceCodeGenerator: erModelSourceCodeGenerators.postgresqlConverter,
 	downloadFilename: 'creation_script.sql'
 });
@@ -61,7 +61,7 @@ const sqliteCodeOutputFormat: CodeOutputFormat = reactive({
 	id: 'sqlite',
 	name: 'SQLite',
 	type: 'code',
-	codeBlockLang: 'sql_more',
+	codeBlockLang: 'sql',
 	erModelSourceCodeGenerator: erModelSourceCodeGenerators.sqliteConverter,
 	downloadFilename: 'creation_script.sql'
 });
@@ -70,7 +70,7 @@ const sqlserverCodeOutputFormat: CodeOutputFormat = reactive({
 	id: 'sqlserver',
 	name: 'SQL Server',
 	type: 'code',
-	codeBlockLang: 'sql_more',
+	codeBlockLang: 'sql',
 	erModelSourceCodeGenerator: erModelSourceCodeGenerators.sqlserverConverter,
 	downloadFilename: 'creation_script.sql'
 });
@@ -97,7 +97,7 @@ const plantumlCodeOutputFormat: CodeOutputFormat = reactive({
 	id: 'plantumlCode',
 	name: 'PlantUML code',
 	type: 'code',
-	codeBlockLang: 'plaintext',
+	codeBlockLang: 'text',
 	erModelSourceCodeGenerator: erModelSourceCodeGenerators.plantumlConverter,
 	downloadFilename: 'diagram.puml'
 });
@@ -113,7 +113,7 @@ const nomnomlCodeOutputFormat: CodeOutputFormat = reactive({
 	id: 'nomnomlCode',
 	name: 'Nomnoml code',
 	type: 'code',
-	codeBlockLang: 'plaintext',
+	codeBlockLang: 'text',
 	erModelSourceCodeGenerator: erModelSourceCodeGenerators.nomnomlConverter,
 	downloadFilename: 'diagram.txt'
 });

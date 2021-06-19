@@ -1,0 +1,123 @@
+/**
+ * prism.prism--js tomorrow night eighties for JavaScript, CoffeeScript, CSS and HTML
+ * Based on https://github.prism--com/chriskempson/tomorrow-theme
+ * @author Rose Pritchard
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+    color: #ccc;
+    background: none;
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    font-size: 1em;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+    padding: 1em;
+    margin: .5em 0;
+    overflow: auto;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+    background: #2d2d2d;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+    padding: .1em;
+    border-radius: .3em;
+    white-space: normal;
+}
+
+.prism--token.prism--comment,
+.prism--token.prism--block-comment,
+.prism--token.prism--prolog,
+.prism--token.prism--doctype,
+.prism--token.prism--cdata {
+    color: #999;
+}
+
+.prism--token.prism--punctuation {
+    color: #ccc;
+}
+
+.prism--token.prism--tag,
+.prism--token.prism--attr-name,
+.prism--token.prism--namespace,
+.prism--token.prism--deleted {
+    color: #e2777a;
+}
+
+.prism--token.prism--function-name {
+    color: #6196cc;
+}
+
+.prism--token.prism--boolean,
+.prism--token.prism--number,
+.prism--token.prism--function {
+    color: #f08d49;
+}
+
+.prism--token.prism--property,
+.prism--token.prism--class-name,
+.prism--token.prism--constant,
+.prism--token.prism--symbol {
+    color: #f8c555;
+}
+
+.prism--token.prism--selector,
+.prism--token.prism--important,
+.prism--token.prism--atrule,
+.prism--token.prism--keyword,
+.prism--token.prism--builtin {
+    color: #cc99cd;
+}
+
+.prism--token.prism--string,
+.prism--token.prism--char,
+.prism--token.prism--attr-value,
+.prism--token.prism--regex,
+.prism--token.prism--variable {
+    color: #7ec699;
+}
+
+.prism--token.prism--operator,
+.prism--token.prism--entity,
+.prism--token.prism--url {
+    color: #67cdcc;
+}
+
+.prism--token.prism--important,
+.prism--token.prism--bold {
+    font-weight: bold;
+}
+
+.prism--token.prism--italic {
+    font-style: italic;
+}
+
+.prism--token.prism--entity {
+    cursor: help;
+}
+
+.prism--token.prism--inserted {
+    color: green;
+}
