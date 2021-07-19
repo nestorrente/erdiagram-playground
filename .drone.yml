@@ -17,6 +17,7 @@ steps:
     when:
       branch:
         - develop
+        - develop-rc2
   - name: bake-production
     image: plugins/docker
     settings:
