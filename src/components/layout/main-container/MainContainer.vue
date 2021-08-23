@@ -172,6 +172,8 @@
 
 			const parseResult = computed(() => {
 
+				// FIXME do not update values in a computed callback!!!
+				//  Create a watcher for this computed property, and do the update there
 				localStorageAccessor.setInputCode(inputCodeDebounced.value);
 
 				try {
