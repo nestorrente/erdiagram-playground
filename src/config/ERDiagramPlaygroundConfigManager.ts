@@ -53,11 +53,11 @@ export class ERDiagramPlaygroundConfigManager
 				code: javaClassModelConfigManager.getDefaultConfig(),
 				transformers: {
 					validation: {
-						enabled: false,
+						enabled: true,
 						config: beanValidationConfigManager.getDefaultConfig()
 					},
 					jpa: {
-						enabled: false,
+						enabled: true,
 						databaseModel: databaseModelConfigManager.getDefaultConfig(),
 						config: jpaConfigManager.getDefaultConfig()
 					}
