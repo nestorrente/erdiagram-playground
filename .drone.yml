@@ -50,6 +50,7 @@ steps:
     when:
       branch:
         - develop
+        - develop-rc2
   - name: deploy-production
     image: rubasace/drone-helm-k8s
     environment:
