@@ -5,8 +5,6 @@ name: default
 steps:
   - name: bake-development
     image: plugins/docker
-    environment:
-      BUILD_MODE: development
     settings:
       username:
         from_secret: docker_user
@@ -14,7 +12,8 @@ steps:
         from_secret: docker_pass
       repo: registry.nestorrente.com/v2/erdiagram/erdiagram-playground
       registry: registry.nestorrente.com/v2
-      build_args_from_env: [ BUILD_MODE ]
+      build_args:
+        - BUILD_MODE: development
       tags:
         - 1.0.0.${CI_BUILD_NUMBER}-SNAPSHOT
     when:
@@ -23,8 +22,6 @@ steps:
         - develop-rc2
   - name: bake-production
     image: plugins/docker
-    environment:
-      BUILD_MODE: production
     settings:
       username:
         from_secret: docker_user
@@ -32,7 +29,8 @@ steps:
         from_secret: docker_pass
       repo: registry.nestorrente.com/v2/erdiagram/erdiagram-playground
       registry: registry.nestorrente.com/v2
-      build_args_from_env: [ BUILD_MODE ]
+      build_args:
+        - BUILD_MODE: production
       tags:
         - latest
         - 1.0.0.${CI_BUILD_NUMBER}
