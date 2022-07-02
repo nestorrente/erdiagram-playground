@@ -10,8 +10,7 @@ export default function useEntityRelationshipModelToSqlCodeConverter(
 		sqlDialectSupplier: () => SqlDialect
 ) {
 	return computed(() => {
-		return SqlSourceCodeGenerator.builder()
-				.useDialect(sqlDialectSupplier())
+		return SqlSourceCodeGenerator.builder(sqlDialectSupplier())
 				.configureDatabaseModel(databaseModelConfigSupplier())
 				.build();
 	});

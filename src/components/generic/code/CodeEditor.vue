@@ -69,7 +69,7 @@
                 aceEditor.session.selection.clearSelection();
                 aceEditor.session.setAnnotations(props.annotations);
 
-                aceEditor.on('input', () => onCodeChanged(aceEditor.getValue()));
+                aceEditor.on('change', () => onCodeChanged(aceEditor.getValue()));
                 focusEditorOnDesktopDevice(aceEditor);
 
                 aceEditorRef.value = aceEditor;

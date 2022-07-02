@@ -53,3 +53,11 @@ $body-overflow-y: auto;
         }
     }
 }
+
+
+@media screen and (min-width: 1024px) {
+    .section {
+        // Keep the same padding for big and small screens
+        padding: 3rem 1.5rem;
+    }
+}

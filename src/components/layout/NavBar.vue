@@ -43,9 +43,10 @@
 
             <div class="navbar-end">
                 <div class="navbar-item">
-                    <article class="message is-warning is-small">
+                    <article class="message is-small" :class="isProduction ? 'is-info' : 'is-warning'">
                         <div class="message-body">
-                            Alpha version
+                            Version {{ appVersion }}
+							<template v-if="!isProduction">({{ environment }})</template>
                         </div>
                     </article>
                 </div>
@@ -56,15 +57,25 @@
 
 <script lang="ts">
     import {defineComponent, ref} from 'vue';
+	import packageJson from '../../../package.json';
 
     export default defineComponent({
         name: 'NavBar',
         setup() {
 
             const expanded = ref(false);
+			const environment = process.env.VUE_APP_ENV;
+			const isProduction = environment === 'production';
+			const appVersion = packageJson.version;
 
-            return {
-                expanded
+			console.log(environment);
+			console.log(isProduction);
+
+			return {
+                expanded,
+				environment,
+				isProduction,
+				appVersion
             };
 
         }
