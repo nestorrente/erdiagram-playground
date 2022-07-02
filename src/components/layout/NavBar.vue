@@ -68,9 +68,6 @@
 			const isProduction = environment === 'production';
 			const appVersion = packageJson.version;
 
-			console.log(environment);
-			console.log(isProduction);
-
 			return {
                 expanded,
 				environment,
