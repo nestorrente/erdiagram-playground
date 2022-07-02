@@ -3,7 +3,7 @@
         <div class="vfc-item">
             <NavBar/>
         </div>
-        <section class="section pb-3 vfc-item vfc-grow">
+        <section class="section pb-0 vfc-item vfc-grow">
             <div class="vertical-full-container">
                 <MainContainer
                         :showing-settings-modal="showingSettingsModal"
