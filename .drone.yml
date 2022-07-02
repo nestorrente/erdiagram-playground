@@ -5,8 +5,7 @@ name: default
 steps:
   - name: bake-development
     image: plugins/docker
-    commands:
-      - export BUILD_MODE=development
+    build_args_from_env: BUILD_MODE=development
     settings:
       username:
         from_secret: docker_user
@@ -22,8 +21,7 @@ steps:
         - develop-rc2
   - name: bake-production
     image: plugins/docker
-    commands:
-      - export BUILD_MODE=production
+    build_args_from_env: BUILD_MODE=production
     settings:
       username:
         from_secret: docker_user
