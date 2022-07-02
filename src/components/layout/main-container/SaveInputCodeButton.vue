@@ -8,7 +8,7 @@
         <Button
                 icon="far fa-save"
                 class="is-button-text-hidden-mobile"
-                title="Ctrl + S"
+                title="Save the current model definition to your local computer (Ctrl + S)"
                 @click="downloadFile"
         >
             Save file

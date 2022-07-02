@@ -11,7 +11,7 @@
         <Button
                 icon="far fa-folder-open"
                 class="is-button-text-hidden-mobile"
-                title="Ctrl + O"
+                title="Load a model definition from your local computer (Ctrl + O)"
                 @click="openFile"
         >
             Open file
