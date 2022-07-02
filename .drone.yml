@@ -18,7 +18,6 @@ steps:
     when:
       branch:
         - develop
-        - develop-rc2
   - name: bake-production
     image: plugins/docker
     settings:
@@ -52,7 +51,6 @@ steps:
     when:
       branch:
         - develop
-        - develop-rc2
   - name: deploy-production
     image: rubasace/drone-helm-k8s
     environment:
