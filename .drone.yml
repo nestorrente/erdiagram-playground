@@ -6,7 +6,7 @@ steps:
   - name: bake-development
     image: plugins/docker
     environment:
-      - BUILD_MODE: development
+      BUILD_MODE: "development"
     settings:
       username:
         from_secret: docker_user
@@ -23,7 +23,7 @@ steps:
   - name: bake-production
     image: plugins/docker
     environment:
-      - BUILD_MODE: production
+      BUILD_MODE: production
     settings:
       username:
         from_secret: docker_user
