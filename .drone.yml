@@ -33,7 +33,7 @@ steps:
         - 1.0.0.${CI_BUILD_NUMBER}
     when:
       branch:
-        - master
+        - main
         - release/*
   - name: deploy-development
     image: rubasace/drone-helm-k8s
@@ -66,4 +66,4 @@ steps:
       IMAGE_TAG: 1.0.0.${CI_BUILD_NUMBER}
     when:
       branch:
-        - master
+        - main
