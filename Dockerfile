@@ -2,7 +2,7 @@ FROM node:16-alpine as build-stage
 WORKDIR /app
 COPY package*.json ./
 COPY nestorrente-erdiagram-1.0.0-rc2.tgz ./
-ENV BUILD_MODE=${BUILD_MODE}
+ENV BUILD_MODE=$BUILD_MODE
 RUN echo '========== ENV START =========='
 RUN env
 RUN echo '========== ENV END =========='
