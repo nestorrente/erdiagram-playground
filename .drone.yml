@@ -27,7 +27,6 @@ steps:
         from_secret: docker_pass
       repo: registry.nestorrente.com/v2/erdiagram/erdiagram-playground
       registry: registry.nestorrente.com/v2
-      build_args: "BUILD_MODE=production"
       tags:
         - latest
         - 1.0.0.${CI_BUILD_NUMBER}
