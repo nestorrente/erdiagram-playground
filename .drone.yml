@@ -12,7 +12,7 @@ steps:
         from_secret: docker_pass
       repo: registry.nestorrente.com/v2/erdiagram/erdiagram-playground
       registry: registry.nestorrente.com/v2
-      build_args: "BUILD_MODE=development"
+      build_args: "build_mode=development"
       tags:
         - 1.0.0.${CI_BUILD_NUMBER}-SNAPSHOT
     when:
@@ -27,7 +27,7 @@ steps:
         from_secret: docker_pass
       repo: registry.nestorrente.com/v2/erdiagram/erdiagram-playground
       registry: registry.nestorrente.com/v2
-      build_args: "BUILD_MODE=production"
+      build_args: "build_mode=production"
       tags:
         - latest
         - 1.0.0.${CI_BUILD_NUMBER}
