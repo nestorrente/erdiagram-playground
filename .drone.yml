@@ -14,7 +14,7 @@ steps:
         from_secret: docker_pass
       repo: registry.nestorrente.com/v2/erdiagram/erdiagram-playground
       registry: registry.nestorrente.com/v2
-      build_args_from_env: [ BUILD_MODE ]
+      build_args_from_env: BUILD_MODE
       tags:
         - 1.0.0.${CI_BUILD_NUMBER}-SNAPSHOT
     when:
@@ -31,7 +31,7 @@ steps:
         from_secret: docker_pass
       repo: registry.nestorrente.com/v2/erdiagram/erdiagram-playground
       registry: registry.nestorrente.com/v2
-      build_args_from_env: [ BUILD_MODE ]
+      build_args_from_env: BUILD_MODE
       tags:
         - latest
         - 1.0.0.${CI_BUILD_NUMBER}
