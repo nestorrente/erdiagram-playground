@@ -83,7 +83,7 @@
     import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
     import {showConfirmModalDialog} from '@/store/globalModalDialogStore';
     import Tabs from '@/components/tabs/Tabs.vue';
-    import erdiagramPlaygroundConfigManager, {LAST_CONFIG_VERSION} from '@/config/ERDiagramPlaygroundConfigManager';
+    import erdiagramPlaygroundConfigManager, {LATEST_CONFIG_VERSION} from '@/config/ERDiagramPlaygroundConfigManager';
     import Tab from '@/components/tabs/Tab.vue';
     import OtherTabContent from '@/components/settings-modal/tabs/ParserTabContent.vue';
     import MysqlTabContent from '@/components/settings-modal/tabs/database/MysqlTabContent.vue';
@@ -98,6 +98,7 @@
     import PlantUmlTabContent from '@/components/settings-modal/tabs/PlantUmlTabContent.vue';
     import PostgresqlTabContent from '@/components/settings-modal/tabs/database/PostgresqlTabContent.vue';
     import SqliteTabContent from '@/components/settings-modal/tabs/database/SqliteTabContent.vue';
+    import configCompatibilityAdapter from '@/config/ERDiagramPlaygroundConfigCompatibilityAdapter';
 
     interface Props {
         showing: boolean;
@@ -199,9 +200,13 @@
 
             function onImportConfigSuccess(text: string) {
                 try {
-                    const importedConfig = erdiagramPlaygroundConfigManager.convertFromSerializableObject(JSON.parse(text));
+                    const importedConfig = erdiagramPlaygroundConfigManager.convertFromSerializableObject(
+                        configCompatibilityAdapter.adaptIfPossible(
+                            JSON.parse(text)
+                        )
+                    );
 
-                    if (importedConfig._version === LAST_CONFIG_VERSION) {
+                    if (importedConfig._version === LATEST_CONFIG_VERSION) {
                         internalConfig.value = erdiagramPlaygroundConfigManager.mergeConfigs(internalConfig.value, importedConfig);
                         showSuccessToastMessage('Settings imported successfully');
                     } else {

@@ -7,7 +7,7 @@ import {
 	JpaConfig,
 	MysqlDialectConfig,
 	NomnomlConfig,
-	OracleDialectConfig,
+	OracleDialectConfig, PlantUmlConfig,
 	PostgresqlDialectConfig,
 	SqlDialectConfig,
 	SqliteDialectConfig,
@@ -43,6 +43,7 @@ export default interface ERDiagramPlaygroundConfig {
 		code: TypeScriptConfig;
 	};
 	nomnoml: NomnomlConfig;
+	plantuml: PlantUmlConfig;
 }
 
 export interface DatabaseDialectConfig<T extends SqlDialectConfig> {

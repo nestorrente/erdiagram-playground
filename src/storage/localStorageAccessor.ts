@@ -2,8 +2,9 @@ import {localJsonStorage} from '@/storage/JsonStorage';
 import outputFormats, {OutputFormat} from '@/common/output/outputFormats';
 import pokemonSampleCode from '!!raw-loader!@/sample-erd-files/Pokemon.erd';
 import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
-import erdiagramPlaygroundConfigManager, {LAST_CONFIG_VERSION} from '@/config/ERDiagramPlaygroundConfigManager';
+import erdiagramPlaygroundConfigManager, {LATEST_CONFIG_VERSION} from '@/config/ERDiagramPlaygroundConfigManager';
 import {JsonObject} from 'true-json';
+import configCompatibilityManager from '@/config/ERDiagramPlaygroundConfigCompatibilityAdapter';
 
 const ItemKeys = {
 	INPUT_CODE: 'inputCode',
@@ -37,9 +38,11 @@ export default {
 
 		if (serializableConfig) {
 
+			const adaptedSerializableConfig = configCompatibilityManager.adaptIfPossible(serializableConfig);
+
 			// Check you are using the last version of the config
-			if (serializableConfig._version === LAST_CONFIG_VERSION) {
-				return erdiagramPlaygroundConfigManager.convertFromSerializableObject(serializableConfig);
+			if (adaptedSerializableConfig._version === LATEST_CONFIG_VERSION) {
+				return erdiagramPlaygroundConfigManager.convertFromSerializableObject(adaptedSerializableConfig);
 			}
 
 			console.warn('Detected old version of settings: using default settings.');

@@ -3,25 +3,27 @@
 
         <table class="table is-fullwidth is-striped is-hoverable settings-table">
             <tbody>
+                <DiagramLevelSettingRow :config="config.nomnoml" />
+
                 <SettingRow
-                        v-for="settingDescription in settingsDescription"
+                        v-for="settingDescription in styleSettingsDescription"
                         :key="settingDescription.name"
                         :description="settingDescription.description"
-                        @restore-default="config.nomnoml[settingDescription.name] = defaultERModelToCodeConverterConfig[settingDescription.name]"
+                        @restore-default="config.nomnoml.style[settingDescription.name] = defaultERModelToCodeConverterConfig.style[settingDescription.name]"
                 >
                     <input
                             v-if="settingDescription.type === 'string'"
                             type="text"
                             class="input"
                             placeholder="(use Nomnoml default)"
-                            v-model="config.nomnoml[settingDescription.name]"
+                            v-model="config.nomnoml.style[settingDescription.name]"
                     >
                     <input
                             v-else-if="settingDescription.type === 'number'"
                             type="text"
                             class="input"
                             placeholder="(use Nomnoml default)"
-                            v-model.number="config.nomnoml[settingDescription.name]"
+                            v-model.number="config.nomnoml.style[settingDescription.name]"
                     >
                     <label
                             v-else-if="settingDescription.type === 'boolean'"
@@ -29,7 +31,7 @@
                     >
                         <input
                                 type="checkbox"
-                                v-model="config.nomnoml[settingDescription.name]"
+                                v-model="config.nomnoml.style[settingDescription.name]"
                                 class="mr-1"
                         >
                     </label>
@@ -37,7 +39,7 @@
                             v-else-if="settingDescription.type === 'enum'"
                             :items="[undefined, ...settingDescription.values]"
                             empty-value-text="(use Nomnoml default)"
-                            v-model="config.nomnoml[settingDescription.name]"
+                            v-model="config.nomnoml.style[settingDescription.name]"
                             block
                     ></SelectInput>
                 </SettingRow>
@@ -49,10 +51,17 @@
 
 <script lang="ts">
     import {defineComponent} from 'vue';
-    import {nomnomlConfigManager} from '@nestorrente/erdiagram';
+    import {DiagramLevel, nomnomlConfigManager} from '@nestorrente/erdiagram';
     import SettingsTabSection from '@/components/settings-modal/tabs/SettingsTabSection.vue';
     import SettingRow from '@/components/settings-modal/tabs/SettingRow.vue';
     import SelectInput from '@/components/generic/form/SelectInput.vue';
+    import useSelectInputOptions, {SelectInputOption} from '@/composition/form/useSelectInputOptions';
+    import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
+    import DiagramLevelSettingRow from '@/components/settings-modal/tabs/common-rows/DiagramLevelSettingRow.vue';
+
+    interface Props {
+        config: ERDiagramPlaygroundConfig;
+    }
 
     interface SettingDescription {
         name: string;
@@ -64,6 +73,7 @@
     export default defineComponent({
         name: 'NomnomlTabContent',
         components: {
+            DiagramLevelSettingRow,
             SelectInput,
             SettingRow,
             SettingsTabSection
@@ -74,9 +84,29 @@
                 required: true
             }
         },
-        setup() {
+        setup(uncastedProps) {
 
-            const settingsDescription: SettingDescription[] = [
+            // Workaround for an issue with TS types
+            const props = uncastedProps as Props;
+
+            const diagramLevelOptions: SelectInputOption<DiagramLevel>[] = [
+                {
+                    text: 'Conceptual',
+                    value: DiagramLevel.CONCEPTUAL
+                },
+                {
+                    text: 'Logical',
+                    value: DiagramLevel.LOGICAL
+                }
+            ];
+
+            const selectedDiagramLevelOption = useSelectInputOptions(
+                diagramLevelOptions,
+                () => props.config.nomnoml.diagramLevel,
+                newValue => props.config.nomnoml.diagramLevel = newValue
+            );
+
+            const styleSettingsDescription: SettingDescription[] = [
                 {name: 'arrowSize', description: 'Arrow size', type: 'number'},
                 {name: 'bendSize', description: 'Bend size', type: 'number'},
                 {name: 'direction', description: 'Direction', type: 'enum', values: ['down', 'right']},
@@ -108,7 +138,9 @@
             const defaultERModelToCodeConverterConfig = nomnomlConfigManager.getDefaultConfig();
 
             return {
-                settingsDescription,
+                diagramLevelOptions,
+                selectedDiagramLevelOption,
+                styleSettingsDescription,
                 defaultERModelToCodeConverterConfig
             };
 

@@ -9,7 +9,7 @@ import {
 	jpaConfigManager,
 	mysqlDialectConfigManager,
 	nomnomlConfigManager,
-	oracleDialectConfigManager,
+	oracleDialectConfigManager, plantUmlConfigManager,
 	postgresqlDialectConfigManager,
 	sqliteDialectConfigManager,
 	sqlServerDialectConfigManager,
@@ -19,14 +19,15 @@ import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
 import PartialERDiagramPlaygroundConfig from '@/config/PartialERDiagramPlaygroundConfig';
 import {JsonAdapter, JsonAdapters} from 'true-json';
 
-export const LAST_CONFIG_VERSION = '0.1.0-rc2-1622372997114';
+export const LATEST_CONFIG_VERSION = '1.0.0-1673646135755';
+export const COMPATIBLE_CONFIG_VERSION = '0.1.0-rc2-1622372997114';
 
 export class ERDiagramPlaygroundConfigManager
 		extends AbstractConfigManager<ERDiagramPlaygroundConfig, PartialERDiagramPlaygroundConfig> {
 
 	getDefaultConfig(): ERDiagramPlaygroundConfig {
 		return {
-			_version: LAST_CONFIG_VERSION,
+			_version: LATEST_CONFIG_VERSION,
 			parser: entityRelationshipModelParserConfigManager.getDefaultConfig(),
 			mysql: {
 				databaseModel: databaseModelConfigManager.getDefaultConfig(),
@@ -68,6 +69,7 @@ export class ERDiagramPlaygroundConfigManager
 				code: typescriptConfigManager.getDefaultConfig()
 			},
 			nomnoml: nomnomlConfigManager.getDefaultConfig(),
+			plantuml: plantUmlConfigManager.getDefaultConfig()
 		};
 	}
 
@@ -171,6 +173,10 @@ export class ERDiagramPlaygroundConfigManager
 			nomnoml: nomnomlConfigManager.mergeConfigs(
 					fullConfig.nomnoml,
 					partialConfig?.nomnoml
+			),
+			plantuml: plantUmlConfigManager.mergeConfigs(
+					fullConfig.plantuml,
+					partialConfig?.plantuml
 			)
 		};
 	}
@@ -178,53 +184,54 @@ export class ERDiagramPlaygroundConfigManager
 	protected getJsonAdapter(): JsonAdapter<ERDiagramPlaygroundConfig> {
 		return JsonAdapters.object({
 			_version: JsonAdapters.identity<string>(),
-			parser: useConfigManagerAsJsonAdapter(entityRelationshipModelParserConfigManager),
+			parser: adaptConfigManagerToJsonAdapter(entityRelationshipModelParserConfigManager),
 			mysql: JsonAdapters.object({
-				databaseModel: useConfigManagerAsJsonAdapter(databaseModelConfigManager),
-				dialectConfig: useConfigManagerAsJsonAdapter(mysqlDialectConfigManager)
+				databaseModel: adaptConfigManagerToJsonAdapter(databaseModelConfigManager),
+				dialectConfig: adaptConfigManagerToJsonAdapter(mysqlDialectConfigManager)
 			}),
 			oracle: JsonAdapters.object({
-				databaseModel: useConfigManagerAsJsonAdapter(databaseModelConfigManager),
-				dialectConfig: useConfigManagerAsJsonAdapter(oracleDialectConfigManager)
+				databaseModel: adaptConfigManagerToJsonAdapter(databaseModelConfigManager),
+				dialectConfig: adaptConfigManagerToJsonAdapter(oracleDialectConfigManager)
 			}),
 			postgresql: JsonAdapters.object({
-				databaseModel: useConfigManagerAsJsonAdapter(databaseModelConfigManager),
-				dialectConfig: useConfigManagerAsJsonAdapter(postgresqlDialectConfigManager)
+				databaseModel: adaptConfigManagerToJsonAdapter(databaseModelConfigManager),
+				dialectConfig: adaptConfigManagerToJsonAdapter(postgresqlDialectConfigManager)
 			}),
 			sqlite: JsonAdapters.object({
-				databaseModel: useConfigManagerAsJsonAdapter(databaseModelConfigManager),
-				dialectConfig: useConfigManagerAsJsonAdapter(sqliteDialectConfigManager)
+				databaseModel: adaptConfigManagerToJsonAdapter(databaseModelConfigManager),
+				dialectConfig: adaptConfigManagerToJsonAdapter(sqliteDialectConfigManager)
 			}),
 			sqlserver: JsonAdapters.object({
-				databaseModel: useConfigManagerAsJsonAdapter(databaseModelConfigManager),
-				dialectConfig: useConfigManagerAsJsonAdapter(sqlServerDialectConfigManager)
+				databaseModel: adaptConfigManagerToJsonAdapter(databaseModelConfigManager),
+				dialectConfig: adaptConfigManagerToJsonAdapter(sqlServerDialectConfigManager)
 			}),
 			java: JsonAdapters.object({
-				classModel: useConfigManagerAsJsonAdapter(classModelConfigManager),
-				code: useConfigManagerAsJsonAdapter(javaClassModelConfigManager),
+				classModel: adaptConfigManagerToJsonAdapter(classModelConfigManager),
+				code: adaptConfigManagerToJsonAdapter(javaClassModelConfigManager),
 				transformers: JsonAdapters.object({
 					validation: JsonAdapters.object({
 						enabled: JsonAdapters.identity<boolean>(),
-						config: useConfigManagerAsJsonAdapter(beanValidationConfigManager)
+						config: adaptConfigManagerToJsonAdapter(beanValidationConfigManager)
 					}),
 					jpa: JsonAdapters.object({
 						enabled: JsonAdapters.identity<boolean>(),
-						databaseModel: useConfigManagerAsJsonAdapter(databaseModelConfigManager),
-						config: useConfigManagerAsJsonAdapter(jpaConfigManager)
+						databaseModel: adaptConfigManagerToJsonAdapter(databaseModelConfigManager),
+						config: adaptConfigManagerToJsonAdapter(jpaConfigManager)
 					})
 				})
 			}),
 			typescript: JsonAdapters.object({
-				classModel: useConfigManagerAsJsonAdapter(classModelConfigManager),
-				code: useConfigManagerAsJsonAdapter(typescriptConfigManager)
+				classModel: adaptConfigManagerToJsonAdapter(classModelConfigManager),
+				code: adaptConfigManagerToJsonAdapter(typescriptConfigManager)
 			}),
-			nomnoml: useConfigManagerAsJsonAdapter(nomnomlConfigManager)
+			nomnoml: adaptConfigManagerToJsonAdapter(nomnomlConfigManager),
+			plantuml: adaptConfigManagerToJsonAdapter(plantUmlConfigManager)
 		});
 	}
 
 }
 
-function useConfigManagerAsJsonAdapter<T>(configManager: ConfigManager<T, any>): JsonAdapter<T> {
+function adaptConfigManagerToJsonAdapter<T>(configManager: ConfigManager<T, any>): JsonAdapter<T> {
 	return JsonAdapters.custom({
 		adaptToJson(value) {
 			return configManager.convertToSerializableObject(value);

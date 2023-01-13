@@ -2,12 +2,11 @@ import {
 	DatabaseModelConfig,
 	EntityRelationshipModelParserConfig,
 	MysqlDialectConfig,
-	NomnomlConfig,
 	OracleDialectConfig,
 	PartialBeanValidationConfig,
 	PartialClassModelConfig,
 	PartialJavaClassModelConfig,
-	PartialJpaConfig,
+	PartialJpaConfig, PartialNomnomlConfig, PartialPlantUmlConfig,
 	PartialTypeScriptConfig,
 	PostgresqlDialectConfig,
 	SqliteDialectConfig,
@@ -42,7 +41,8 @@ type PartialERDiagramPlaygroundConfig = Partial<{
 		classModel: PartialClassModelConfig;
 		code: PartialTypeScriptConfig;
 	}>;
-	nomnoml: Partial<NomnomlConfig>;
+	nomnoml: PartialNomnomlConfig;
+	plantuml: PartialPlantUmlConfig;
 }>;
 
 export default PartialERDiagramPlaygroundConfig;

@@ -5,7 +5,7 @@ import {
 	SqlSourceCodeGenerator
 } from '@nestorrente/erdiagram';
 
-export default function useEntityRelationshipModelToSqlCodeConverter(
+export default function useEntityRelationshipModelToSqlSourceCodeGenerator(
 		databaseModelConfigSupplier: () => DatabaseModelConfig,
 		sqlDialectSupplier: () => SqlDialect
 ) {

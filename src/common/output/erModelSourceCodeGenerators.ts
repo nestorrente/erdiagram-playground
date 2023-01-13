@@ -1,5 +1,5 @@
-import useEntityRelationshipModelToSqlCodeConverter
-	from '@/composition/erdiagram/useEntityRelationshipModelToSqlCodeConverter';
+import useEntityRelationshipModelToSqlSourceCodeGenerator
+	from '@/composition/erdiagram/useEntityRelationshipModelToSqlSourceCodeGenerator';
 import configStore from '@/store/configStore';
 import {
 	BeanValidationTransformer,
@@ -17,27 +17,27 @@ import {
 } from '@nestorrente/erdiagram';
 import {computed, markRaw} from 'vue';
 
-const mysqlConverter = useEntityRelationshipModelToSqlCodeConverter(
+const mysqlConverter = useEntityRelationshipModelToSqlSourceCodeGenerator(
 		() => configStore.config.mysql.databaseModel,
 		() => new MysqlDialect(configStore.config.mysql.dialectConfig)
 );
 
-const oracleConverter = useEntityRelationshipModelToSqlCodeConverter(
+const oracleConverter = useEntityRelationshipModelToSqlSourceCodeGenerator(
 		() => configStore.config.oracle.databaseModel,
 		() => new OracleDialect(configStore.config.oracle.dialectConfig)
 );
 
-const postgresqlConverter = useEntityRelationshipModelToSqlCodeConverter(
+const postgresqlConverter = useEntityRelationshipModelToSqlSourceCodeGenerator(
 		() => configStore.config.postgresql.databaseModel,
 		() => new PostgresqlDialect(configStore.config.postgresql.dialectConfig)
 );
 
-const sqliteConverter = useEntityRelationshipModelToSqlCodeConverter(
+const sqliteConverter = useEntityRelationshipModelToSqlSourceCodeGenerator(
 		() => configStore.config.sqlite.databaseModel,
 		() => new SqliteDialect(configStore.config.sqlite.dialectConfig)
 );
 
-const sqlserverConverter = useEntityRelationshipModelToSqlCodeConverter(
+const sqlserverConverter = useEntityRelationshipModelToSqlSourceCodeGenerator(
 		() => configStore.config.sqlserver.databaseModel,
 		() => new SqlServerDialect(configStore.config.sqlserver.dialectConfig)
 );
@@ -119,13 +119,9 @@ const typescriptConverter = computed(() => {
 
 });
 
-const plantumlConverter = computed(() => {
-	return new PlantUmlSourceCodeGenerator();
-});
+const plantumlConverter = computed(() => new PlantUmlSourceCodeGenerator(configStore.config.plantuml));
 
-const nomnomlConverter = computed(() => {
-	return new NomnomlSourceCodeGenerator(configStore.config.nomnoml);
-});
+const nomnomlConverter = computed(() => new NomnomlSourceCodeGenerator(configStore.config.nomnoml));
 
 // FIXME rename all to "{format}Generator"
 export default {
