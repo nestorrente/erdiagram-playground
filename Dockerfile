@@ -1,7 +1,6 @@
 FROM node:16-alpine as build-stage
 WORKDIR /app
 COPY package*.json ./
-COPY nestorrente-erdiagram-1.0.0-rc2.tgz ./
 ARG BUILD_MODE=production
 RUN npm install
 COPY . .
