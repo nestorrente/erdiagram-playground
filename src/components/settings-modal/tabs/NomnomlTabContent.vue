@@ -4,7 +4,13 @@
         <table class="table is-fullwidth is-striped is-hoverable settings-table">
             <tbody>
                 <DiagramLevelSettingRow :config="config.nomnoml" />
+            </tbody>
+        </table>
 
+        <h3 class="is-size-5 mb-5 has-text-weight-bold">Style directives</h3>
+
+        <table class="table is-fullwidth is-striped is-hoverable settings-table">
+            <tbody>
                 <SettingRow
                         v-for="settingDescription in styleSettingsDescription"
                         :key="settingDescription.name"
@@ -15,14 +21,14 @@
                             v-if="settingDescription.type === 'string'"
                             type="text"
                             class="input"
-                            placeholder="(use Nomnoml default)"
+                            placeholder="(use Nomnoml's default)"
                             v-model="config.nomnoml.style[settingDescription.name]"
                     >
                     <input
                             v-else-if="settingDescription.type === 'number'"
                             type="text"
                             class="input"
-                            placeholder="(use Nomnoml default)"
+                            placeholder="(use Nomnoml's default)"
                             v-model.number="config.nomnoml.style[settingDescription.name]"
                     >
                     <label
@@ -38,7 +44,7 @@
                     <SelectInput
                             v-else-if="settingDescription.type === 'enum'"
                             :items="[undefined, ...settingDescription.values]"
-                            empty-value-text="(use Nomnoml default)"
+                            empty-value-text="(use Nomnoml's default)"
                             v-model="config.nomnoml.style[settingDescription.name]"
                             block
                     ></SelectInput>
