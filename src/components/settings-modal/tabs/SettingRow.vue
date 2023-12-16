@@ -4,7 +4,7 @@
             {{ description }}:
         </td>
         <td class="setting-value">
-            <slot/>
+            <slot :disabled="disabled"/>
         </td>
         <td style="width: 58px">
             <Button
@@ -22,11 +22,6 @@
 <script lang="ts">
     import {defineComponent} from 'vue';
     import Button from '@/components/generic/form/Button.vue';
-    import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
-
-    interface Props {
-        config: ERDiagramPlaygroundConfig;
-    }
 
     export default defineComponent({
         name: 'SettingRow',
@@ -47,6 +42,6 @@
 
 <style scoped>
     .disabled-setting {
-        color: gray;
+        color: grey;
     }
 </style>

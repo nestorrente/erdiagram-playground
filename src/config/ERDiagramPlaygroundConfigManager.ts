@@ -6,7 +6,7 @@ import {
 	databaseModelConfigManager,
 	entityRelationshipModelParserConfigManager,
 	javaClassModelConfigManager,
-	jpaConfigManager,
+	jpaConfigManager, lombokConfigManager,
 	mysqlDialectConfigManager,
 	nomnomlConfigManager,
 	oracleDialectConfigManager, plantUmlConfigManager,
@@ -18,16 +18,14 @@ import {
 import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
 import PartialERDiagramPlaygroundConfig from '@/config/PartialERDiagramPlaygroundConfig';
 import {JsonAdapter, JsonAdapters} from 'true-json';
-
-export const LATEST_CONFIG_VERSION = '1.0.0-1673646135755';
-export const COMPATIBLE_CONFIG_VERSION = '0.1.0-rc2-1622372997114';
+import {APP_VERSION} from "@/AppInfo.ts";
 
 export class ERDiagramPlaygroundConfigManager
 		extends AbstractConfigManager<ERDiagramPlaygroundConfig, PartialERDiagramPlaygroundConfig> {
 
 	getDefaultConfig(): ERDiagramPlaygroundConfig {
 		return {
-			_version: LATEST_CONFIG_VERSION,
+			_version: APP_VERSION,
 			parser: entityRelationshipModelParserConfigManager.getDefaultConfig(),
 			mysql: {
 				databaseModel: databaseModelConfigManager.getDefaultConfig(),
@@ -61,7 +59,11 @@ export class ERDiagramPlaygroundConfigManager
 						enabled: true,
 						databaseModel: databaseModelConfigManager.getDefaultConfig(),
 						config: jpaConfigManager.getDefaultConfig()
-					}
+					},
+					lombok: lombokConfigManager.mergeWithDefaultConfig({
+						getterAnnotation: true,
+						setterAnnotation: true
+					})
 				}
 			},
 			typescript: {
@@ -157,7 +159,11 @@ export class ERDiagramPlaygroundConfigManager
 								fullConfig.java.transformers.jpa.config,
 								partialConfig?.java?.transformers?.jpa?.config
 						)
-					}
+					},
+					lombok: lombokConfigManager.mergeConfigs(
+						fullConfig.java.transformers.lombok,
+						partialConfig?.java?.transformers?.lombok,
+					)
 				}
 			},
 			typescript: {
@@ -217,7 +223,8 @@ export class ERDiagramPlaygroundConfigManager
 						enabled: JsonAdapters.identity<boolean>(),
 						databaseModel: adaptConfigManagerToJsonAdapter(databaseModelConfigManager),
 						config: adaptConfigManagerToJsonAdapter(jpaConfigManager)
-					})
+					}),
+					lombok: adaptConfigManagerToJsonAdapter(lombokConfigManager)
 				})
 			}),
 			typescript: JsonAdapters.object({

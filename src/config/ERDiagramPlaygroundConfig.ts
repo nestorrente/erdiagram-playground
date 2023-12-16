@@ -5,9 +5,11 @@ import {
 	EntityRelationshipModelParserConfig,
 	JavaClassModelConfig,
 	JpaConfig,
+	LombokConfig,
 	MysqlDialectConfig,
 	NomnomlConfig,
-	OracleDialectConfig, PlantUmlConfig,
+	OracleDialectConfig,
+	PlantUmlConfig,
 	PostgresqlDialectConfig,
 	SqlDialectConfig,
 	SqliteDialectConfig,
@@ -36,6 +38,7 @@ export default interface ERDiagramPlaygroundConfig {
 				databaseModel: DatabaseModelConfig;
 				config: JpaConfig;
 			};
+			lombok: LombokConfig;
 		};
 	};
 	typescript: {

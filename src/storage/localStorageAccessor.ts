@@ -2,9 +2,10 @@ import {localJsonStorage} from '@/storage/JsonStorage';
 import outputFormats, {OutputFormat} from '@/common/output/outputFormats';
 import pokemonSampleCode from '@/sample-erd-files/Pokemon.erd?raw';
 import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
-import erdiagramPlaygroundConfigManager, {LATEST_CONFIG_VERSION} from '@/config/ERDiagramPlaygroundConfigManager';
+import erdiagramPlaygroundConfigManager from '@/config/ERDiagramPlaygroundConfigManager';
 import type {JsonObject} from 'true-json';
 import configCompatibilityManager from '@/config/ERDiagramPlaygroundConfigCompatibilityAdapter';
+import {APP_VERSION} from "@/AppInfo.ts";
 
 const ItemKeys = {
 	INPUT_CODE: 'inputCode',
@@ -41,7 +42,7 @@ export default {
 			const adaptedSerializableConfig = configCompatibilityManager.adaptIfPossible(serializableConfig);
 
 			// Check you are using the last version of the config
-			if (adaptedSerializableConfig._version === LATEST_CONFIG_VERSION) {
+			if (adaptedSerializableConfig._version === APP_VERSION) {
 				return erdiagramPlaygroundConfigManager.convertFromSerializableObject(adaptedSerializableConfig);
 			}
 

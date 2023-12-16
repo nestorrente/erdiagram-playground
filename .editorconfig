@@ -19,3 +19,4 @@ ij_typescript_force_quote_style = true
 ij_typescript_use_double_quotes = false
 ij_typescript_force_semicolon_style = true
 ij_typescript_use_semicolon_after_statement = true
+ij_vue_indent_children_of_top_level = true

@@ -18,6 +18,73 @@
             </tbody>
         </table>
 
+        <h3 class="is-size-5 mb-5 has-text-weight-bold">Lombok</h3>
+
+        <table class="table is-fullwidth is-striped is-hoverable settings-table">
+            <tbody>
+                <SettingRow
+                        description="Use @Builder annotation"
+                        @restore-default="config.java.transformers.lombok.builderAnnotation = defaultLombokConfig.builderAnnotation"
+                >
+                    <BlockCheckbox
+                            v-model="config.java.transformers.lombok.builderAnnotation"
+                    />
+                </SettingRow>
+                <SettingRow
+                        description="Use @Data annotation"
+                        @restore-default="config.java.transformers.lombok.dataAnnotation = defaultLombokConfig.dataAnnotation"
+                >
+                    <BlockCheckbox
+                            v-model="config.java.transformers.lombok.dataAnnotation"
+                    />
+                </SettingRow>
+                <SettingRow
+                        description="Use @Getter annotation"
+                        :disabled="config.java.transformers.lombok.dataAnnotation"
+                        @restore-default="config.java.transformers.lombok.getterAnnotation = defaultLombokConfig.getterAnnotation"
+                        #default="{disabled}"
+                >
+                    <BlockCheckbox
+                            v-model="config.java.transformers.lombok.getterAnnotation"
+                            :disabled="disabled"
+                    />
+                </SettingRow>
+                <SettingRow
+                        description="Use @Setter annotation"
+                        :disabled="config.java.transformers.lombok.dataAnnotation"
+                        @restore-default="config.java.transformers.lombok.setterAnnotation = defaultLombokConfig.setterAnnotation"
+                        #default="{disabled}"
+                >
+                    <BlockCheckbox
+                            v-model="config.java.transformers.lombok.setterAnnotation"
+                            :disabled="disabled"
+                    />
+                </SettingRow>
+                <SettingRow
+                        description="Use @ToString annotation"
+                        :disabled="config.java.transformers.lombok.dataAnnotation"
+                        @restore-default="config.java.transformers.lombok.toStringAnnotation = defaultLombokConfig.toStringAnnotation"
+                        #default="{disabled}"
+                >
+                    <BlockCheckbox
+                            v-model="config.java.transformers.lombok.toStringAnnotation"
+                            :disabled="disabled"
+                    />
+                </SettingRow>
+                <SettingRow
+                        description="Use @EqualsAndHashCode annotation"
+                        :disabled="config.java.transformers.lombok.dataAnnotation"
+                        @restore-default="config.java.transformers.lombok.equalsAndHashCodeAnnotation = defaultLombokConfig.equalsAndHashCodeAnnotation"
+                        #default="{disabled}"
+                >
+                    <BlockCheckbox
+                            v-model="config.java.transformers.lombok.equalsAndHashCodeAnnotation"
+                            :disabled="disabled"
+                    />
+                </SettingRow>
+            </tbody>
+        </table>
+
         <h3 class="is-size-5 mb-5 has-text-weight-bold">Java Validation API (JSR-303)</h3>
 
         <table class="table is-fullwidth is-striped is-hoverable settings-table">
@@ -34,6 +101,7 @@
                         description="Not-null text validation strategy"
                         :disabled="!config.java.transformers.validation.enabled"
                         @restore-default="config.java.transformers.validation.config.notNullTextValidationStrategy = defaultBeanValidationConfig.notNullTextValidationStrategy"
+                        #default="{disabled}"
                 >
                     <SelectInput
                             :items="notNullTextValidationStrategyOptions"
@@ -41,13 +109,14 @@
                             text-field="text"
                             id-field="text"
                             block
-                            :disabled="!config.java.transformers.validation.enabled"
+                            :disabled="disabled"
                     ></SelectInput>
                 </SettingRow>
                 <SettingRow
                         description="Not-null blob validation strategy"
                         :disabled="!config.java.transformers.validation.enabled"
                         @restore-default="config.java.transformers.validation.config.notNullBlobValidationStrategy = defaultBeanValidationConfig.notNullBlobValidationStrategy"
+                        #default="{disabled}"
                 >
                     <SelectInput
                             :items="notNullBlobValidationStrategyOptions"
@@ -55,17 +124,18 @@
                             text-field="text"
                             id-field="text"
                             block
-                            :disabled="!config.java.transformers.validation.enabled"
+                            :disabled="disabled"
                     ></SelectInput>
                 </SettingRow>
                 <SettingRow
                         description="Move annotations to getter methods"
                         :disabled="!config.java.transformers.validation.enabled"
                         @restore-default="config.java.transformers.validation.config.annotateGetters = defaultBeanValidationConfig.annotateGetters"
+                        #default="{disabled}"
                 >
                     <BlockCheckbox
                             v-model="config.java.transformers.validation.config.annotateGetters"
-                            :disabled="!config.java.transformers.validation.enabled"
+                            :disabled="disabled"
                     />
                 </SettingRow>
             </tbody>
@@ -87,6 +157,7 @@
                         description="Table name case format"
                         :disabled="!config.java.transformers.jpa.enabled"
                         @restore-default="config.java.transformers.jpa.config.tableNameCaseFormat = defaultJpaConfig.tableNameCaseFormat"
+                        #default="{disabled}"
                 >
                     <SelectInput
                             :items="caseFormatOptions"
@@ -94,13 +165,14 @@
                             text-field="text"
                             id-field="text"
                             block
-                            :disabled="!config.java.transformers.jpa.enabled"
+                            :disabled="disabled"
                     ></SelectInput>
                 </SettingRow>
                 <SettingRow
                         description="Column name case format"
                         :disabled="!config.java.transformers.jpa.enabled"
                         @restore-default="config.java.transformers.jpa.config.columnNameCaseFormat = defaultJpaConfig.columnNameCaseFormat"
+                        #default="{disabled}"
                 >
                     <SelectInput
                             :items="caseFormatOptions"
@@ -108,7 +180,7 @@
                             text-field="text"
                             id-field="text"
                             block
-                            :disabled="!config.java.transformers.jpa.enabled"
+                            :disabled="disabled"
                     ></SelectInput>
                 </SettingRow>
                 <IdNamingStrategySettingRow
@@ -120,40 +192,44 @@
                         description="Use explicit table names"
                         :disabled="!config.java.transformers.jpa.enabled"
                         @restore-default="config.java.transformers.jpa.config.useExplicitTableName = false"
+                        #default="{disabled}"
                 >
                     <BlockCheckbox
                             v-model="config.java.transformers.jpa.config.useExplicitTableName"
-                            :disabled="!config.java.transformers.jpa.enabled"
+                            :disabled="disabled"
                     />
                 </SettingRow>
                 <SettingRow
                         description="Plural table names"
                         :disabled="!config.java.transformers.jpa.enabled || !config.java.transformers.jpa.config.useExplicitTableName"
                         @restore-default="config.java.transformers.jpa.databaseModel.usePluralTableNames = defaultDatabaseModelConfig.usePluralTableNames"
+                        #default="{disabled}"
                 >
                     <BlockCheckbox
                             v-model="config.java.transformers.jpa.databaseModel.usePluralTableNames"
-                            :disabled="!config.java.transformers.jpa.enabled || !config.java.transformers.jpa.config.useExplicitTableName"
+                            :disabled="disabled"
                     />
                 </SettingRow>
                 <SettingRow
                         description="Use explicit column names"
                         :disabled="!config.java.transformers.jpa.enabled"
                         @restore-default="config.java.transformers.jpa.config.useExplicitColumnName = false"
+                        #default="{disabled}"
                 >
                     <BlockCheckbox
                             v-model="config.java.transformers.jpa.config.useExplicitColumnName"
-                            :disabled="!config.java.transformers.jpa.enabled"
+                            :disabled="disabled"
                     />
                 </SettingRow>
                 <SettingRow
                         description="Move annotations to getter methods"
                         :disabled="!config.java.transformers.jpa.enabled"
                         @restore-default="config.java.transformers.jpa.config.annotateGetters = defaultBeanValidationConfig.annotateGetters"
+                        #default="{disabled}"
                 >
                     <BlockCheckbox
                             v-model="config.java.transformers.jpa.config.annotateGetters"
-                            :disabled="!config.java.transformers.jpa.enabled"
+                            :disabled="disabled"
                     />
                 </SettingRow>
             </tbody>
@@ -171,7 +247,7 @@
 </template>
 
 <script lang="ts">
-    import {defineComponent} from 'vue';
+    import {defineComponent, PropType} from 'vue';
     import {
         beanValidationConfigManager,
         CaseFormat,
@@ -179,7 +255,7 @@
         databaseModelConfigManager,
         javaClassModelConfigManager,
         JavaType,
-        jpaConfigManager,
+        jpaConfigManager, lombokConfigManager,
         NotNullBlobValidationStrategy,
         NotNullTextValidationStrategy,
         parseJavaType,
@@ -195,10 +271,6 @@
     import SelectInput from '@/components/generic/form/SelectInput.vue';
     import BlockCheckbox from '@/components/generic/form/BlockCheckbox.vue';
 
-    interface Props {
-        config: ERDiagramPlaygroundConfig;
-    }
-
     export default defineComponent({
         name: 'JavaTabContent',
         components: {
@@ -211,14 +283,11 @@
         },
         props: {
             config: {
-                type: Object,
+                type: Object as PropType<ERDiagramPlaygroundConfig>,
                 required: true
             }
         },
-        setup(uncastedProps) {
-
-            // Workaround for an issue with TS types
-            const props = uncastedProps as Props;
+        setup(props) {
 
             const formatJavaType = (javaType: JavaType) => javaType.formatCanonical();
 
@@ -226,6 +295,7 @@
             const defaultJavaClassModelConfig = javaClassModelConfigManager.getDefaultConfig();
             const defaultBeanValidationConfig = beanValidationConfigManager.getDefaultConfig();
             const defaultJpaConfig = jpaConfigManager.getDefaultConfig();
+            const defaultLombokConfig = lombokConfigManager.getDefaultConfig();
 
             const notNullTextValidationStrategyOptions: SelectInputOption<NotNullTextValidationStrategy>[] = [
                 {
@@ -314,6 +384,7 @@
                 defaultJavaClassModelConfig,
                 defaultBeanValidationConfig,
                 defaultJpaConfig,
+                defaultLombokConfig,
                 caseFormatOptions,
                 selectedTableNameCaseFormatOption,
                 selectedColumnNameCaseFormatOption,

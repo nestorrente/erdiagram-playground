@@ -46,7 +46,7 @@
                     <article class="message is-small" :class="isProduction ? 'is-info' : 'is-warning'">
                         <div class="message-body">
                             Version {{ appVersion }}
-							<template v-if="!isProduction">({{ environment }})</template>
+                            <template v-if="!isProduction">({{ environment }})</template>
                         </div>
                     </article>
                 </div>
@@ -57,22 +57,21 @@
 
 <script lang="ts">
     import {defineComponent, ref} from 'vue';
-	import packageJson from '../../../package.json';
+    import {APP_VERSION} from "@/AppInfo.ts";
 
     export default defineComponent({
         name: 'NavBar',
         setup() {
 
             const expanded = ref(false);
-			const environment = import.meta.env.VUE_APP_ENV;
-			const isProduction = environment === 'production';
-			const appVersion = packageJson.version;
+            const environment = import.meta.env.VUE_APP_ENV;
+            const isProduction = environment === 'production';
 
-			return {
+            return {
                 expanded,
-				environment,
-				isProduction,
-				appVersion
+                environment,
+                isProduction,
+                appVersion: APP_VERSION
             };
 
         }

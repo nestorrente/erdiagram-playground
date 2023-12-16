@@ -6,7 +6,7 @@ import {
 	PartialBeanValidationConfig,
 	PartialClassModelConfig,
 	PartialJavaClassModelConfig,
-	PartialJpaConfig, PartialNomnomlConfig, PartialPlantUmlConfig,
+	PartialJpaConfig, PartialLombokConfig, PartialNomnomlConfig, PartialPlantUmlConfig,
 	PartialTypeScriptConfig,
 	PostgresqlDialectConfig,
 	SqliteDialectConfig,
@@ -35,6 +35,7 @@ type PartialERDiagramPlaygroundConfig = Partial<{
 				databaseModel: DatabaseModelConfig;
 				config: PartialJpaConfig;
 			}>;
+			lombok: PartialLombokConfig;
 		}>;
 	}>;
 	typescript: Partial<{

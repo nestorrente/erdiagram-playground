@@ -83,7 +83,7 @@
     import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
     import {showConfirmModalDialog} from '@/store/globalModalDialogStore';
     import Tabs from '@/components/tabs/Tabs.vue';
-    import erdiagramPlaygroundConfigManager, {LATEST_CONFIG_VERSION} from '@/config/ERDiagramPlaygroundConfigManager';
+    import erdiagramPlaygroundConfigManager from '@/config/ERDiagramPlaygroundConfigManager';
     import Tab from '@/components/tabs/Tab.vue';
     import OtherTabContent from '@/components/settings-modal/tabs/ParserTabContent.vue';
     import MysqlTabContent from '@/components/settings-modal/tabs/database/MysqlTabContent.vue';
@@ -99,15 +99,7 @@
     import PostgresqlTabContent from '@/components/settings-modal/tabs/database/PostgresqlTabContent.vue';
     import SqliteTabContent from '@/components/settings-modal/tabs/database/SqliteTabContent.vue';
     import configCompatibilityAdapter from '@/config/ERDiagramPlaygroundConfigCompatibilityAdapter';
-
-    interface Props {
-        showing: boolean;
-    }
-
-    interface SelectInputOption<T> {
-        text: string;
-        value: T;
-    }
+    import {APP_VERSION} from "@/AppInfo.ts";
 
     export default defineComponent({
         name: 'SettingsModal',
@@ -141,10 +133,7 @@
                 required: false
             }
         },
-        setup(uncastedProps, context) {
-
-            // Workaround for an issue with TS types
-            const props = uncastedProps as Props;
+        setup(props, context) {
 
             const internalConfig = ref<ERDiagramPlaygroundConfig>(configStore.config);
             const configChanged = ref(false);
@@ -206,7 +195,7 @@
                         )
                     );
 
-                    if (importedConfig._version === LATEST_CONFIG_VERSION) {
+                    if (importedConfig._version === APP_VERSION) {
                         internalConfig.value = erdiagramPlaygroundConfigManager.mergeConfigs(internalConfig.value, importedConfig);
                         showSuccessToastMessage('Settings imported successfully');
                     } else {

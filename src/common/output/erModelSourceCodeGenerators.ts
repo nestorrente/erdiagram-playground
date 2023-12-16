@@ -5,7 +5,7 @@ import {
 	BeanValidationTransformer,
 	JavaClassModelTransformer,
 	JavaSourceCodeGenerator,
-	JpaTransformer,
+	JpaTransformer, LombokTransformer,
 	MysqlDialect,
 	NomnomlSourceCodeGenerator,
 	OracleDialect,
@@ -45,6 +45,28 @@ const sqlserverConverter = useEntityRelationshipModelToSqlSourceCodeGenerator(
 // TODO move implementation to another file
 const javaConverter = (() => {
 
+	const lombokTransformer = computed((): LombokTransformer | null => {
+
+		const lombokConfig = configStore.config.java.transformers.lombok;
+
+		const isAnyAnnotationEnabled = Object.values(lombokConfig).some(e => e);
+
+		if (!isAnyAnnotationEnabled) {
+			return null;
+		}
+
+		return markRaw(
+			new LombokTransformer({
+				...lombokConfig,
+				getterAnnotation: lombokConfig.getterAnnotation && !lombokConfig.dataAnnotation,
+				setterAnnotation: lombokConfig.setterAnnotation && !lombokConfig.dataAnnotation,
+				toStringAnnotation: lombokConfig.toStringAnnotation && !lombokConfig.dataAnnotation,
+				equalsAndHashCodeAnnotation: lombokConfig.equalsAndHashCodeAnnotation && !lombokConfig.dataAnnotation,
+			})
+		);
+
+	});
+
 	const jpaTransformer = computed((): JpaTransformer | null => {
 
 		const jpaConfig = configStore.config.java.transformers.jpa;
@@ -79,6 +101,10 @@ const javaConverter = (() => {
 	const javaTransformers = computed((): JavaClassModelTransformer[] => {
 
 		const transformers: JavaClassModelTransformer[] = [];
+
+		if (lombokTransformer.value != null) {
+			transformers.push(lombokTransformer.value);
+		}
 
 		if (jpaTransformer.value != null) {
 			transformers.push(jpaTransformer.value);
