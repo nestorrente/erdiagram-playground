@@ -14,17 +14,11 @@
 </template>
 
 <script lang="ts">
-    import {defineComponent} from 'vue';
+    import {defineComponent, PropType} from 'vue';
     import {DiagramLevel} from '@nestorrente/erdiagram';
     import SettingRow from '@/components/settings-modal/tabs/SettingRow.vue';
     import SelectInput from '@/components/generic/form/SelectInput.vue';
     import useSelectInputOptions, {SelectInputOption} from '@/composition/form/useSelectInputOptions';
-
-    interface Props {
-        config: {
-            diagramLevel: DiagramLevel;
-        };
-    }
 
     export default defineComponent({
         name: 'DiagramLevelSettingRow',
@@ -35,14 +29,13 @@
         },
         props: {
             config: {
-                type: Object,
+                type: Object as PropType<{
+                    diagramLevel: DiagramLevel;
+                }>,
                 required: true
             }
         },
-        setup(uncastedProps) {
-
-            // Workaround for an issue with TS types
-            const props = uncastedProps as Props;
+        setup(props) {
 
             const diagramLevelOptions: SelectInputOption<DiagramLevel>[] = [
                 {

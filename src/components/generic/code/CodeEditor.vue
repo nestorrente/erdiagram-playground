@@ -9,7 +9,6 @@
 <script lang="ts">
     import {defineComponent, onBeforeUnmount, onMounted, ref, watch} from 'vue';
     import ace, {Ace} from 'ace-builds';
-	// import '@/ace/vite-resolver.ts';
     import 'ace-builds/esm-resolver';
     import 'ace-builds/src-noconflict/mode-json';
     import 'ace-builds/src-noconflict/ext-language_tools';

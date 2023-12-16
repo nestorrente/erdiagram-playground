@@ -74,7 +74,7 @@
 					<CodeBlock
 							v-if="parseError"
 							lang="text"
-							:code="parseErrorDisplayText"
+							:code="parseErrorDisplayText!"
 							download-filename="erdiagram_error.txt"
 							wrap
 							custom-code-class="has-text-danger"
@@ -82,9 +82,9 @@
 					/>
 					<CodeBlock
 							v-else-if="isCodeOutput"
-							:lang="selectedOutputFormat.codeBlockLang"
+							:lang="(selectedOutputFormat as CodeOutputFormat).codeBlockLang"
 							:code="outputCode"
-							:download-filename="selectedOutputFormat.downloadFilename"
+							:download-filename="(selectedOutputFormat as CodeOutputFormat).downloadFilename"
 							:download-callback="getFileContentsToDownloadOutputCode"
 							full-height
 					/>
@@ -203,7 +203,7 @@
 					return `There is an error in your code:\n\n${error.message}, line ${error.lineNumber}`;
 				}
 
-				return `Unexpected error when parsing input code:\n\n${error.message}`;
+				return `Unexpected error when parsing input code:\n\n${error instanceof Error ? error.message : error}`;
 
 			});
 

@@ -38,16 +38,7 @@ const globalModalDialogStore = createStore(() => {
 
 	function show(options: GlobalModalDialogOptions) {
 
-		const fullOptions: GlobalModalDialogOptions = {
-			headerClass: undefined,
-			titleClass: undefined,
-			titleIcon: undefined,
-			acceptButton: undefined,
-			cancelButton: undefined,
-			...options
-		};
-
-		copyProperties(fullOptions, optionsState);
+		copyProperties(options, optionsState);
 
 		showing.value = true;
 

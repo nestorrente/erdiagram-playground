@@ -1,6 +1,7 @@
 import {ref, Ref, SetupContext, watch} from 'vue';
+import {StringKeyOf} from "@/util/util-types.ts";
 
-export default function useControllablePropRef<P, K extends keyof P>(
+export default function useControllablePropRef<P, K extends StringKeyOf<P>>(
 		props: P,
 		propName: K,
 		context: SetupContext

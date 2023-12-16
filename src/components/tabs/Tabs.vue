@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-    import {computed, defineComponent, ref, SetupContext, VNode, VNodeTypes, watch} from 'vue';
+    import {computed, defineComponent, PropType, ref, SetupContext, StyleValue, VNode, VNodeTypes, watch} from 'vue';
     import Tab from '@/components/tabs/Tab.vue';
     import VNodes from '@/components/VNodes.vue';
 
@@ -78,7 +78,7 @@
                 required: false
             },
             appendTabsStyle: {
-                type: [String, Array, Object],
+                type: [String, Array, Object] as PropType<StyleValue>,
                 required: false
             },
             appendTabsContentClass: {
@@ -86,7 +86,7 @@
                 required: false
             },
             appendTabsContentStyle: {
-                type: [String, Array, Object],
+                type: [String, Array, Object] as PropType<StyleValue>,
                 required: false
             },
             selectedTabName: {

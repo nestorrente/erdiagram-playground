@@ -11,7 +11,7 @@ export default function useDragElement(positionManager: PositionManager) {
 
 	let state: DragState | null = null;
 
-	function onDragStart(event: Event, dragPositionProvider: () => Point) {
+	function onDragStart(dragPositionProvider: () => Point) {
 		state = {
 			dragStartPoint: dragPositionProvider(),
 			elementStartPosition: positionManager.getPosition()
@@ -83,12 +83,12 @@ export default function useDragElement(positionManager: PositionManager) {
 	return {
 		onPointerDown(event: PointerEvent) {
 			if (event.isPrimary && event.button === 0) {
-				onDragStart(event, () => getCurrentDragPointFromPointer(event));
+				onDragStart(() => getCurrentDragPointFromPointer(event));
 			}
 		},
 		onTouchStart(event: TouchEvent) {
 			event.preventDefault();
-			onDragStart(event, () => getCurrentDragPointFromTouch(event));
+			onDragStart(() => getCurrentDragPointFromTouch(event));
 		},
 		stopDrag,
 		cancelDrag

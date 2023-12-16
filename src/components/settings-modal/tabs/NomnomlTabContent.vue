@@ -15,7 +15,7 @@
                         v-for="settingDescription in styleSettingsDescription"
                         :key="settingDescription.name"
                         :description="settingDescription.description"
-                        @restore-default="config.nomnoml.style[settingDescription.name] = defaultERModelToCodeConverterConfig.style[settingDescription.name]"
+                        @restore-default="resetSetting(settingDescription.name)"
                 >
                     <input
                             v-if="settingDescription.type === 'string'"
@@ -56,8 +56,8 @@
 </template>
 
 <script lang="ts">
-    import {defineComponent} from 'vue';
-    import {DiagramLevel, nomnomlConfigManager} from '@nestorrente/erdiagram';
+    import {defineComponent, PropType} from 'vue';
+    import {DiagramLevel, nomnomlConfigManager, NomnomlStyleConfig} from '@nestorrente/erdiagram';
     import SettingsTabSection from '@/components/settings-modal/tabs/SettingsTabSection.vue';
     import SettingRow from '@/components/settings-modal/tabs/SettingRow.vue';
     import SelectInput from '@/components/generic/form/SelectInput.vue';
@@ -65,12 +65,8 @@
     import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
     import DiagramLevelSettingRow from '@/components/settings-modal/tabs/common-rows/DiagramLevelSettingRow.vue';
 
-    interface Props {
-        config: ERDiagramPlaygroundConfig;
-    }
-
-    interface SettingDescription {
-        name: string;
+    interface NomnomlSettingDescription {
+        name: keyof NomnomlStyleConfig;
         description: string;
         type: string;
         values?: any[];
@@ -86,14 +82,11 @@
         },
         props: {
             config: {
-                type: Object,
+                type: Object as PropType<ERDiagramPlaygroundConfig>,
                 required: true
             }
         },
-        setup(uncastedProps) {
-
-            // Workaround for an issue with TS types
-            const props = uncastedProps as Props;
+        setup(props) {
 
             const diagramLevelOptions: SelectInputOption<DiagramLevel>[] = [
                 {
@@ -112,7 +105,7 @@
                 newValue => props.config.nomnoml.diagramLevel = newValue
             );
 
-            const styleSettingsDescription: SettingDescription[] = [
+            const styleSettingsDescription: NomnomlSettingDescription[] = [
                 {name: 'arrowSize', description: 'Arrow size', type: 'number'},
                 {name: 'bendSize', description: 'Bend size', type: 'number'},
                 {name: 'direction', description: 'Direction', type: 'enum', values: ['down', 'right']},
@@ -141,13 +134,17 @@
                 },
             ];
 
-            const defaultERModelToCodeConverterConfig = nomnomlConfigManager.getDefaultConfig();
+            const defaultNomnomlConfig = nomnomlConfigManager.getDefaultConfig();
+
+            function resetSetting<K extends keyof NomnomlStyleConfig>(name: K) {
+                props.config.nomnoml.style[name] = defaultNomnomlConfig.style[name];
+            }
 
             return {
                 diagramLevelOptions,
                 selectedDiagramLevelOption,
                 styleSettingsDescription,
-                defaultERModelToCodeConverterConfig
+                resetSetting
             };
 
         }

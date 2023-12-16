@@ -20,10 +20,6 @@
 <script lang="ts">
     import {computed, defineComponent} from 'vue';
 
-    interface Props {
-        currentPath?: string;
-    }
-
     interface BreadcrumbNode {
         text: string;
         children: Record<string, BreadcrumbNode | string>;
@@ -44,10 +40,7 @@
                 required: false
             }
         },
-        setup(uncastedProps, context) {
-
-            // Workaround for an issue with TS types
-            const props = uncastedProps as Props;
+        setup(props) {
 
             const breadcrumbRoot: BreadcrumbNode = {
                 text: 'All settings',

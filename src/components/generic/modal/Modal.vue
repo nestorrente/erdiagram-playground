@@ -54,6 +54,7 @@
 
 <script lang="ts">
     import {computed, defineComponent, getCurrentInstance, watch} from 'vue';
+    import type {PropType, StyleValue} from 'vue';
     import openModalsStore from '@/store/openModalsStore';
     import {useDocumentEventListener} from '@/composition/event/useEventListener';
 
@@ -97,7 +98,7 @@
                 required: false
             },
             appendHeaderStyle: {
-                type: [String, Array, Object],
+                type: [String, Array, Object] as PropType<StyleValue>,
                 required: false
             },
             appendTitleClass: {
@@ -105,7 +106,7 @@
                 required: false
             },
             appendTitleStyle: {
-                type: [String, Array, Object],
+                type: [String, Array, Object] as PropType<StyleValue>,
                 required: false
             },
             appendBodyClass: {
@@ -113,7 +114,7 @@
                 required: false
             },
             appendBodyStyle: {
-                type: [String, Array, Object],
+                type: [String, Array, Object] as PropType<StyleValue>,
                 required: false
             },
             appendFooterClass: {
@@ -121,7 +122,7 @@
                 required: false
             },
             appendFooterStyle: {
-                type: [String, Array, Object],
+                type: [String, Array, Object] as PropType<StyleValue>,
                 required: false
             }
         },

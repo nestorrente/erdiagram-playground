@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts">
-    import {defineComponent} from 'vue';
+    import {defineComponent, PropType} from 'vue';
     import SelectInput from '@/components/generic/form/SelectInput.vue';
     import {
         CaseFormat,
@@ -59,12 +59,6 @@
     import IdNamingStrategySettingRow
         from '@/components/settings-modal/tabs/common-rows/IdNamingStrategySettingRow.vue';
 
-    interface Props {
-        databaseModelConfig: DatabaseModelConfig;
-        sqlDialectConfig: SqlDialectConfig;
-        defaultSqlDialectConfig: SqlDialectConfig;
-    }
-
     export default defineComponent({
         name: 'CommonDatabaseSettingsTable',
         components: {
@@ -74,22 +68,19 @@
         },
         props: {
             databaseModelConfig: {
-                type: Object,
+                type: Object as PropType<DatabaseModelConfig>,
                 required: true
             },
             sqlDialectConfig: {
-                type: Object,
+                type: Object as PropType<SqlDialectConfig>,
                 required: true
             },
             defaultSqlDialectConfig: {
-                type: Object,
+                type: Object as PropType<SqlDialectConfig>,
                 required: true
             }
         },
-        setup(uncastedProps) {
-
-            // Workaround for an issue with TS types
-            const props = uncastedProps as Props;
+        setup(props) {
 
             const caseFormatOptions: SelectInputOption<CaseFormat>[] = [
                 {

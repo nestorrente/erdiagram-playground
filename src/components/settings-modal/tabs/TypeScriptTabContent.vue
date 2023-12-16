@@ -19,17 +19,13 @@
 </template>
 
 <script lang="ts">
-    import {defineComponent} from 'vue';
+    import {defineComponent, PropType} from 'vue';
     import {parseTypeScriptType, typescriptConfigManager, TypeScriptType} from '@nestorrente/erdiagram';
     import TypeBindingsTable from '@/components/settings-modal/tabs/TypeBindingsTable.vue';
     import SettingsTabSection from '@/components/settings-modal/tabs/SettingsTabSection.vue';
     import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
     import IdNamingStrategySettingRow
         from '@/components/settings-modal/tabs/common-rows/IdNamingStrategySettingRow.vue';
-
-    interface Props {
-        config: ERDiagramPlaygroundConfig;
-    }
 
     export default defineComponent({
         name: 'TypeScriptTabContent',
@@ -40,13 +36,15 @@
         },
         props: {
             config: {
-                type: Object,
+                type: Object as PropType<ERDiagramPlaygroundConfig>,
                 required: true
             }
         },
         setup() {
 
-            const formatTypeScriptType = (typeScriptType: TypeScriptType) => typeScriptType.format();
+            function formatTypeScriptType(typeScriptType: TypeScriptType) {
+                return typeScriptType.format();
+            }
 
             const defaultTypeScriptConfig = typescriptConfigManager.getDefaultConfig();
 

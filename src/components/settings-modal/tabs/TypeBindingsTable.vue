@@ -29,7 +29,11 @@
                             ref="input"
                             type="text"
                             :value="displayFunction(typeBindings[entityPropertyType])"
-                            @change="onTypeBindingChange(entityPropertyType, $event.currentTarget.value, $forceUpdate)"
+                            @change="onTypeBindingChange(
+                                entityPropertyType,
+                                 ($event.currentTarget as HTMLInputElement).value,
+                                  $forceUpdate
+                            )"
                             class="input type-binding-input"
                     >
                 </td>

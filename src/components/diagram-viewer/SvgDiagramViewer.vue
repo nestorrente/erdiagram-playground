@@ -57,7 +57,7 @@
 </template>
 
 <script lang="ts">
-    import {computed, defineComponent, nextTick, ref, watch} from 'vue';
+    import {computed, defineComponent, nextTick, PropType, ref, watch} from 'vue';
     import useDragElement from '@/composition/dom/useDragElement';
     import Button from '@/components/generic/form/Button.vue';
     import FileDownloadWrapper from '@/components/generic/file/FileDownloadWrapper.vue';
@@ -67,24 +67,18 @@
     import useElementSize from '@/composition/dom/size/useElementSize';
     import {Dimension, Point, Rectangle, scaleDimension} from '@/util/geometric-types';
     import {addBoundariesToPositionManager} from '@/util/positioning-strategy/PositionManager';
-
-    interface Props {
-        svgCode: string | Promise<string>;
-    }
+    import {PromiseOrResult} from "@/util/util-types.ts";
 
     export default defineComponent({
         name: 'SvgDiagramViewer',
         components: {FileDownloadWrapper, Button},
         props: {
             svgCode: {
-                type: [String, Promise],
+                type: [String, Promise] as PropType<PromiseOrResult<string>>,
                 required: true
             }
         },
-        setup(uncastedProps) {
-
-            // Workaround for an issue with TS types
-            const props = uncastedProps as unknown as Props;
+        setup(props) {
 
             const {
                 data: computedSvgCode,

@@ -5,7 +5,7 @@
                 class="mr-1"
                 :checked="modelValue"
                 :disabled="disabled"
-                @input="$emit('update:modelValue', $event.currentTarget.checked)"
+                @input="$emit('update:modelValue', ($event.currentTarget as HTMLInputElement).checked)"
         >
     </label>
 </template>

@@ -16,19 +16,11 @@
 </template>
 
 <script lang="ts">
-    import {defineComponent} from 'vue';
+    import {defineComponent, PropType} from 'vue';
     import {IdNamingStrategy, StandardIdNamingStrategies} from '@nestorrente/erdiagram';
     import useSelectInputOptions, {SelectInputOption} from '@/composition/form/useSelectInputOptions';
     import SelectInput from '@/components/generic/form/SelectInput.vue';
     import SettingRow from '@/components/settings-modal/tabs/SettingRow.vue';
-
-    interface Props {
-        config: {
-            idNamingStrategy: IdNamingStrategy;
-        };
-        description: string;
-        disabled: boolean;
-    }
 
     export default defineComponent({
         name: 'IdNamingStrategySettingRow',
@@ -39,7 +31,9 @@
         },
         props: {
             config: {
-                type: Object,
+                type: Object as PropType<{
+                    idNamingStrategy: IdNamingStrategy;
+                }>,
                 required: true
             },
             description: {
@@ -51,10 +45,7 @@
                 default: false
             }
         },
-        setup(uncastedProps) {
-
-            // Workaround for an issue with TS types
-            const props = uncastedProps as Props;
+        setup(props) {
 
             const idNamingStrategyOptions: SelectInputOption<IdNamingStrategy>[] = [
                 {

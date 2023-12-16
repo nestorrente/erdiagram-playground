@@ -109,7 +109,7 @@
                 required: true
             }
         },
-        setup(props, context) {
+        setup(_props, context) {
 
             async function restoreDefaultConfig() {
                 if (await confirmRestoreDefaultConfig()) {
