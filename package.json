@@ -1,51 +1,34 @@
 {
-	"name": "erdiagram-playground",
-	"version": "1.0.0",
-	"private": true,
-	"engines": {
-		"npm": ">=8.0.0",
-		"node": ">=16.0.0"
-	},
-	"scripts": {
-		"serve": "vue-cli-service serve --port 3000",
-		"build": "vue-cli-service build",
-		"test:unit": "vue-cli-service test:unit",
-		"lint": "vue-cli-service lint"
-	},
-	"dependencies": {
-		"@fortawesome/fontawesome-free": "^5.15.2",
-		"@nestorrente/erdiagram": "^1.0.0",
-		"@types/prismjs": "^1.16.5",
-		"ace-builds": "^1.4.12",
-		"bulma": "^0.9.2",
-		"core-js": "^3.6.5",
-		"jszip": "^3.6.0",
-		"lodash.debounce": "^4.0.8",
-		"nomnoml": "^1.3.1",
-		"prismjs": "^1.23.0",
-		"resize-observer-polyfill": "^1.5.1",
-		"vue": "3.0.11"
-	},
-	"devDependencies": {
-		"@types/big.js": "^6.0.2",
-		"@types/jest": "^24.0.19",
-		"@types/lodash.debounce": "^4.0.6",
-		"@typescript-eslint/eslint-plugin": "^2.33.0",
-		"@typescript-eslint/parser": "^2.33.0",
-		"@vue/cli-plugin-babel": "~4.5.0",
-		"@vue/cli-plugin-eslint": "~4.5.0",
-		"@vue/cli-plugin-typescript": "~4.5.0",
-		"@vue/cli-plugin-unit-jest": "^3.12.1",
-		"@vue/cli-service": "~4.5.0",
-		"@vue/compiler-sfc": "3.0.11",
-		"@vue/eslint-config-typescript": "^5.0.2",
-		"@vue/test-utils": "^2.0.0-0",
-		"eslint": "^6.7.2",
-		"eslint-plugin-vue": "^7.0.0-0",
-		"raw-loader": "^4.0.2",
-		"sass": "^1.26.5",
-		"sass-loader": "^8.0.2",
-		"typescript": "~3.9.3",
-		"vue-jest": "^5.0.0-0"
-	}
+  "name": "erdiagram-playground",
+  "private": true,
+  "version": "1.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 3000",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.5.1",
+    "@nestorrente/erdiagram": "^1.0.0",
+    "ace-builds": "^1.32.2",
+    "bulma": "^0.9.4",
+    "jszip": "^3.10.1",
+    "lodash.debounce": "^4.0.8",
+    "nomnoml": "^1.6.2",
+    "prismjs": "^1.29.0",
+    "resize-observer-polyfill": "^1.5.1",
+    "true-json": "^1.0.3",
+    "vue": "^3.3.11"
+  },
+  "devDependencies": {
+    "@types/lodash.debounce": "^4.0.9",
+    "@types/prismjs": "^1.26.3",
+    "@vitejs/plugin-vue": "^4.5.2",
+    "sass": "^1.69.5",
+    "typescript": "^5.2.2",
+    "url": "^0.11.3",
+    "vite": "^5.0.8",
+    "vue-tsc": "^1.8.25"
+  }
 }

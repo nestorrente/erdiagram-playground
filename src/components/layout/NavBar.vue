@@ -64,7 +64,7 @@
         setup() {
 
             const expanded = ref(false);
-			const environment = process.env.VUE_APP_ENV;
+			const environment = import.meta.env.VUE_APP_ENV;
 			const isProduction = environment === 'production';
 			const appVersion = packageJson.version;
 

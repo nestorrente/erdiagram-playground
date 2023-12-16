@@ -1,6 +1,6 @@
 // @ts-ignore
 import ace, {Ace, Range as RangeType} from 'ace-builds';
-// import erdiagramModeWorkerSourceCode from '!!raw-loader!@/ace/mode/erdiagram-mode-worker.js';
+// import erdiagramModeWorkerSourceCode from '@/ace/mode/erdiagram-mode-worker.js?raw';
 
 type RequireFn = <T = any>(module: string) => T;
 type Exports = any;
@@ -20,7 +20,7 @@ ace.define('ace/mode/folding/erdiagram', ['require', 'exports'], function (requi
 		// regular expressions that identify starting and stopping points
 		public foldingStartMarker = /^[A-Za-z_][A-Za-z_0-9]*$/;
 
-		public getFoldWidgetRange(session: Ace.EditSession, foldStyle: string, startRow: number) {
+		public getFoldWidgetRange(session: Ace.EditSession, _foldStyle: string, startRow: number) {
 
 			const startLine = session.getLine(startRow);
 			const allLines = session.getDocument().getAllLines();
@@ -252,7 +252,7 @@ ace.define('ace/mode/erdiagram', ['require', 'exports'], function (require: Requ
 			const indent = this.$getIndent(line);
 
 			// eslint-disable-next-line
-			if (state == 'start' && line.match(/^.*[\{\(\[]\s*$/)) {
+			if (state == 'start' && line.match(/^.*[{(\[]\s*$/)) {
 				return indent + tab;
 			} else {
 				return indent;

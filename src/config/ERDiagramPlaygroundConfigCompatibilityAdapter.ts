@@ -1,4 +1,4 @@
-import {JsonObject} from 'true-json';
+import type {JsonObject} from 'true-json';
 import {COMPATIBLE_CONFIG_VERSION, LATEST_CONFIG_VERSION} from '@/config/ERDiagramPlaygroundConfigManager';
 import {
     nomnomlConfigManager,

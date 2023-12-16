@@ -59,15 +59,15 @@
     import DropdownItem from '@/components/generic/form/DropdownItem.vue';
     import Icon from '@/components/generic/form/Icon.vue';
     import DropdownDivider from '@/components/generic/form/DropdownDivider.vue';
-    import basicEntitiesExampleCode from '!!raw-loader!@/sample-erd-files/entities/BasicEntities.erd';
-    import dataTypesExampleCode from '!!raw-loader!@/sample-erd-files/entities/DataTypes.erd';
-    import propertyModifiersExampleCode from '!!raw-loader!@/sample-erd-files/entities/PropertyModifiers.erd';
-    import cardinalitiesExampleCode from '!!raw-loader!@/sample-erd-files/relationships/Cardinalities.erd';
-    import directionsExampleCode from '!!raw-loader!@/sample-erd-files/relationships/Directions.erd';
-    import aliasesExampleCode from '!!raw-loader!@/sample-erd-files/relationships/Aliases.erd';
-    import relationshipNameExampleCode from '!!raw-loader!@/sample-erd-files/relationships/RelationshipName.erd';
-    import pokemonExampleCode from '!!raw-loader!@/sample-erd-files/Pokemon.erd';
-    import virtualShopExampleCode from '!!raw-loader!@/sample-erd-files/VirtualShop.erd';
+    import basicEntitiesExampleCode from '@/sample-erd-files/entities/BasicEntities.erd?raw';
+    import dataTypesExampleCode from '@/sample-erd-files/entities/DataTypes.erd?raw';
+    import propertyModifiersExampleCode from '@/sample-erd-files/entities/PropertyModifiers.erd?raw';
+    import cardinalitiesExampleCode from '@/sample-erd-files/relationships/Cardinalities.erd?raw';
+    import directionsExampleCode from '@/sample-erd-files/relationships/Directions.erd?raw';
+    import aliasesExampleCode from '@/sample-erd-files/relationships/Aliases.erd?raw';
+    import relationshipNameExampleCode from '@/sample-erd-files/relationships/RelationshipName.erd?raw';
+    import pokemonExampleCode from '@/sample-erd-files/Pokemon.erd?raw';
+    import virtualShopExampleCode from '@/sample-erd-files/VirtualShop.erd?raw';
 
     export default defineComponent({
         name: 'ExamplesDropdown',
