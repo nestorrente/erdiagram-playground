@@ -64,7 +64,7 @@
         setup() {
 
             const expanded = ref(false);
-            const environment = import.meta.env.VUE_APP_ENV;
+            const environment = import.meta.env.VITE_APP_ENV;
             const isProduction = environment === 'production';
 
             return {
