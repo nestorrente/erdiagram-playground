@@ -1,9 +1,10 @@
-import {
+import type {
 	BeanValidationConfig,
 	ClassModelConfig,
 	DatabaseModelConfig,
 	EntityRelationshipModelParserConfig,
 	JavaClassModelConfig,
+	JavaExtendedPackage,
 	JpaConfig,
 	LombokConfig,
 	MysqlDialectConfig,
@@ -29,6 +30,9 @@ export default interface ERDiagramPlaygroundConfig {
 		classModel: ClassModelConfig;
 		code: JavaClassModelConfig;
 		transformers: {
+			shared: {
+				javaExtendedPackage: JavaExtendedPackage;
+			}
 			validation: {
 				enabled: boolean;
 				config: BeanValidationConfig;

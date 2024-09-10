@@ -15,6 +15,20 @@
                     >
                 </SettingRow>
                 <IdNamingStrategySettingRow :config="config.java.classModel"/>
+				<SettingRow
+						description="Java extended package"
+						@restore-default="config.java.transformers.shared.javaExtendedPackage = defaultJpaConfig.javaExtendedPackage"
+						#default="{disabled}"
+				>
+					<SelectInput
+							:items="javaExtendedPackageOptions"
+							v-model="selectedJavaExtendedPackageOption"
+							text-field="text"
+							id-field="text"
+							block
+							:disabled="disabled"
+					></SelectInput>
+				</SettingRow>
             </tbody>
         </table>
 
@@ -248,19 +262,21 @@
 
 <script lang="ts">
     import {defineComponent, PropType} from 'vue';
-    import {
-        beanValidationConfigManager,
-        CaseFormat,
-        classModelConfigManager,
-        databaseModelConfigManager,
-        javaClassModelConfigManager,
-        JavaType,
-        jpaConfigManager, lombokConfigManager,
-        NotNullBlobValidationStrategy,
-        NotNullTextValidationStrategy,
-        parseJavaType,
-        StandardCaseFormats
-    } from '@nestorrente/erdiagram';
+	import {
+		beanValidationConfigManager,
+		CaseFormat,
+		classModelConfigManager,
+		databaseModelConfigManager,
+		javaClassModelConfigManager,
+		JavaExtendedPackage,
+		JavaType,
+		jpaConfigManager,
+		lombokConfigManager,
+		NotNullBlobValidationStrategy,
+		NotNullTextValidationStrategy,
+		parseJavaType,
+		StandardCaseFormats
+	} from '@nestorrente/erdiagram';
     import TypeBindingsTable from '@/components/settings-modal/tabs/TypeBindingsTable.vue';
     import SettingsTabSection from '@/components/settings-modal/tabs/SettingsTabSection.vue';
     import ERDiagramPlaygroundConfig from '@/config/ERDiagramPlaygroundConfig';
@@ -296,6 +312,23 @@
             const defaultBeanValidationConfig = beanValidationConfigManager.getDefaultConfig();
             const defaultJpaConfig = jpaConfigManager.getDefaultConfig();
             const defaultLombokConfig = lombokConfigManager.getDefaultConfig();
+
+            const javaExtendedPackageOptions: SelectInputOption<JavaExtendedPackage>[] = [
+                {
+                    text: 'jakarta (recommended)',
+                    value: JavaExtendedPackage.JAKARTA
+                },
+                {
+                    text: 'javax (legacy)',
+                    value: JavaExtendedPackage.JAVAX
+                }
+            ];
+
+			const selectedJavaExtendedPackageOption = useSelectInputOptions(
+					javaExtendedPackageOptions,
+					() => props.config.java.transformers.shared.javaExtendedPackage,
+					newValue => props.config.java.transformers.shared.javaExtendedPackage = newValue
+			);
 
             const notNullTextValidationStrategyOptions: SelectInputOption<NotNullTextValidationStrategy>[] = [
                 {
@@ -376,6 +409,8 @@
             return {
                 parseJavaType,
                 formatJavaType,
+				javaExtendedPackageOptions,
+				selectedJavaExtendedPackageOption,
                 notNullTextValidationStrategyOptions,
                 selectedNotNullTextValidationStrategyOption,
                 notNullBlobValidationStrategyOptions,

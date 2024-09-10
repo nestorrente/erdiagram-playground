@@ -1,12 +1,16 @@
 import {
 	DatabaseModelConfig,
 	EntityRelationshipModelParserConfig,
+	JavaExtendedPackage,
 	MysqlDialectConfig,
 	OracleDialectConfig,
 	PartialBeanValidationConfig,
 	PartialClassModelConfig,
 	PartialJavaClassModelConfig,
-	PartialJpaConfig, PartialLombokConfig, PartialNomnomlConfig, PartialPlantUmlConfig,
+	PartialJpaConfig,
+	PartialLombokConfig,
+	PartialNomnomlConfig,
+	PartialPlantUmlConfig,
 	PartialTypeScriptConfig,
 	PostgresqlDialectConfig,
 	SqliteDialectConfig,
@@ -26,6 +30,9 @@ type PartialERDiagramPlaygroundConfig = Partial<{
 		classModel: PartialClassModelConfig;
 		code: PartialJavaClassModelConfig;
 		transformers: Partial<{
+			shared: Partial<{
+				javaExtendedPackage: JavaExtendedPackage;
+			}>;
 			validation: Partial<{
 				enabled: boolean;
 				config: PartialBeanValidationConfig;

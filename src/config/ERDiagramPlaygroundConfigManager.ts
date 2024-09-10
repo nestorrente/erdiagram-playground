@@ -6,10 +6,13 @@ import {
 	databaseModelConfigManager,
 	entityRelationshipModelParserConfigManager,
 	javaClassModelConfigManager,
-	jpaConfigManager, lombokConfigManager,
+	JavaExtendedPackage,
+	jpaConfigManager,
+	lombokConfigManager,
 	mysqlDialectConfigManager,
 	nomnomlConfigManager,
-	oracleDialectConfigManager, plantUmlConfigManager,
+	oracleDialectConfigManager,
+	plantUmlConfigManager,
 	postgresqlDialectConfigManager,
 	sqliteDialectConfigManager,
 	sqlServerDialectConfigManager,
@@ -51,6 +54,9 @@ export class ERDiagramPlaygroundConfigManager
 				classModel: classModelConfigManager.getDefaultConfig(),
 				code: javaClassModelConfigManager.getDefaultConfig(),
 				transformers: {
+					shared: {
+						javaExtendedPackage: jpaConfigManager.getDefaultConfig().javaExtendedPackage
+					},
 					validation: {
 						enabled: true,
 						config: beanValidationConfigManager.getDefaultConfig()
@@ -142,6 +148,10 @@ export class ERDiagramPlaygroundConfigManager
 						partialConfig?.java?.code
 				),
 				transformers: {
+					shared: {
+						javaExtendedPackage: partialConfig?.java?.transformers?.shared?.javaExtendedPackage
+								?? fullConfig.java.transformers.shared.javaExtendedPackage
+					},
 					validation: {
 						enabled: partialConfig?.java?.transformers?.validation?.enabled ?? fullConfig.java.transformers.validation.enabled,
 						config: beanValidationConfigManager.mergeConfigs(
@@ -215,6 +225,9 @@ export class ERDiagramPlaygroundConfigManager
 				classModel: adaptConfigManagerToJsonAdapter(classModelConfigManager),
 				code: adaptConfigManagerToJsonAdapter(javaClassModelConfigManager),
 				transformers: JsonAdapters.object({
+					shared: JsonAdapters.object({
+						javaExtendedPackage: JsonAdapters.identity<JavaExtendedPackage>()
+					}),
 					validation: JsonAdapters.object({
 						enabled: JsonAdapters.identity<boolean>(),
 						config: adaptConfigManagerToJsonAdapter(beanValidationConfigManager)

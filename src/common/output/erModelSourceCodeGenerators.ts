@@ -69,6 +69,7 @@ const javaConverter = (() => {
 
 	const jpaTransformer = computed((): JpaTransformer | null => {
 
+		const { javaExtendedPackage } = configStore.config.java.transformers.shared;
 		const jpaConfig = configStore.config.java.transformers.jpa;
 
 		if (!jpaConfig.enabled) {
@@ -78,7 +79,10 @@ const javaConverter = (() => {
 		return markRaw(
 				JpaTransformer.builder()
 						.configureDatabaseModel(jpaConfig.databaseModel)
-						.configureJpa(jpaConfig.config)
+						.configureJpa({
+							...jpaConfig.config,
+							javaExtendedPackage
+						})
 						.build()
 		);
 
@@ -86,6 +90,7 @@ const javaConverter = (() => {
 
 	const validationTransformer = computed((): BeanValidationTransformer | null => {
 
+		const { javaExtendedPackage } = configStore.config.java.transformers.shared;
 		const validationConfig = configStore.config.java.transformers.validation;
 
 		if (!validationConfig.enabled) {
@@ -93,7 +98,10 @@ const javaConverter = (() => {
 		}
 
 		return markRaw(
-				new BeanValidationTransformer(validationConfig.config)
+				new BeanValidationTransformer({
+					...validationConfig.config,
+					javaExtendedPackage
+				})
 		);
 
 	});

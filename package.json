@@ -1,7 +1,7 @@
 {
   "name": "erdiagram-playground",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite --port 3000",
@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.5.1",
-    "@nestorrente/erdiagram": "^1.1.0",
+    "@nestorrente/erdiagram": "^1.2.0",
     "ace-builds": "^1.32.2",
     "bulma": "^0.9.4",
     "jszip": "^3.10.1",
