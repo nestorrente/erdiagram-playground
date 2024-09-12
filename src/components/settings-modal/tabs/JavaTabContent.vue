@@ -14,7 +14,6 @@
                             placeholder="com.example"
                     >
                 </SettingRow>
-                <IdNamingStrategySettingRow :config="config.java.classModel"/>
 				<SettingRow
 						description="Java extended package"
 						@restore-default="config.java.transformers.shared.javaExtendedPackage = defaultJpaConfig.javaExtendedPackage"
@@ -28,6 +27,15 @@
 							block
 							:disabled="disabled"
 					></SelectInput>
+				</SettingRow>
+				<IdNamingStrategySettingRow :config="config.java.classModel"/>
+				<SettingRow
+						description="Enforce not-null lists"
+						@restore-default="config.java.classModel.enforceNotNullLists = defaultClassModelConfig.enforceNotNullLists"
+				>
+					<BlockCheckbox
+							v-model="config.java.classModel.enforceNotNullLists"
+					/>
 				</SettingRow>
             </tbody>
         </table>

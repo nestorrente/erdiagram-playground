@@ -30,6 +30,10 @@ export class ERDiagramPlaygroundConfigCompatibilityAdapter {
                 _version: APP_VERSION,
                 java: {
                     ...serializableConfig.java,
+					classModel: {
+						...serializableConfig.java.classModel,
+						enforceNotNullLists: false
+					},
                     transformers: {
                         ...serializableConfig.java.transformers,
 						shared: {
@@ -39,7 +43,13 @@ export class ERDiagramPlaygroundConfigCompatibilityAdapter {
 								lombokConfigManager.getDefaultConfig()
 						)
                     }
-                }
+                },
+				typescript: {
+					classModel: {
+						...serializableConfig.typescript.classModel,
+						enforceNotNullLists: false
+					},
+				}
             };
 
         }
@@ -53,13 +63,23 @@ export class ERDiagramPlaygroundConfigCompatibilityAdapter {
                 _version: APP_VERSION,
                 java: {
                     ...serializableConfig.java,
+					classModel: {
+						...serializableConfig.java.classModel,
+						enforceNotNullLists: false
+					},
                     transformers: {
                         ...serializableConfig.java.transformers,
                         lombok: lombokConfigManager.convertToSerializableObject(
                             lombokConfigManager.getDefaultConfig()
                         )
                     }
-                }
+                },
+				typescript: {
+					classModel: {
+						...serializableConfig.typescript.classModel,
+						enforceNotNullLists: false
+					},
+				}
             };
 
         }
