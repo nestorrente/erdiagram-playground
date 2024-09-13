@@ -45,6 +45,7 @@ export class ERDiagramPlaygroundConfigCompatibilityAdapter {
                     }
                 },
 				typescript: {
+					...serializableConfig.typescript,
 					classModel: {
 						...serializableConfig.typescript.classModel,
 						enforceNotNullLists: false
@@ -75,6 +76,7 @@ export class ERDiagramPlaygroundConfigCompatibilityAdapter {
                     }
                 },
 				typescript: {
+					...serializableConfig.typescript,
 					classModel: {
 						...serializableConfig.typescript.classModel,
 						enforceNotNullLists: false
