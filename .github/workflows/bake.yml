@@ -1,0 +1,38 @@
+name: Bake Production
+
+on:
+  push:
+    branches:
+      - main
+      - 'release/**'
+
+jobs:
+  bake-production:
+    runs-on: ubuntu-latest
+
+    env:
+      REGISTRY: registry.nestorrente.com/v2
+      IMAGE_NAME: erdiagram/erdiagram-playground
+      VERSION_PREFIX: 1.1.0
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to Docker registry
+        run: |
+          echo "${{ secrets.DOCKER_PASS }}" | docker login ${{ env.REGISTRY }} \
+            -u "${{ secrets.DOCKER_USER }}" --password-stdin
+
+      - name: Build and push Docker images
+        run: |
+          BUILD_NUMBER=${GITHUB_RUN_NUMBER}
+
+          TAG_LATEST="latest"
+          TAG_VERSION="${VERSION_PREFIX}.${BUILD_NUMBER}"
+
+          docker build -t "$REGISTRY/$IMAGE_NAME:$TAG_LATEST" \
+                       -t "$REGISTRY/$IMAGE_NAME:$TAG_VERSION" .
+
+          docker push "$REGISTRY/$IMAGE_NAME:$TAG_LATEST"
+          docker push "$REGISTRY/$IMAGE_NAME:$TAG_VERSION"
